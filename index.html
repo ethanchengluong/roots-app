@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Roots – Financial Wellness for AANHPI Students</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'DM Sans', sans-serif; background: #f7f4ee; color: #1a1a1a; min-height: 100vh; }
@@ -35,14 +36,50 @@
     .tag-new { background: #faeeda; color: #854f0b; }
     .module-title { font-size: 13px; font-weight: 500; color: #1a1a1a; line-height: 1.3; }
     .module-sub { font-size: 11px; color: #7a7060; margin-top: 2px; }
-    .map-wrap { margin: 0 1.5rem 1.5rem; border-radius: 16px; overflow: hidden; border: 1px solid rgba(0,0,0,0.06); background: white; }
-    .map-info { padding: 12px 16px; display: none; border-top: 1px solid rgba(0,0,0,0.06); }
-    .map-info-row { display: flex; align-items: center; gap: 10px; }
-    .map-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-    .map-tag { font-size: 10px; padding: 2px 8px; border-radius: 100px; font-weight: 500; display: inline-block; margin-bottom: 3px; }
-    .map-name { font-size: 13px; font-weight: 500; color: #1a1a1a; }
-    .map-hours { font-size: 11px; color: #7a7060; margin-top: 1px; }
-    .nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 420px; background: white; border-top: 1px solid rgba(0,0,0,0.06); display: flex; justify-content: space-around; padding: 12px 0 20px; }
+
+    /* Map section */
+    .map-wrap { margin: 0 1.5rem 1.5rem; border-radius: 16px; overflow: hidden; border: 1px solid rgba(0,0,0,0.06); background: white; position: relative; }
+    .map-header { padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.06); }
+    .map-header-title { font-size: 13px; font-weight: 500; color: #1a1a1a; }
+    .map-header-sub { font-size: 11px; color: #7a7060; }
+    .expand-btn { font-size: 11px; background: #2d5a3d; color: white; border: none; border-radius: 20px; padding: 5px 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; font-weight: 500; }
+    #map { height: 220px; width: 100%; z-index: 1; }
+
+    /* Full-screen overlay */
+    .map-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 9999; align-items: flex-end; justify-content: center; }
+    .map-overlay.open { display: flex; }
+    .map-modal { background: white; border-radius: 24px 24px 0 0; width: 100%; max-width: 420px; height: 88vh; display: flex; flex-direction: column; overflow: hidden; }
+    .modal-header { padding: 14px 16px 12px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+    .modal-handle { width: 36px; height: 4px; background: #e0dbd2; border-radius: 2px; margin: 0 auto 12px; }
+    .modal-title { font-size: 15px; font-weight: 500; color: #1a1a1a; font-family: 'DM Sans', sans-serif; }
+    .close-btn { background: #f0ede8; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
+    #map-full { flex: 1; min-height: 0; }
+
+    /* Pin legend bar */
+    .pin-bar { padding: 10px 14px; border-top: 1px solid rgba(0,0,0,0.06); display: flex; gap: 8px; overflow-x: auto; flex-shrink: 0; }
+    .pin-chip { display: flex; align-items: center; gap: 7px; background: #f7f4ee; border: 1px solid rgba(0,0,0,0.07); border-radius: 100px; padding: 6px 12px 6px 8px; white-space: nowrap; cursor: pointer; }
+    .pin-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .pin-chip-label { font-size: 12px; font-weight: 500; color: #1a1a1a; font-family: 'DM Sans', sans-serif; }
+
+    /* Leaflet popup custom style */
+    .roots-popup .leaflet-popup-content-wrapper {
+      border-radius: 14px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+      padding: 0;
+      overflow: hidden;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .roots-popup .leaflet-popup-content { margin: 0; width: 220px !important; }
+    .roots-popup .leaflet-popup-tip { background: white; }
+    .popup-inner { padding: 14px; }
+    .popup-tag { font-size: 10px; padding: 2px 8px; border-radius: 100px; font-weight: 500; display: inline-block; margin-bottom: 8px; }
+    .popup-name { font-size: 13px; font-weight: 500; color: #1a1a1a; margin-bottom: 4px; line-height: 1.3; }
+    .popup-desc { font-size: 11px; color: #7a7060; margin-bottom: 8px; line-height: 1.5; }
+    .popup-hours { font-size: 11px; color: #5a7060; font-weight: 500; margin-bottom: 8px; }
+    .popup-link { display: block; text-align: center; background: #2d5a3d; color: white; font-size: 11px; font-weight: 500; padding: 7px; border-radius: 8px; text-decoration: none; font-family: 'DM Sans', sans-serif; }
+    .popup-link:hover { background: #3a7050; }
+
+    .nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 420px; background: white; border-top: 1px solid rgba(0,0,0,0.06); display: flex; justify-content: space-around; padding: 12px 0 20px; z-index: 100; }
     .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; opacity: 0.4; }
     .nav-item.active { opacity: 1; }
     .nav-label { font-size: 10px; color: #1a1a1a; }
@@ -94,183 +131,16 @@
   </div>
 
   <div class="section-label">Resources for you</div>
+
   <div class="map-wrap">
-    <svg width="100%" viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg" style="display:block;">
-
-      <!-- base green campus -->
-      <rect width="360" height="300" fill="#c8dba8"/>
-
-      <!-- outer roads -->
-      <rect x="0" y="0" width="360" height="22" fill="#b8b0a0"/>
-      <rect x="0" y="278" width="360" height="22" fill="#b8b0a0"/>
-      <rect x="0" y="0" width="22" height="300" fill="#b8b0a0"/>
-      <rect x="338" y="0" width="22" height="300" fill="#b8b0a0"/>
-
-      <!-- road lines outer -->
-      <rect x="0" y="10" width="360" height="2" fill="white" opacity="0.4"/>
-      <rect x="0" y="288" width="360" height="2" fill="white" opacity="0.4"/>
-      <rect x="10" y="0" width="2" height="300" fill="white" opacity="0.4"/>
-      <rect x="348" y="0" width="2" height="300" fill="white" opacity="0.4"/>
-
-      <!-- inner cross roads -->
-      <rect x="22" y="136" width="316" height="28" fill="#c4bbaa"/>
-      <rect x="166" y="22" width="28" height="256" fill="#c4bbaa"/>
-
-      <!-- road center dashes -->
-      <rect x="30" y="149" width="20" height="3" fill="white" opacity="0.5" rx="1"/>
-      <rect x="60" y="149" width="20" height="3" fill="white" opacity="0.5" rx="1"/>
-      <rect x="90" y="149" width="20" height="3" fill="white" opacity="0.5" rx="1"/>
-      <rect x="120" y="149" width="20" height="3" fill="white" opacity="0.5" rx="1"/>
-      <rect x="210" y="149" width="20" height="3" fill="white" opacity="0.5" rx="1"/>
-      <rect x="240" y="149" width="20" height="3" fill="white" opacity="0.5" rx="1"/>
-      <rect x="270" y="149" width="20" height="3" fill="white" opacity="0.5" rx="1"/>
-      <rect x="300" y="149" width="20" height="3" fill="white" opacity="0.5" rx="1"/>
-      <rect x="179" y="30" width="3" height="20" fill="white" opacity="0.5" rx="1"/>
-      <rect x="179" y="60" width="3" height="20" fill="white" opacity="0.5" rx="1"/>
-      <rect x="179" y="90" width="3" height="20" fill="white" opacity="0.5" rx="1"/>
-      <rect x="179" y="110" width="3" height="20" fill="white" opacity="0.5" rx="1"/>
-      <rect x="179" y="170" width="3" height="20" fill="white" opacity="0.5" rx="1"/>
-      <rect x="179" y="200" width="3" height="20" fill="white" opacity="0.5" rx="1"/>
-      <rect x="179" y="230" width="3" height="20" fill="white" opacity="0.5" rx="1"/>
-      <rect x="179" y="255" width="3" height="20" fill="white" opacity="0.5" rx="1"/>
-
-      <!-- quad patches -->
-      <rect x="30" y="28" width="128" height="100" fill="#b8d898" rx="6"/>
-      <rect x="202" y="28" width="128" height="100" fill="#b8d898" rx="6"/>
-      <rect x="30" y="172" width="128" height="100" fill="#b8d898" rx="6"/>
-      <rect x="202" y="172" width="128" height="100" fill="#b8d898" rx="6"/>
-
-      <!-- FINANCIAL AID OFFICE (top left) -->
-      <rect x="42" y="38" width="68" height="50" fill="#f5f0e0" rx="4"/>
-      <rect x="42" y="38" width="68" height="10" fill="#e8c87a" rx="4"/>
-      <rect x="42" y="44" width="68" height="4" fill="#e8c87a"/>
-      <rect x="50" y="52" width="10" height="12" fill="#add8f0" rx="1"/>
-      <rect x="64" y="52" width="10" height="12" fill="#add8f0" rx="1"/>
-      <rect x="78" y="52" width="10" height="12" fill="#add8f0" rx="1"/>
-      <rect x="92" y="52" width="10" height="12" fill="#add8f0" rx="1"/>
-      <rect x="50" y="67" width="10" height="10" fill="#add8f0" rx="1"/>
-      <rect x="64" y="67" width="10" height="10" fill="#add8f0" rx="1"/>
-      <rect x="78" y="67" width="10" height="10" fill="#add8f0" rx="1"/>
-      <rect x="92" y="67" width="10" height="10" fill="#add8f0" rx="1"/>
-      <rect x="68" y="79" width="14" height="9" fill="#8b6030" rx="1"/>
-      <rect x="38" y="84" width="76" height="6" fill="#d4b870" rx="2"/>
-
-      <!-- FOOD PANTRY (top left, smaller building below) -->
-      <rect x="48" y="98" width="52" height="22" fill="#eef8ec" rx="3"/>
-      <rect x="48" y="98" width="52" height="7" fill="#7ec8a0" rx="3"/>
-      <rect x="48" y="101" width="52" height="4" fill="#7ec8a0"/>
-      <rect x="55" y="108" width="7" height="7" fill="#add8f0" rx="1"/>
-      <rect x="66" y="108" width="7" height="7" fill="#add8f0" rx="1"/>
-      <rect x="77" y="108" width="7" height="7" fill="#add8f0" rx="1"/>
-      <rect x="64" y="114" width="10" height="6" fill="#8b6030" rx="1"/>
-
-      <!-- COUNSELING CENTER (top right) -->
-      <rect x="212" y="34" width="90" height="80" fill="#eeeade" rx="4"/>
-      <rect x="212" y="34" width="90" height="11" fill="#7aabd8" rx="4"/>
-      <rect x="212" y="41" width="90" height="4" fill="#7aabd8"/>
-      <rect x="220" y="50" width="10" height="13" fill="#add8f0" rx="1"/>
-      <rect x="234" y="50" width="10" height="13" fill="#add8f0" rx="1"/>
-      <rect x="248" y="50" width="10" height="13" fill="#add8f0" rx="1"/>
-      <rect x="262" y="50" width="10" height="13" fill="#add8f0" rx="1"/>
-      <rect x="276" y="50" width="10" height="13" fill="#add8f0" rx="1"/>
-      <rect x="220" y="67" width="10" height="13" fill="#add8f0" rx="1"/>
-      <rect x="234" y="67" width="10" height="13" fill="#add8f0" rx="1"/>
-      <rect x="248" y="67" width="10" height="13" fill="#add8f0" rx="1"/>
-      <rect x="262" y="67" width="10" height="13" fill="#add8f0" rx="1"/>
-      <rect x="276" y="67" width="10" height="13" fill="#add8f0" rx="1"/>
-      <rect x="220" y="84" width="10" height="10" fill="#add8f0" rx="1"/>
-      <rect x="234" y="84" width="10" height="10" fill="#add8f0" rx="1"/>
-      <rect x="248" y="84" width="10" height="10" fill="#add8f0" rx="1"/>
-      <rect x="252" y="106" width="14" height="8" fill="#8b6030" rx="1"/>
-      <rect x="208" y="110" width="98" height="6" fill="#5a90c0" rx="2"/>
-
-      <!-- SCHOLARSHIPS OFFICE (bottom left) -->
-      <rect x="42" y="182" width="78" height="58" fill="#f2eee5" rx="4"/>
-      <rect x="42" y="182" width="78" height="10" fill="#c8a0dc" rx="4"/>
-      <rect x="42" y="188" width="78" height="4" fill="#c8a0dc"/>
-      <rect x="50" y="196" width="10" height="12" fill="#add8f0" rx="1"/>
-      <rect x="64" y="196" width="10" height="12" fill="#add8f0" rx="1"/>
-      <rect x="78" y="196" width="10" height="12" fill="#add8f0" rx="1"/>
-      <rect x="92" y="196" width="10" height="12" fill="#add8f0" rx="1"/>
-      <rect x="50" y="212" width="10" height="12" fill="#add8f0" rx="1"/>
-      <rect x="64" y="212" width="10" height="12" fill="#add8f0" rx="1"/>
-      <rect x="78" y="212" width="10" height="12" fill="#add8f0" rx="1"/>
-      <rect x="64" y="230" width="14" height="10" fill="#8b6030" rx="1"/>
-      <rect x="38" y="236" width="86" height="6" fill="#a07abf" rx="2"/>
-
-      <!-- bottom right: open green space / future building -->
-      <rect x="215" y="182" width="108" height="78" fill="#a8cc88" rx="6"/>
-      <rect x="230" y="198" width="78" height="44" fill="#90b870" rx="4"/>
-      <text x="269" y="224" text-anchor="middle" font-size="9" fill="#5a8040" font-family="sans-serif" font-weight="500">Green Space</text>
-
-      <!-- Trees -->
-      <circle cx="148" cy="50" r="10" fill="#5aaa38"/><circle cx="148" cy="50" r="6" fill="#4a9a28"/>
-      <circle cx="148" cy="78" r="8" fill="#5aaa38"/><circle cx="148" cy="78" r="5" fill="#4a9a28"/>
-      <circle cx="148" cy="105" r="9" fill="#5aaa38"/><circle cx="148" cy="105" r="5" fill="#4a9a28"/>
-      <circle cx="310" cy="50" r="10" fill="#5aaa38"/><circle cx="310" cy="50" r="6" fill="#4a9a28"/>
-      <circle cx="310" cy="90" r="8" fill="#5aaa38"/><circle cx="310" cy="90" r="5" fill="#4a9a28"/>
-      <circle cx="148" cy="195" r="9" fill="#5aaa38"/><circle cx="148" cy="195" r="5" fill="#4a9a28"/>
-      <circle cx="148" cy="230" r="10" fill="#5aaa38"/><circle cx="148" cy="230" r="6" fill="#4a9a28"/>
-      <circle cx="310" cy="190" r="8" fill="#5aaa38"/><circle cx="310" cy="190" r="5" fill="#4a9a28"/>
-      <circle cx="310" cy="250" r="10" fill="#5aaa38"/><circle cx="310" cy="250" r="6" fill="#4a9a28"/>
-
-      <!-- Benches -->
-      <rect x="155" y="75" width="6" height="14" fill="#a07848" rx="1"/>
-      <rect x="155" y="200" width="6" height="14" fill="#a07848" rx="1"/>
-
-      <!-- PIN: Financial Aid -->
-      <g id="pin-aid" style="cursor:pointer" onclick="showInfo('aid')">
-        <circle cx="76" cy="52" r="11" fill="#EA4335" stroke="white" stroke-width="2"/>
-        <circle cx="76" cy="52" r="4" fill="white"/>
-        <polygon points="76,68 70,59 82,59" fill="#EA4335"/>
-      </g>
-
-      <!-- PIN: Food Pantry -->
-      <g id="pin-food" style="cursor:pointer" onclick="showInfo('food')">
-        <circle cx="74" cy="100" r="11" fill="#EA4335" stroke="white" stroke-width="2"/>
-        <circle cx="74" cy="100" r="4" fill="white"/>
-        <polygon points="74,116 68,107 80,107" fill="#EA4335"/>
-      </g>
-
-      <!-- PIN: Counseling -->
-      <g id="pin-mental" style="cursor:pointer" onclick="showInfo('mental')">
-        <circle cx="257" cy="46" r="11" fill="#EA4335" stroke="white" stroke-width="2"/>
-        <circle cx="257" cy="46" r="4" fill="white"/>
-        <polygon points="257,62 251,53 263,53" fill="#EA4335"/>
-      </g>
-
-      <!-- PIN: Scholarships -->
-      <g id="pin-scholar" style="cursor:pointer" onclick="showInfo('scholar')">
-        <circle cx="81" cy="186" r="11" fill="#EA4335" stroke="white" stroke-width="2"/>
-        <circle cx="81" cy="186" r="4" fill="white"/>
-        <polygon points="81,202 75,193 87,193" fill="#EA4335"/>
-      </g>
-
-      <!-- Labels -->
-      <rect x="86" y="46" width="52" height="13" fill="white" opacity="0.85" rx="3"/>
-      <text x="112" y="56" text-anchor="middle" font-size="8" fill="#1a1a1a" font-family="sans-serif" font-weight="500">Financial Aid</text>
-
-      <rect x="86" y="94" width="46" height="13" fill="white" opacity="0.85" rx="3"/>
-      <text x="109" y="104" text-anchor="middle" font-size="8" fill="#1a1a1a" font-family="sans-serif" font-weight="500">Food Pantry</text>
-
-      <rect x="210" y="40" width="44" height="13" fill="white" opacity="0.85" rx="3"/>
-      <text x="232" y="50" text-anchor="middle" font-size="8" fill="#1a1a1a" font-family="sans-serif" font-weight="500">Counseling</text>
-
-      <rect x="94" y="180" width="52" height="13" fill="white" opacity="0.85" rx="3"/>
-      <text x="120" y="190" text-anchor="middle" font-size="8" fill="#1a1a1a" font-family="sans-serif" font-weight="500">Scholarships</text>
-
-    </svg>
-
-    <div class="map-info" id="map-info">
-      <div class="map-info-row">
-        <div class="map-icon" id="map-icon"></div>
-        <div>
-          <div class="map-tag" id="map-tag"></div>
-          <div class="map-name" id="map-name"></div>
-          <div class="map-hours" id="map-hours"></div>
-        </div>
+    <div class="map-header">
+      <div>
+        <div class="map-header-title">UW Campus Resources</div>
+        <div class="map-header-sub">Tap a pin to learn more</div>
       </div>
+      <button class="expand-btn" onclick="openFullMap()">Expand</button>
     </div>
+    <div id="map"></div>
   </div>
 
   <nav class="nav">
@@ -281,22 +151,153 @@
   </nav>
 </div>
 
+<!-- Full screen map overlay -->
+<div class="map-overlay" id="mapOverlay" onclick="handleOverlayClick(event)">
+  <div class="map-modal" id="mapModal">
+    <div style="padding: 12px 16px 0;">
+      <div class="modal-handle"></div>
+      <div class="modal-header" style="padding: 0 0 10px;">
+        <div class="modal-title">UW Campus Resources</div>
+        <button class="close-btn" onclick="closeFullMap()">✕</button>
+      </div>
+    </div>
+    <div id="map-full"></div>
+    <div class="pin-bar">
+      <div class="pin-chip" onclick="flyToPin('food', true)">
+        <div class="pin-dot" style="background:#2d5a3d;"></div>
+        <span class="pin-chip-label">UW Food Pantry</span>
+      </div>
+      <div class="pin-chip" onclick="flyToPin('advising', true)">
+        <div class="pin-dot" style="background:#7fb069;"></div>
+        <span class="pin-chip-label">UAA Advising</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-const mapData = {
-  aid:     { icon:'💰', bg:'#eef5eb', tag:'Financial aid',  tagBg:'#eef5eb', tagColor:'#3b6d11', name:'Office of Student Financial Aid', hours:'Mon–Fri 11am–3pm · (206) 543-6101' },
-  food:    { icon:'🥗', bg:'#faeeda', tag:'Food support',   tagBg:'#faeeda', tagColor:'#854f0b', name:'UW Food Pantry',                   hours:'Mon–Fri varying hours · (206) 543-5739' },
-  mental:  { icon:'💬', bg:'#e6f1fb', tag:'Mental health',  tagBg:'#e6f1fb', tagColor:'#185fa5', name:'UW Counseling Center',              hours:'Mon–Fri 8am–5pm · (206) 543-1240' },
-  scholar: { icon:'🎓', bg:'#EEEDFE', tag:'Scholarships',   tagBg:'#EEEDFE', tagColor:'#3C3489', name:'UW Scholarships Office',            hours:'Mon–Fri 9am–4pm' },
+const UW_CENTER = [47.6553, -122.3035];
+
+const resources = {
+  food: {
+    latlng: [47.6567, -122.3152],
+    color: '#2d5a3d',
+    tag: 'Food support',
+    tagBg: '#eef5eb',
+    tagColor: '#3b6d11',
+    name: 'UW Food Pantry',
+    desc: 'Free groceries, fresh produce, and pantry staples for UW students in need. No eligibility requirements.',
+    hours: 'Mon–Fri · Hours vary by quarter',
+    phone: '(206) 543-5739',
+    link: 'https://www.washington.edu/community/food-pantry/',
+    linkLabel: 'Visit website →'
+  },
+  advising: {
+    latlng: [47.6561, -122.3082],
+    color: '#7fb069',
+    tag: 'Academic advising',
+    tagBg: '#eef5eb',
+    tagColor: '#3b6d11',
+    name: 'UAA Undergraduate Advising',
+    desc: 'Academic planning, degree requirements, major exploration, and support for all UW undergrads.',
+    hours: 'Mon–Fri 8am–5pm',
+    phone: '(206) 543-2550',
+    link: 'https://www.washington.edu/uaa/',
+    linkLabel: 'Visit website →'
+  }
 };
-function showInfo(key) {
-  const d = mapData[key];
-  document.getElementById('map-icon').textContent = d.icon;
-  document.getElementById('map-icon').style.background = d.bg;
-  document.getElementById('map-tag').textContent = d.tag;
-  document.getElementById('map-tag').style.cssText = `background:${d.tagBg};color:${d.tagColor};font-size:10px;padding:2px 8px;border-radius:100px;font-weight:500;display:inline-block;margin-bottom:3px;`;
-  document.getElementById('map-name').textContent = d.name;
-  document.getElementById('map-hours').textContent = d.hours;
-  document.getElementById('map-info').style.display = 'block';
+
+function makeIcon(color) {
+  return L.divIcon({
+    className: '',
+    html: `<svg width="28" height="38" viewBox="0 0 28 38" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="14" cy="14" r="13" fill="${color}" stroke="white" stroke-width="2.5"/>
+      <circle cx="14" cy="14" r="5" fill="white"/>
+      <polygon points="14,38 6,24 22,24" fill="${color}"/>
+    </svg>`,
+    iconSize: [28, 38],
+    iconAnchor: [14, 38],
+    popupAnchor: [0, -40]
+  });
+}
+
+function makePopup(r) {
+  return `<div class="popup-inner">
+    <div class="popup-tag" style="background:${r.tagBg};color:${r.tagColor};">${r.tag}</div>
+    <div class="popup-name">${r.name}</div>
+    <div class="popup-desc">${r.desc}</div>
+    <div class="popup-hours">🕐 ${r.hours}</div>
+    <a class="popup-link" href="${r.link}" target="_blank">${r.linkLabel}</a>
+  </div>`;
+}
+
+// Mini map (inline)
+const miniMap = L.map('map', {
+  center: UW_CENTER,
+  zoom: 15,
+  zoomControl: false,
+  scrollWheelZoom: false,
+  dragging: false,
+  doubleClickZoom: false,
+  touchZoom: false
+});
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© OpenStreetMap contributors'
+}).addTo(miniMap);
+
+Object.entries(resources).forEach(([key, r]) => {
+  L.marker(r.latlng, { icon: makeIcon(r.color) })
+    .addTo(miniMap)
+    .bindPopup(makePopup(r), { className: 'roots-popup', maxWidth: 240 });
+});
+
+// Full map (modal)
+let fullMap = null;
+let fullMarkers = {};
+
+function initFullMap() {
+  if (fullMap) return;
+  fullMap = L.map('map-full', {
+    center: UW_CENTER,
+    zoom: 16,
+    zoomControl: true
+  });
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(fullMap);
+
+  Object.entries(resources).forEach(([key, r]) => {
+    const marker = L.marker(r.latlng, { icon: makeIcon(r.color) })
+      .addTo(fullMap)
+      .bindPopup(makePopup(r), { className: 'roots-popup', maxWidth: 240 });
+    fullMarkers[key] = marker;
+  });
+}
+
+function openFullMap() {
+  document.getElementById('mapOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => {
+    initFullMap();
+    fullMap.invalidateSize();
+  }, 100);
+}
+
+function closeFullMap() {
+  document.getElementById('mapOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('mapOverlay')) closeFullMap();
+}
+
+function flyToPin(key, openPopup) {
+  const r = resources[key];
+  if (!fullMap) return;
+  fullMap.flyTo(r.latlng, 17, { duration: 0.8 });
+  if (openPopup) setTimeout(() => fullMarkers[key].openPopup(), 900);
 }
 </script>
 </body>
