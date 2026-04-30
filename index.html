@@ -171,6 +171,10 @@
         <div class="pin-dot" style="background:#7fb069;"></div>
         <span class="pin-chip-label">UAA Advising</span>
       </div>
+      <div class="pin-chip" onclick="flyToPin('financialaid', true)">
+        <div class="pin-dot" style="background:#e8a030;"></div>
+        <span class="pin-chip-label">Financial Aid</span>
+      </div>
     </div>
   </div>
 </div>
@@ -181,7 +185,7 @@ const UW_CENTER = [47.6553, -122.3035];
 
 const resources = {
   food: {
-    latlng: [47.6567, -122.3152],
+    latlng: [47.6599, -122.3152],
     color: '#2d5a3d',
     tag: 'Food support',
     tagBg: '#eef5eb',
@@ -190,7 +194,7 @@ const resources = {
     desc: 'Free groceries, fresh produce, and pantry staples for UW students in need. No eligibility requirements.',
     hours: 'Mon–Fri · Hours vary by quarter',
     phone: '(206) 543-5739',
-    link: 'https://www.washington.edu/community/food-pantry/',
+    link: 'https://www.washington.edu/anyhungryhusky/',
     linkLabel: 'Visit website →'
   },
   advising: {
@@ -204,6 +208,19 @@ const resources = {
     hours: 'Mon–Fri 8am–5pm',
     phone: '(206) 543-2550',
     link: 'https://www.washington.edu/uaa/',
+    linkLabel: 'Visit website →'
+  },
+  financialaid: {
+    latlng: [47.6532, -122.3082],
+    color: '#e8a030',
+    tag: 'Financial aid',
+    tagBg: '#faeeda',
+    tagColor: '#854f0b',
+    name: 'Office of Student Financial Aid',
+    desc: 'Help with FAFSA, scholarships, grants, loans, and work-study. Located in Schmitz Hall.',
+    hours: 'Mon–Fri 11am–3pm (in-person)',
+    phone: '(206) 543-6101',
+    link: 'https://www.washington.edu/financialaid/',
     linkLabel: 'Visit website →'
   }
 };
