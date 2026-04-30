@@ -80,7 +80,7 @@
     .popup-link:hover { background: #3a7050; }
 
     .nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 420px; background: white; border-top: 1px solid rgba(0,0,0,0.06); display: flex; justify-content: space-around; padding: 12px 0 20px; z-index: 100; }
-    .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; opacity: 0.4; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; opacity: 0.4; text-decoration: none; }
     .nav-item.active { opacity: 1; }
     .nav-label { font-size: 10px; color: #1a1a1a; }
     .nav-item.active .nav-label { color: #2d5a3d; font-weight: 500; }
@@ -146,10 +146,10 @@
   <div style="text-align:center; padding: 0 0 1.5rem; font-size: 11px; color: #b0a898;">designed by @ethanchengluong</div>
 
   <nav class="nav">
-    <div class="nav-item active"><span>🏠</span><span class="nav-label">Home</span></div>
-    <div class="nav-item"><span>📚</span><span class="nav-label">Learn</span></div>
-    <div class="nav-item"><span>🔖</span><span class="nav-label">Resources</span></div>
-    <div class="nav-item"><span>👤</span><span class="nav-label">Profile</span></div>
+    <a href="index.html" class="nav-item active"><span>🏠</span><span class="nav-label">Home</span></a>
+    <a href="#" class="nav-item"><span>📚</span><span class="nav-label">Learn</span></a>
+    <a href="resources.html" class="nav-item"><span>🔖</span><span class="nav-label">Resources</span></a>
+    <a href="#" class="nav-item"><span>👤</span><span class="nav-label">Profile</span></a>
   </nav>
 </div>
 
