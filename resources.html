@@ -3,445 +3,230 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BLOOM – Financial Wellness for AANHPI Students</title>
+  <title>Resources – BLOOM</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    /* ── Themes ── */
-    body.theme-morning {
-      --bg: #fdf8e4; --bg-card: #ffffff; --bg-featured: #fef3c7;
-      --text-primary: #1a1a1a; --text-muted: #7a7060; --text-faint: #b0a060;
-      --wellness-bg: #c8960c; --wellness-orb: rgba(255,220,80,0.25);
-      --wellness-label: #fde68a; --wellness-progress: #fde68a; --wellness-progress-text: #fef3c7;
-      --nav-bg: #ffffff; --nav-border: rgba(0,0,0,0.06);
-      --section-label: #a09050; --footer: #c8b870; --card-border: rgba(200,150,12,0.12);
-      --transition: background 0.6s ease, color 0.4s ease;
-    }
-    body.theme-afternoon {
-      --bg: #fdf0e6; --bg-card: #ffffff; --bg-featured: #fde8d8;
-      --text-primary: #1a1a1a; --text-muted: #7a6050; --text-faint: #b08060;
-      --wellness-bg: #c45c2a; --wellness-orb: rgba(255,160,80,0.25);
-      --wellness-label: #fcd0b0; --wellness-progress: #fcd0b0; --wellness-progress-text: #fde8d8;
-      --nav-bg: #ffffff; --nav-border: rgba(0,0,0,0.06);
-      --section-label: #a07050; --footer: #c89070; --card-border: rgba(196,92,42,0.12);
-      --transition: background 0.6s ease, color 0.4s ease;
-    }
-    body.theme-evening {
-      --bg: #12122a; --bg-card: #1e1e3a; --bg-featured: #1a1a32;
-      --text-primary: #e8e4f0; --text-muted: #8880a8; --text-faint: #6660a8;
-      --wellness-bg: #3d2b6b; --wellness-orb: rgba(120,80,200,0.25);
-      --wellness-label: #a890d8; --wellness-progress: #a890d8; --wellness-progress-text: #2a1f50;
-      --nav-bg: #1e1e3a; --nav-border: rgba(255,255,255,0.06);
-      --section-label: #6860a0; --footer: #4a4480; --card-border: rgba(168,144,216,0.15);
-      --transition: background 0.6s ease, color 0.4s ease;
-    }
-
-    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text-primary); min-height: 100vh; transition: var(--transition); }
-    .app { max-width: 420px; margin: 0 auto; background: var(--bg); min-height: 100vh; padding-bottom: 80px; transition: var(--transition); }
-
-    /* Header */
-    .header { padding: 1.5rem 1.5rem 0.5rem; display: flex; justify-content: space-between; align-items: flex-start; }
-    .logo { font-family: 'DM Serif Display', serif; font-size: 28px; color: #2d5a3d; }
-    .logo span { font-style: italic; color: #7fb069; }
-    .avatar { width: 40px; height: 40px; border-radius: 50%; background: #2d5a3d; display: flex; align-items: center; justify-content: center; color: #f7f4ee; font-size: 14px; font-weight: 500; }
-
-    /* Sky arc */
-    .sky-arc-wrap { padding: 0 1.5rem; margin-bottom: 0; }
-    .sky-arc-svg { width: 100%; display: block; overflow: visible; opacity: 0.85; }
-
-    /* Greeting */
-    .greeting { padding: 0 1.5rem 1.5rem; }
-    .greeting p { font-size: 13px; color: var(--text-muted); margin-bottom: 4px; }
-    .greeting h1 { font-family: 'DM Serif Display', serif; font-size: 24px; font-weight: 400; color: var(--text-primary); }
-
-    /* Budget preview card */
-    .budget-card { margin: 0 1.5rem 1.5rem; background: var(--wellness-bg); border-radius: 20px; padding: 1.5rem; color: #f7f4ee; position: relative; overflow: hidden; text-decoration: none; display: block; cursor: pointer; transition: background 0.6s ease, transform 0.15s ease; }
-    .budget-card:active { transform: scale(0.98); }
-    .budget-card::before { content: ''; position: absolute; top: -40px; right: -40px; width: 160px; height: 160px; background: var(--wellness-orb); border-radius: 50%; }
-    .budget-card-label { font-size: 12px; color: var(--wellness-label); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
-    .budget-card-title { font-family: 'DM Serif Display', serif; font-size: 20px; margin-bottom: 14px; line-height: 1.3; color: #fff; }
-    .budget-card-row { display: flex; gap: 10px; margin-bottom: 14px; }
-    .budget-pill { flex: 1; background: rgba(255,255,255,0.15); border-radius: 12px; padding: 10px 12px; }
-    .budget-pill-label { font-size: 10px; color: rgba(255,255,255,0.65); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
-    .budget-pill-value { font-size: 15px; font-weight: 500; color: white; }
-    .budget-pill-value.pos { color: #86efac; }
-    .budget-pill-value.neg { color: #fca5a5; }
-    .budget-card-cta { font-size: 12px; color: var(--wellness-label); display: flex; align-items: center; gap: 4px; }
-
-    /* Section */
-    .section-label { padding: 0 1.5rem; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--section-label); margin-bottom: 12px; }
-
-    /* Module cards */
-    .modules { padding: 0 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.5rem; }
-    .module-card { background: var(--bg-card); border-radius: 16px; padding: 1rem; border: 1px solid var(--card-border); cursor: pointer; transition: background 0.6s ease; }
-    .module-card.featured { grid-column: span 2; background: var(--bg-featured); display: flex; align-items: center; gap: 1rem; }
-    .module-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 8px; flex-shrink: 0; }
-    .module-card.featured .module-icon { margin-bottom: 0; }
-    .module-tag { font-size: 10px; padding: 2px 8px; border-radius: 100px; font-weight: 500; display: inline-block; margin-bottom: 6px; }
-    .tag-start { background: #eef5eb; color: #3b6d11; }
-    .tag-next  { background: #e6f1fb; color: #185fa5; }
-    .tag-new   { background: #faeeda; color: #854f0b; }
-    .module-title { font-size: 13px; font-weight: 500; color: var(--text-primary); line-height: 1.3; }
-    .module-sub   { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-
-    /* Map */
-    .map-wrap { margin: 0 1.5rem 1.5rem; border-radius: 16px; overflow: hidden; border: 1px solid var(--card-border); background: var(--bg-card); transition: background 0.6s ease; }
-    .map-header { padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--card-border); }
-    .map-header-title { font-size: 13px; font-weight: 500; color: var(--text-primary); }
-    .map-header-sub   { font-size: 11px; color: var(--text-muted); }
-    .expand-btn { font-size: 11px; background: #2d5a3d; color: white; border: none; border-radius: 20px; padding: 5px 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; font-weight: 500; }
-    #map { height: 220px; width: 100%; z-index: 1; }
-
-    /* Full map overlay */
-    .map-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 9999; align-items: flex-end; justify-content: center; }
-    .map-overlay.open { display: flex; }
-    .map-modal { background: white; border-radius: 24px 24px 0 0; width: 100%; max-width: 420px; height: 88vh; display: flex; flex-direction: column; overflow: hidden; }
-    .modal-header { padding: 14px 16px 12px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
-    .modal-handle { width: 36px; height: 4px; background: #e0dbd2; border-radius: 2px; margin: 0 auto 12px; }
-    .modal-title  { font-size: 15px; font-weight: 500; color: #1a1a1a; font-family: 'DM Sans', sans-serif; }
-    .close-btn { background: #f0ede8; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
-    #map-full { flex: 1; min-height: 0; }
-    .pin-bar { padding: 10px 14px; border-top: 1px solid rgba(0,0,0,0.06); display: flex; gap: 8px; overflow-x: auto; flex-shrink: 0; }
-    .pin-chip { display: flex; align-items: center; gap: 7px; background: #f7f4ee; border: 1px solid rgba(0,0,0,0.07); border-radius: 100px; padding: 6px 12px 6px 8px; white-space: nowrap; cursor: pointer; }
-    .pin-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-    .pin-chip-label { font-size: 12px; font-weight: 500; color: #1a1a1a; font-family: 'DM Sans', sans-serif; }
-
-    /* Leaflet popup */
-    .roots-popup .leaflet-popup-content-wrapper { border-radius: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.12); padding: 0; overflow: hidden; font-family: 'DM Sans', sans-serif; }
-    .roots-popup .leaflet-popup-content { margin: 0; width: 220px !important; }
-    .roots-popup .leaflet-popup-tip { background: white; }
-    .popup-inner  { padding: 14px; }
-    .popup-tag    { font-size: 10px; padding: 2px 8px; border-radius: 100px; font-weight: 500; display: inline-block; margin-bottom: 8px; }
-    .popup-name   { font-size: 13px; font-weight: 500; color: #1a1a1a; margin-bottom: 4px; line-height: 1.3; }
-    .popup-desc   { font-size: 11px; color: #7a7060; margin-bottom: 8px; line-height: 1.5; }
-    .popup-hours  { font-size: 11px; color: #5a7060; font-weight: 500; margin-bottom: 8px; }
-    .popup-link   { display: block; text-align: center; background: #2d5a3d; color: white; font-size: 11px; font-weight: 500; padding: 7px; border-radius: 8px; text-decoration: none; font-family: 'DM Sans', sans-serif; }
-    .popup-link:hover { background: #3a7050; }
-
-    /* Footer */
-    .page-footer { text-align: center; padding: 0 0 1.5rem; font-size: 11px; color: var(--footer); }
-
-    /* Nav */
-    .nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 420px; background: var(--nav-bg); border-top: 1px solid var(--nav-border); display: flex; justify-content: space-around; padding: 12px 0 20px; z-index: 100; transition: background 0.6s ease; }
-    .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; opacity: 0.4; text-decoration: none; }
-    .nav-item.active { opacity: 1; }
-    .nav-label { font-size: 10px; color: var(--text-primary); }
-    .nav-item.active .nav-label { color: #2d5a3d; font-weight: 500; }
+    body.theme-morning { --bg:#f5efe3;--bg-card:#fffdf7;--bg-featured:#ede4d0;--text-primary:#1e1a14;--text-muted:#7a6a50;--text-faint:#b09a78;--nav-bg:#fffdf7;--nav-border:rgba(0,0,0,0.07);--section-label:#8a7a5a;--footer:#b09a78;--card-border:rgba(154,176,141,0.3);--accent:#274133;--logo-primary:#274133;--logo-accent:#9ab08d;--transition:background 0.6s ease,color 0.4s ease; }
+    body.theme-afternoon { --bg:#edddc5;--bg-card:#f7f0e2;--bg-featured:#e4d5b5;--text-primary:#1e1a14;--text-muted:#6a5840;--text-faint:#9a8060;--nav-bg:#f7f0e2;--nav-border:rgba(0,0,0,0.07);--section-label:#7a6040;--footer:#9a8060;--card-border:rgba(200,176,103,0.4);--accent:#274133;--logo-primary:#274133;--logo-accent:#9ab08d;--transition:background 0.6s ease,color 0.4s ease; }
+    body.theme-evening { --bg:#1a2920;--bg-card:#274133;--bg-featured:#1f3328;--text-primary:#edddc5;--text-muted:#9ab08d;--text-faint:#6a8870;--nav-bg:#274133;--nav-border:rgba(237,221,197,0.08);--section-label:#7a9a80;--footer:#5a7860;--card-border:rgba(154,176,141,0.18);--accent:#9ab08d;--logo-primary:#9ab08d;--logo-accent:#c8b067;--transition:background 0.6s ease,color 0.4s ease; }
+    body { font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text-primary);min-height:100vh;transition:var(--transition); }
+    .app { max-width:420px;margin:0 auto;background:var(--bg);min-height:100vh;padding-bottom:100px;transition:var(--transition); }
+    .header { padding:1.5rem 1.5rem 0.5rem;display:flex;justify-content:space-between;align-items:flex-start; }
+    .header-right { display:flex;align-items:center;gap:8px; }
+    .logo { font-family:'DM Serif Display',serif;font-size:28px;color:var(--logo-primary); }
+    .logo span { font-style:italic;color:var(--logo-accent); }
+    .avatar { width:40px;height:40px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#edddc5;font-size:14px;font-weight:500; }
+    .lang-btn { background:var(--bg-card);border:1px solid var(--card-border);border-radius:20px;padding:5px 10px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;gap:4px; }
+    .lang-btn:hover { border-color:var(--accent);color:var(--accent); }
+    .lang-overlay { display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:999;align-items:flex-end;justify-content:center; }
+    .lang-overlay.open { display:flex; }
+    .lang-modal { background:var(--bg);border-radius:24px 24px 0 0;width:100%;max-width:420px;padding:1.5rem;padding-bottom:2.5rem;transition:background 0.6s ease; }
+    .lang-handle { width:36px;height:4px;background:var(--card-border);border-radius:2px;margin:0 auto 1.25rem; }
+    .lang-title-el { font-family:'DM Serif Display',serif;font-size:20px;color:var(--text-primary);margin-bottom:1rem; }
+    .lang-list { display:flex;flex-direction:column;gap:8px; }
+    .lang-option { display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--bg-card);border:1px solid var(--card-border);border-radius:14px;cursor:pointer;transition:all 0.2s; }
+    .lang-option:hover { border-color:var(--accent); }
+    .lang-option.active { border-color:var(--accent);background:var(--bg-featured); }
+    .lang-option-left { display:flex;flex-direction:column;gap:2px; }
+    .lang-native { font-size:15px;font-weight:500;color:var(--text-primary); }
+    .lang-english { font-size:11px;color:var(--text-muted); }
+    .lang-check { font-size:16px;color:var(--accent);opacity:0; }
+    .lang-option.active .lang-check { opacity:1; }
+    .sky-arc-wrap { padding:0 1.5rem; }
+    .sky-arc-svg { width:100%;display:block;overflow:visible;opacity:0.85; }
+    .page-title { padding:0.75rem 1.5rem 1.5rem; }
+    .page-title p { font-size:13px;color:var(--text-muted);margin-bottom:4px; }
+    .page-title h1 { font-family:'DM Serif Display',serif;font-size:24px;font-weight:400;color:var(--text-primary); }
+    .section-label { padding:0 1.5rem;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--section-label);margin-bottom:12px; }
+    .map-wrap { margin:0 1.5rem 1.5rem;border-radius:16px;overflow:hidden;border:1px solid var(--card-border);background:var(--bg-card);transition:background 0.6s ease; }
+    .map-header { padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--card-border); }
+    .map-header-title { font-size:13px;font-weight:500;color:var(--text-primary); }
+    .map-header-sub { font-size:11px;color:var(--text-muted); }
+    .expand-btn { font-size:11px;background:var(--accent);color:#edddc5;border:none;border-radius:20px;padding:5px 12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500; }
+    #map { height:220px;width:100%;z-index:1; }
+    .map-overlay { display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:flex-end;justify-content:center; }
+    .map-overlay.open { display:flex; }
+    .map-modal { background:white;border-radius:24px 24px 0 0;width:100%;max-width:420px;height:88vh;display:flex;flex-direction:column;overflow:hidden; }
+    .modal-handle { width:36px;height:4px;background:#e0dbd2;border-radius:2px;margin:0 auto 12px; }
+    .modal-header { padding:0 0 10px;display:flex;align-items:center;justify-content:space-between; }
+    .modal-title { font-size:15px;font-weight:500;color:#1a1a1a;font-family:'DM Sans',sans-serif; }
+    .close-btn { background:#f0ede8;border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center; }
+    #map-full { flex:1;min-height:0; }
+    .pin-bar { padding:10px 14px;border-top:1px solid rgba(0,0,0,0.06);display:flex;gap:8px;overflow-x:auto;flex-shrink:0; }
+    .pin-chip { display:flex;align-items:center;gap:7px;background:#f5efe3;border:1px solid rgba(0,0,0,0.07);border-radius:100px;padding:6px 12px 6px 8px;white-space:nowrap;cursor:pointer; }
+    .pin-dot { width:10px;height:10px;border-radius:50%;flex-shrink:0; }
+    .pin-chip-label { font-size:12px;font-weight:500;color:#1a1a1a;font-family:'DM Sans',sans-serif; }
+    .roots-popup .leaflet-popup-content-wrapper { border-radius:14px;box-shadow:0 4px 20px rgba(0,0,0,0.12);padding:0;overflow:hidden;font-family:'DM Sans',sans-serif; }
+    .roots-popup .leaflet-popup-content { margin:0;width:220px !important; }
+    .roots-popup .leaflet-popup-tip { background:white; }
+    .popup-inner { padding:14px; }
+    .popup-tag { font-size:10px;padding:2px 8px;border-radius:100px;font-weight:500;display:inline-block;margin-bottom:8px; }
+    .popup-name { font-size:13px;font-weight:500;color:#1a1a1a;margin-bottom:4px;line-height:1.3; }
+    .popup-desc { font-size:11px;color:#7a6a50;margin-bottom:8px;line-height:1.5; }
+    .popup-hours { font-size:11px;color:#274133;font-weight:500;margin-bottom:8px; }
+    .popup-link { display:block;text-align:center;background:#274133;color:#edddc5;font-size:11px;font-weight:500;padding:7px;border-radius:8px;text-decoration:none; }
+    .resource-list { padding:0 1.5rem;display:flex;flex-direction:column;gap:10px;margin-bottom:1.5rem; }
+    .resource-card { background:var(--bg-card);border-radius:16px;padding:1rem;border:1px solid var(--card-border);display:flex;align-items:center;gap:12px;text-decoration:none;transition:background 0.6s ease; }
+    .resource-card:active { background:var(--bg-featured); }
+    .resource-card-icon { width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0; }
+    .resource-card-body { flex:1;min-width:0; }
+    .resource-card-tag { font-size:10px;padding:2px 8px;border-radius:100px;font-weight:500;display:inline-block;margin-bottom:5px; }
+    .resource-card-name { font-size:13px;font-weight:500;color:var(--text-primary);line-height:1.3; }
+    .resource-card-sub { font-size:11px;color:var(--text-muted);margin-top:2px; }
+    .resource-card-arrow { font-size:16px;color:var(--text-faint);flex-shrink:0; }
+    .footer { text-align:center;padding:0 0 1.5rem;font-size:11px;color:var(--footer); }
+    .nav { position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:420px;background:var(--nav-bg);border-top:1px solid var(--nav-border);display:flex;justify-content:space-around;padding:12px 0 20px;z-index:100;transition:background 0.6s ease; }
+    .nav-item { display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;opacity:0.4;text-decoration:none; }
+    .nav-item.active { opacity:1; }
+    .nav-label { font-size:10px;color:var(--text-primary); }
+    .nav-item.active .nav-label { color:var(--accent);font-weight:500; }
   </style>
 </head>
 <body>
 <div class="app">
-
   <div class="header">
     <div class="logo">BL<span>OOM</span></div>
-    <div class="avatar">EC</div>
+    <div class="header-right">
+      <button class="lang-btn" onclick="openLang()">🌐 <span id="lang-current">EN</span></button>
+      <div class="avatar">EC</div>
+    </div>
   </div>
-
-  <!-- Sky arc -->
   <div class="sky-arc-wrap">
     <svg class="sky-arc-svg" viewBox="0 0 340 52" xmlns="http://www.w3.org/2000/svg">
       <line x1="0" y1="48" x2="340" y2="48" stroke-width="1" stroke-linecap="round" id="horizon-line"/>
       <path id="arc-path" d="M 20 48 A 150 42 0 0 1 320 48" fill="none" stroke-width="1" stroke-dasharray="3 5" stroke-linecap="round"/>
-      <g id="stars" opacity="0">
-        <circle cx="60" cy="12" r="1" fill="white" opacity="0.7"/>
-        <circle cx="110" cy="5" r="0.8" fill="white" opacity="0.5"/>
-        <circle cx="170" cy="9" r="1.1" fill="white" opacity="0.8"/>
-        <circle cx="230" cy="4" r="0.8" fill="white" opacity="0.6"/>
-        <circle cx="280" cy="13" r="1" fill="white" opacity="0.7"/>
-        <circle cx="145" cy="20" r="0.7" fill="white" opacity="0.5"/>
-        <circle cx="255" cy="22" r="0.7" fill="white" opacity="0.5"/>
-      </g>
-      <g id="sky-body">
-        <circle id="sky-glow" cx="0" cy="0" r="10" opacity="0.25"/>
-        <circle id="sky-circle" cx="0" cy="0" r="7"/>
-        <g id="moon-detail" opacity="0">
-          <circle cx="2.5" cy="-2" r="1.6" fill="rgba(0,0,0,0.1)"/>
-          <circle cx="-2" cy="2" r="1.2" fill="rgba(0,0,0,0.08)"/>
-        </g>
-        <g id="sun-rays" stroke-width="1.2" stroke-linecap="round">
-          <line x1="0" y1="-11" x2="0" y2="-14"/>
-          <line x1="8" y1="-8" x2="10" y2="-10"/>
-          <line x1="11" y1="0" x2="14" y2="0"/>
-          <line x1="8" y1="8" x2="10" y2="10"/>
-          <line x1="0" y1="11" x2="0" y2="14"/>
-          <line x1="-8" y1="8" x2="-10" y2="10"/>
-          <line x1="-11" y1="0" x2="-14" y2="0"/>
-          <line x1="-8" y1="-8" x2="-10" y2="-10"/>
-        </g>
-      </g>
+      <g id="stars" opacity="0"><circle cx="60" cy="12" r="1" fill="#edddc5" opacity="0.7"/><circle cx="110" cy="5" r="0.8" fill="#edddc5" opacity="0.5"/><circle cx="170" cy="9" r="1.1" fill="#edddc5" opacity="0.8"/><circle cx="230" cy="4" r="0.8" fill="#edddc5" opacity="0.6"/><circle cx="280" cy="13" r="1" fill="#edddc5" opacity="0.7"/></g>
+      <g id="sky-body"><circle id="sky-glow" cx="0" cy="0" r="10" opacity="0.25"/><circle id="sky-circle" cx="0" cy="0" r="7"/><g id="moon-detail" opacity="0"><circle cx="2.5" cy="-2" r="1.6" fill="rgba(0,0,0,0.1)"/><circle cx="-2" cy="2" r="1.2" fill="rgba(0,0,0,0.08)"/></g><g id="sun-rays" stroke-width="1.2" stroke-linecap="round"><line x1="0" y1="-11" x2="0" y2="-14"/><line x1="8" y1="-8" x2="10" y2="-10"/><line x1="11" y1="0" x2="14" y2="0"/><line x1="8" y1="8" x2="10" y2="10"/><line x1="0" y1="11" x2="0" y2="14"/><line x1="-8" y1="8" x2="-10" y2="10"/><line x1="-11" y1="0" x2="-14" y2="0"/><line x1="-8" y1="-8" x2="-10" y2="-10"/></g></g>
     </svg>
   </div>
-
-  <div class="greeting">
-    <p id="greeting-time">Good morning,</p>
-    <h1>Welcome back, Ethan 🌸</h1>
+  <div class="page-title">
+    <p id="greeting-time"></p>
+    <h1 id="page-heading"></h1>
   </div>
-
-  <!-- Budget preview card (links to budget.html) -->
-  <a class="budget-card" href="budget.html">
-    <div class="budget-card-label">Your finances</div>
-    <div class="budget-card-title" id="budget-card-title">Budget Journal</div>
-    <div class="budget-card-row">
-      <div class="budget-pill">
-        <div class="budget-pill-label">This month</div>
-        <div class="budget-pill-value pos" id="home-balance">$0.00</div>
-      </div>
-      <div class="budget-pill">
-        <div class="budget-pill-label">Expenses</div>
-        <div class="budget-pill-value neg" id="home-expenses">$0.00</div>
-      </div>
-    </div>
-    <div class="budget-card-cta">Open budget journal →</div>
-  </a>
-
-  <div class="section-label">Learn</div>
-  <div class="modules">
-    <div class="module-card featured">
-      <div class="module-icon" style="background:#ddefd5;">📋</div>
-      <div>
-        <div class="module-tag tag-next">Up next</div>
-        <div class="module-title">Understanding Student Loans</div>
-        <div class="module-sub">5 min · Module 3</div>
-      </div>
-    </div>
-    <div class="module-card">
-      <div class="module-icon" style="background:#faeeda;">💸</div>
-      <div class="module-tag tag-start">Start</div>
-      <div class="module-title">Budgeting on a Student Income</div>
-      <div class="module-sub">7 min</div>
-    </div>
-    <div class="module-card">
-      <div class="module-icon" style="background:#e6f1fb;">🎓</div>
-      <div class="module-tag tag-new">New</div>
-      <div class="module-title">FAFSA Decoded</div>
-      <div class="module-sub">6 min</div>
-    </div>
-  </div>
-
-  <div class="section-label">Resources for you</div>
+  <div class="section-label" id="section-map"></div>
   <div class="map-wrap">
     <div class="map-header">
-      <div>
-        <div class="map-header-title">UW Campus Resources</div>
-        <div class="map-header-sub">Tap a pin to learn more</div>
-      </div>
-      <button class="expand-btn" onclick="openFullMap()">Expand</button>
+      <div><div class="map-header-title" id="map-title"></div><div class="map-header-sub" id="map-sub"></div></div>
+      <button class="expand-btn" onclick="openFullMap()" id="map-expand-btn"></button>
     </div>
     <div id="map"></div>
   </div>
-
-  <div class="page-footer">designed by @ethanchengluong</div>
-
-  <nav class="nav">
-    <a href="index.html" class="nav-item active"><span>🏠</span><span class="nav-label">Home</span></a>
-    <a href="#" class="nav-item"><span>📚</span><span class="nav-label">Learn</span></a>
-    <a href="resources.html" class="nav-item"><span>🔖</span><span class="nav-label">Resources</span></a>
-    <a href="budget.html" class="nav-item"><span>💸</span><span class="nav-label">Budget</span></a>
-  </nav>
+  <div class="section-label" id="section-all"></div>
+  <div class="resource-list">
+    <a class="resource-card" href="https://www.washington.edu/anyhungryhusky/" target="_blank">
+      <div class="resource-card-icon" style="background:rgba(154,176,141,0.25);">🥗</div>
+      <div class="resource-card-body">
+        <div class="resource-card-tag" style="background:rgba(154,176,141,0.25);color:#274133;" id="tag-food"></div>
+        <div class="resource-card-name" id="name-food"></div>
+        <div class="resource-card-sub" id="sub-food"></div>
+      </div>
+      <div class="resource-card-arrow">›</div>
+    </a>
+    <a class="resource-card" href="https://www.washington.edu/financialaid/" target="_blank">
+      <div class="resource-card-icon" style="background:rgba(206,144,66,0.2);">💰</div>
+      <div class="resource-card-body">
+        <div class="resource-card-tag" style="background:rgba(206,144,66,0.2);color:#7a4010;" id="tag-aid"></div>
+        <div class="resource-card-name" id="name-aid"></div>
+        <div class="resource-card-sub" id="sub-aid"></div>
+      </div>
+      <div class="resource-card-arrow">›</div>
+    </a>
+    <a class="resource-card" href="https://www.washington.edu/uaa/" target="_blank">
+      <div class="resource-card-icon" style="background:rgba(154,176,141,0.25);">🎓</div>
+      <div class="resource-card-body">
+        <div class="resource-card-tag" style="background:rgba(154,176,141,0.25);color:#274133;" id="tag-advising"></div>
+        <div class="resource-card-name" id="name-advising"></div>
+        <div class="resource-card-sub" id="sub-advising"></div>
+      </div>
+      <div class="resource-card-arrow">›</div>
+    </a>
+  </div>
+  <div class="footer">designed by @ethanchengluong</div>
 </div>
 
-<!-- Full map overlay -->
+<div class="lang-overlay" id="lang-overlay" onclick="handleLangOverlay(event)">
+  <div class="lang-modal">
+    <div class="lang-handle"></div>
+    <div class="lang-title-el" id="lang-modal-title">Language</div>
+    <div class="lang-list" id="lang-list"></div>
+  </div>
+</div>
+
 <div class="map-overlay" id="mapOverlay" onclick="handleOverlayClick(event)">
-  <div class="map-modal" id="mapModal">
-    <div style="padding: 12px 16px 0;">
-      <div class="modal-handle"></div>
-      <div class="modal-header" style="padding: 0 0 10px;">
-        <div class="modal-title">UW Campus Resources</div>
-        <button class="close-btn" onclick="closeFullMap()">✕</button>
-      </div>
-    </div>
+  <div class="map-modal">
+    <div style="padding:12px 16px 0;"><div class="modal-handle"></div><div class="modal-header"><div class="modal-title" id="map-modal-title"></div><button class="close-btn" onclick="closeFullMap()">✕</button></div></div>
     <div id="map-full"></div>
     <div class="pin-bar">
-      <div class="pin-chip" onclick="flyToPin('food', true)">
-        <div class="pin-dot" style="background:#2d5a3d;"></div>
-        <span class="pin-chip-label">UW Food Pantry</span>
-      </div>
-      <div class="pin-chip" onclick="flyToPin('advising', true)">
-        <div class="pin-dot" style="background:#7fb069;"></div>
-        <span class="pin-chip-label">UAA Advising</span>
-      </div>
-      <div class="pin-chip" onclick="flyToPin('financialaid', true)">
-        <div class="pin-dot" style="background:#e8a030;"></div>
-        <span class="pin-chip-label">Financial Aid</span>
-      </div>
+      <div class="pin-chip" onclick="flyToPin('food',true)"><div class="pin-dot" style="background:#274133;"></div><span class="pin-chip-label" id="pin-food"></span></div>
+      <div class="pin-chip" onclick="flyToPin('advising',true)"><div class="pin-dot" style="background:#9ab08d;"></div><span class="pin-chip-label" id="pin-advising"></span></div>
+      <div class="pin-chip" onclick="flyToPin('financialaid',true)"><div class="pin-dot" style="background:#ce9042;"></div><span class="pin-chip-label" id="pin-aid"></span></div>
     </div>
   </div>
 </div>
 
+<nav class="nav">
+  <a href="index.html" class="nav-item"><span>🏠</span><span class="nav-label" id="nav-home"></span></a>
+  <a href="#" class="nav-item"><span>📚</span><span class="nav-label" id="nav-learn"></span></a>
+  <a href="resources.html" class="nav-item active"><span>🔖</span><span class="nav-label" id="nav-resources"></span></a>
+  <a href="budget.html" class="nav-item"><span>💸</span><span class="nav-label" id="nav-budget"></span></a>
+</nav>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-  // ── Theme & sky arc ──────────────────────────────────────────────────────
-  const hour = new Date().getHours();
-  const minutes = new Date().getMinutes();
-  const timeDecimal = hour + minutes / 60;
-  const greeting = hour < 12 ? 'Good morning,' : hour < 17 ? 'Good afternoon,' : 'Good evening,';
-  const theme = hour < 12 ? 'theme-morning' : hour < 17 ? 'theme-afternoon' : 'theme-evening';
-  document.getElementById('greeting-time').textContent = greeting;
-  document.body.classList.add(theme);
+const LANGS={en:{code:'EN',native:'English',english:'English',gm:'Good morning,',ga:'Good afternoon,',ge:'Good evening,',ph:'Campus Resources 🗺️',sm:'Campus map',sa:'All resources',mt:'UW Campus Resources',ms:'Tap a pin to learn more',me:'Expand',tf:'Food support',nf:'UW Food Pantry',sf:'Poplar Hall · Mon–Fri, hours vary',ta:'Financial aid',na:'Office of Student Financial Aid',sat:'Schmitz Hall · Mon–Fri 11am–3pm',tad:'Academic advising',nad:'UAA Undergraduate Advising',sad:'Mary Gates Hall · Mon–Fri 8am–5pm',pf:'UW Food Pantry',pa:'UAA Advising',paid:'Financial Aid',nh:'Home',nl:'Learn',nr:'Resources',nb:'Budget',lt:'Language'},zh:{code:'繁中',native:'繁體中文',english:'Chinese (Traditional)',gm:'早安，',ga:'午安，',ge:'晚安，',ph:'校園資源 🗺️',sm:'校園地圖',sa:'所有資源',mt:'華盛頓大學校園資源',ms:'點擊圖釘了解更多',me:'展開',tf:'食物支援',nf:'UW 食物儲藏室',sf:'楊樹廳 · 週一至週五',ta:'助學金',na:'學生財務援助辦公室',sat:'Schmitz 廳 · 週一至週五 11–15時',tad:'學業輔導',nad:'UAA 大學生輔導',sad:'Mary Gates 廳 · 週一至週五 8–17時',pf:'食物儲藏室',pa:'學業輔導',paid:'助學金辦公室',nh:'首頁',nl:'學習',nr:'資源',nb:'預算',lt:'語言'},ja:{code:'日本語',native:'日本語',english:'Japanese',gm:'おはようございます、',ga:'こんにちは、',ge:'こんばんは、',ph:'キャンパスリソース 🗺️',sm:'キャンパスマップ',sa:'すべてのリソース',mt:'UWキャンパスリソース',ms:'ピンをタップして詳細を見る',me:'拡大',tf:'食料支援',nf:'UWフードパントリー',sf:'ポプラホール · 月〜金',ta:'奨学金',na:'学生奨学金オフィス',sat:'シュミッツホール · 月〜金 11–15時',tad:'学業相談',nad:'UAA学業アドバイジング',sad:'メアリーゲーツホール · 月〜金 8–17時',pf:'フードパントリー',pa:'学業アドバイジング',paid:'奨学金オフィス',nh:'ホーム',nl:'学ぶ',nr:'リソース',nb:'予算',lt:'言語'},vi:{code:'VI',native:'Tiếng Việt',english:'Vietnamese',gm:'Chào buổi sáng,',ga:'Chào buổi chiều,',ge:'Chào buổi tối,',ph:'Tài Nguyên Khuôn Viên 🗺️',sm:'Bản đồ khuôn viên',sa:'Tất cả tài nguyên',mt:'Tài Nguyên Khuôn Viên UW',ms:'Nhấn vào ghim để tìm hiểu thêm',me:'Mở rộng',tf:'Hỗ trợ thực phẩm',nf:'Kho Lương Thực UW',sf:'Phòng Poplar · Thứ Hai–Sáu',ta:'Hỗ trợ tài chính',na:'Văn phòng Hỗ trợ Tài chính',sat:'Tòa Schmitz · T2–T6 11–15 giờ',tad:'Tư vấn học thuật',nad:'Tư Vấn UAA',sad:'Tòa Mary Gates · T2–T6 8–17 giờ',pf:'Kho Lương Thực UW',pa:'Tư Vấn UAA',paid:'Hỗ Trợ Tài Chính',nh:'Trang Chủ',nl:'Học Tập',nr:'Tài Nguyên',nb:'Ngân Sách',lt:'Ngôn ngữ'},ko:{code:'한국어',native:'한국어',english:'Korean',gm:'좋은 아침이에요,',ga:'안녕하세요,',ge:'좋은 저녁이에요,',ph:'캠퍼스 자원 🗺️',sm:'캠퍼스 지도',sa:'모든 자원',mt:'UW 캠퍼스 자원',ms:'핀을 탭하여 자세히 알아보세요',me:'확대',tf:'식품 지원',nf:'UW 푸드 팬트리',sf:'포플러 홀 · 월~금',ta:'학비 지원',na:'학생 재정 지원 사무소',sat:'슈밋츠 홀 · 월~금 11시–15시',tad:'학업 상담',nad:'UAA 학업 상담',sad:'메리 게이츠 홀 · 월~금 8시–17시',pf:'UW 푸드 팬트리',pa:'UAA 학업 상담',paid:'학비 지원 사무소',nh:'홈',nl:'학습',nr:'자원',nb:'예산',lt:'언어'}};
+const LANG_ORDER=['en','zh','ja','vi','ko'];
+let currentLang=localStorage.getItem('bloom_lang')||'en';
+function t(k){return LANGS[currentLang][k]||LANGS.en[k]||'';}
+function applyLang(){
+  const h=new Date().getHours();
+  document.getElementById('greeting-time').textContent=h<12?t('gm'):h<17?t('ga'):t('ge');
+  document.getElementById('page-heading').textContent=t('ph');
+  document.getElementById('section-map').textContent=t('sm');
+  document.getElementById('section-all').textContent=t('sa');
+  document.getElementById('map-title').textContent=t('mt');
+  document.getElementById('map-sub').textContent=t('ms');
+  document.getElementById('map-expand-btn').textContent=t('me');
+  document.getElementById('map-modal-title').textContent=t('mt');
+  document.getElementById('tag-food').textContent=t('tf');document.getElementById('name-food').textContent=t('nf');document.getElementById('sub-food').textContent=t('sf');
+  document.getElementById('tag-aid').textContent=t('ta');document.getElementById('name-aid').textContent=t('na');document.getElementById('sub-aid').textContent=t('sat');
+  document.getElementById('tag-advising').textContent=t('tad');document.getElementById('name-advising').textContent=t('nad');document.getElementById('sub-advising').textContent=t('sad');
+  document.getElementById('pin-food').textContent=t('pf');document.getElementById('pin-advising').textContent=t('pa');document.getElementById('pin-aid').textContent=t('paid');
+  document.getElementById('nav-home').textContent=t('nh');document.getElementById('nav-learn').textContent=t('nl');document.getElementById('nav-resources').textContent=t('nr');document.getElementById('nav-budget').textContent=t('nb');
+  document.getElementById('lang-current').textContent=LANGS[currentLang].code;
+  document.getElementById('lang-modal-title').textContent=t('lt');
+  document.getElementById('lang-list').innerHTML=LANG_ORDER.map(lk=>{const l=LANGS[lk];return `<div class="lang-option ${lk===currentLang?'active':''}" onclick="selectLang('${lk}')"><div class="lang-option-left"><div class="lang-native">${l.native}</div><div class="lang-english">${l.english}</div></div><div class="lang-check">✓</div></div>`;}).join('');
+}
+function openLang(){document.getElementById('lang-overlay').classList.add('open');}
+function closeLang(){document.getElementById('lang-overlay').classList.remove('open');}
+function handleLangOverlay(e){if(e.target===document.getElementById('lang-overlay'))closeLang();}
+function selectLang(lk){currentLang=lk;localStorage.setItem('bloom_lang',lk);applyLang();closeLang();}
 
-  const RISE = 6, SET = 20;
-  const isDay = timeDecimal >= RISE && timeDecimal < SET;
-  let progress;
-  if (isDay) {
-    progress = (timeDecimal - RISE) / (SET - RISE);
-  } else {
-    const nightDur = 24 - (SET - RISE);
-    const nightTime = timeDecimal >= SET ? timeDecimal - SET : timeDecimal + (24 - SET);
-    progress = nightTime / nightDur;
-  }
+const hour=new Date().getHours(),mins=new Date().getMinutes(),timeDecimal=hour+mins/60;
+document.body.classList.add(hour<12?'theme-morning':hour<17?'theme-afternoon':'theme-evening');
+const RISE=6,SET=20,isDay=timeDecimal>=RISE&&timeDecimal<SET;
+let progress=isDay?(timeDecimal-RISE)/(SET-RISE):(()=>{const nd=24-(SET-RISE),nt=timeDecimal>=SET?timeDecimal-SET:timeDecimal+(24-SET);return nt/nd;})();
+const ang=Math.PI-progress*Math.PI;
+document.getElementById('sky-body').setAttribute('transform',`translate(${170+150*Math.cos(ang)},${48-42*Math.sin(ang)})`);
+const circle=document.getElementById('sky-circle'),glow=document.getElementById('sky-glow'),rays=document.getElementById('sun-rays'),moonDetail=document.getElementById('moon-detail'),stars=document.getElementById('stars'),arcPath=document.getElementById('arc-path'),horizonLine=document.getElementById('horizon-line');
+if(isDay){const edge=progress<0.15||progress>0.85;circle.setAttribute('fill',edge?'#ce9042':'#c8b067');glow.setAttribute('fill',edge?'#f5d4a0':'#e8d898');rays.setAttribute('stroke',edge?'#ce9042':'#c8b067');rays.style.opacity='1';moonDetail.style.opacity='0';stars.style.opacity='0';arcPath.setAttribute('stroke','#c8b067');horizonLine.setAttribute('stroke','#c8b067');}
+else{circle.setAttribute('fill','#edddc5');glow.setAttribute('fill','#c8b067');rays.style.opacity='0';moonDetail.style.opacity='1';stars.style.opacity='1';arcPath.setAttribute('stroke','#9ab08d');horizonLine.setAttribute('stroke','#9ab08d');}
 
-  const cx = 170, cy = 48, rx = 150, ry = 42;
-  const angle = Math.PI - progress * Math.PI;
-  const sx = cx + rx * Math.cos(angle), sy = cy - ry * Math.sin(angle);
-  document.getElementById('sky-body').setAttribute('transform', `translate(${sx}, ${sy})`);
-
-  const circle      = document.getElementById('sky-circle');
-  const glow        = document.getElementById('sky-glow');
-  const rays        = document.getElementById('sun-rays');
-  const moonDetail  = document.getElementById('moon-detail');
-  const stars       = document.getElementById('stars');
-  const arcPath     = document.getElementById('arc-path');
-  const horizonLine = document.getElementById('horizon-line');
-
-  if (isDay) {
-    const sunColor  = progress < 0.15 || progress > 0.85 ? '#f97316' : '#f59e0b';
-    const glowColor = progress < 0.15 || progress > 0.85 ? '#fed7aa' : '#fde68a';
-    circle.setAttribute('fill', sunColor);
-    glow.setAttribute('fill', glowColor);
-    rays.setAttribute('stroke', sunColor);
-    rays.style.opacity = '1';
-    moonDetail.style.opacity = '0';
-    stars.style.opacity = '0';
-    arcPath.setAttribute('stroke', '#d4a830');
-    horizonLine.setAttribute('stroke', '#d4a830');
-  } else {
-    circle.setAttribute('fill', '#e8e0f0');
-    glow.setAttribute('fill', '#c8b8e8');
-    rays.style.opacity = '0';
-    moonDetail.style.opacity = '1';
-    stars.style.opacity = '1';
-    arcPath.setAttribute('stroke', '#6860a0');
-    horizonLine.setAttribute('stroke', '#6860a0');
-  }
-
-  // ── Budget summary preview from localStorage ─────────────────────────────
-  (function() {
-    const entries = JSON.parse(localStorage.getItem('bloom_budget') || '[]');
-    const now = new Date();
-    const key = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-    const me  = entries.filter(e => e.month === key);
-    const inc = me.filter(e => e.type === 'income').reduce((a, e) => a + e.amount, 0);
-    const exp = me.filter(e => e.type === 'expense').reduce((a, e) => a + e.amount, 0);
-    const bal = inc - exp;
-    const fmt = n => '$' + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    const balEl = document.getElementById('home-balance');
-    balEl.textContent = fmt(bal);
-    balEl.className = 'budget-pill-value ' + (bal < 0 ? 'neg' : 'pos');
-    document.getElementById('home-expenses').textContent = fmt(exp);
-    const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-    document.getElementById('budget-card-title').textContent = `${MONTHS[now.getMonth()]} Budget`;
-  })();
-
-  // ── Map ───────────────────────────────────────────────────────────────────
-  const UW_CENTER = [47.6553, -122.3035];
-  const resources = {
-    food: {
-      latlng: [47.6599, -122.3152], color: '#2d5a3d',
-      tag: 'Food support', tagBg: '#eef5eb', tagColor: '#3b6d11',
-      name: 'UW Food Pantry',
-      desc: 'Free groceries, fresh produce, and pantry staples for UW students in need. No eligibility requirements.',
-      hours: 'Mon–Fri · Hours vary by quarter',
-      link: 'https://www.washington.edu/anyhungryhusky/', linkLabel: 'Visit website →'
-    },
-    advising: {
-      latlng: [47.6561, -122.3082], color: '#7fb069',
-      tag: 'Academic advising', tagBg: '#eef5eb', tagColor: '#3b6d11',
-      name: 'UAA Undergraduate Advising',
-      desc: 'Academic planning, degree requirements, major exploration, and support for all UW undergrads.',
-      hours: 'Mon–Fri 8am–5pm',
-      link: 'https://www.washington.edu/uaa/', linkLabel: 'Visit website →'
-    },
-    financialaid: {
-      latlng: [47.6532, -122.3082], color: '#e8a030',
-      tag: 'Financial aid', tagBg: '#faeeda', tagColor: '#854f0b',
-      name: 'Office of Student Financial Aid',
-      desc: 'Help with FAFSA, scholarships, grants, loans, and work-study. Located in Schmitz Hall.',
-      hours: 'Mon–Fri 11am–3pm (in-person)',
-      link: 'https://www.washington.edu/financialaid/', linkLabel: 'Visit website →'
-    }
-  };
-
-  function makeIcon(color) {
-    return L.divIcon({
-      className: '',
-      html: `<svg width="28" height="38" viewBox="0 0 28 38" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="14" cy="14" r="13" fill="${color}" stroke="white" stroke-width="2.5"/>
-        <circle cx="14" cy="14" r="5" fill="white"/>
-        <polygon points="14,38 6,24 22,24" fill="${color}"/>
-      </svg>`,
-      iconSize: [28, 38], iconAnchor: [14, 38], popupAnchor: [0, -40]
-    });
-  }
-  function makePopup(r) {
-    return `<div class="popup-inner">
-      <div class="popup-tag" style="background:${r.tagBg};color:${r.tagColor};">${r.tag}</div>
-      <div class="popup-name">${r.name}</div>
-      <div class="popup-desc">${r.desc}</div>
-      <div class="popup-hours">🕐 ${r.hours}</div>
-      <a class="popup-link" href="${r.link}" target="_blank">${r.linkLabel}</a>
-    </div>`;
-  }
-
-  const miniMap = L.map('map', {
-    center: UW_CENTER, zoom: 15,
-    zoomControl: false, scrollWheelZoom: false,
-    dragging: false, doubleClickZoom: false, touchZoom: false
-  });
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors'
-  }).addTo(miniMap);
-  Object.entries(resources).forEach(([key, r]) => {
-    L.marker(r.latlng, { icon: makeIcon(r.color) })
-      .addTo(miniMap)
-      .bindPopup(makePopup(r), { className: 'roots-popup', maxWidth: 240 });
-  });
-
-  let fullMap = null;
-  let fullMarkers = {};
-
-  function initFullMap() {
-    if (fullMap) return;
-    fullMap = L.map('map-full', { center: UW_CENTER, zoom: 16, zoomControl: true });
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
-    }).addTo(fullMap);
-    Object.entries(resources).forEach(([key, r]) => {
-      const marker = L.marker(r.latlng, { icon: makeIcon(r.color) })
-        .addTo(fullMap)
-        .bindPopup(makePopup(r), { className: 'roots-popup', maxWidth: 240 });
-      fullMarkers[key] = marker;
-    });
-  }
-
-  function openFullMap() {
-    document.getElementById('mapOverlay').classList.add('open');
-    document.body.style.overflow = 'hidden';
-    setTimeout(() => { initFullMap(); fullMap.invalidateSize(); }, 100);
-  }
-  function closeFullMap() {
-    document.getElementById('mapOverlay').classList.remove('open');
-    document.body.style.overflow = '';
-  }
-  function handleOverlayClick(e) {
-    if (e.target === document.getElementById('mapOverlay')) closeFullMap();
-  }
-  function flyToPin(key, openPopup) {
-    if (!fullMap) return;
-    fullMap.flyTo(resources[key].latlng, 17, { duration: 0.8 });
-    if (openPopup) setTimeout(() => fullMarkers[key].openPopup(), 900);
-  }
+const UW_CENTER=[47.6553,-122.3035];
+const resources={food:{latlng:[47.6599,-122.3152],color:'#274133',tag:'Food support',tagBg:'rgba(154,176,141,0.2)',tagColor:'#274133',name:'UW Food Pantry',desc:'Free groceries, fresh produce, and pantry staples for UW students in need.',hours:'Mon–Fri · Hours vary by quarter',link:'https://www.washington.edu/anyhungryhusky/',linkLabel:'Visit →'},advising:{latlng:[47.6561,-122.3082],color:'#9ab08d',tag:'Academic advising',tagBg:'rgba(154,176,141,0.2)',tagColor:'#274133',name:'UAA Undergraduate Advising',desc:'Academic planning, degree requirements, and support for all UW undergrads.',hours:'Mon–Fri 8am–5pm',link:'https://www.washington.edu/uaa/',linkLabel:'Visit →'},financialaid:{latlng:[47.6532,-122.3082],color:'#ce9042',tag:'Financial aid',tagBg:'rgba(206,144,66,0.18)',tagColor:'#7a4010',name:'Office of Student Financial Aid',desc:'Help with FAFSA, scholarships, grants, loans, and work-study.',hours:'Mon–Fri 11am–3pm',link:'https://www.washington.edu/financialaid/',linkLabel:'Visit →'}};
+const makeIcon=c=>L.divIcon({className:'',html:`<svg width="28" height="38" viewBox="0 0 28 38" xmlns="http://www.w3.org/2000/svg"><circle cx="14" cy="14" r="13" fill="${c}" stroke="white" stroke-width="2.5"/><circle cx="14" cy="14" r="5" fill="white"/><polygon points="14,38 6,24 22,24" fill="${c}"/></svg>`,iconSize:[28,38],iconAnchor:[14,38],popupAnchor:[0,-40]});
+const makePopup=r=>`<div class="popup-inner"><div class="popup-tag" style="background:${r.tagBg};color:${r.tagColor};">${r.tag}</div><div class="popup-name">${r.name}</div><div class="popup-desc">${r.desc}</div><div class="popup-hours">🕐 ${r.hours}</div><a class="popup-link" href="${r.link}" target="_blank">${r.linkLabel}</a></div>`;
+const miniMap=L.map('map',{center:UW_CENTER,zoom:15,zoomControl:false,scrollWheelZoom:false,dragging:false,doubleClickZoom:false,touchZoom:false});
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap contributors'}).addTo(miniMap);
+Object.entries(resources).forEach(([k,r])=>L.marker(r.latlng,{icon:makeIcon(r.color)}).addTo(miniMap).bindPopup(makePopup(r),{className:'roots-popup',maxWidth:240}));
+let fullMap=null,fullMarkers={};
+function initFullMap(){if(fullMap)return;fullMap=L.map('map-full',{center:UW_CENTER,zoom:16,zoomControl:true});L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap contributors'}).addTo(fullMap);Object.entries(resources).forEach(([k,r])=>{fullMarkers[k]=L.marker(r.latlng,{icon:makeIcon(r.color)}).addTo(fullMap).bindPopup(makePopup(r),{className:'roots-popup',maxWidth:240});});}
+function openFullMap(){document.getElementById('mapOverlay').classList.add('open');document.body.style.overflow='hidden';setTimeout(()=>{initFullMap();fullMap.invalidateSize();},100);}
+function closeFullMap(){document.getElementById('mapOverlay').classList.remove('open');document.body.style.overflow='';}
+function handleOverlayClick(e){if(e.target===document.getElementById('mapOverlay'))closeFullMap();}
+function flyToPin(k,op){if(!fullMap)return;fullMap.flyTo(resources[k].latlng,17,{duration:0.8});if(op)setTimeout(()=>fullMarkers[k].openPopup(),900);}
+applyLang();
 </script>
 </body>
 </html>
