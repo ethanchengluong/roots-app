@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Budget – BLOOM</title>
+  <title>BLOOM – Financial Wellness for AANHPI Students</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -13,32 +14,32 @@
       --bg: #fdf8e4; --bg-card: #ffffff; --bg-featured: #fef3c7;
       --text-primary: #1a1a1a; --text-muted: #7a7060; --text-faint: #b0a060;
       --wellness-bg: #c8960c; --wellness-orb: rgba(255,220,80,0.25);
-      --wellness-label: #fde68a; --nav-bg: #ffffff; --nav-border: rgba(0,0,0,0.06);
-      --section-label: #a09050; --footer: #c8b870; --input-bg: #fffef5;
-      --modal-bg: #fdf8e4; --card-border: rgba(200,150,12,0.12);
+      --wellness-label: #fde68a; --wellness-progress: #fde68a; --wellness-progress-text: #fef3c7;
+      --nav-bg: #ffffff; --nav-border: rgba(0,0,0,0.06);
+      --section-label: #a09050; --footer: #c8b870; --card-border: rgba(200,150,12,0.12);
       --transition: background 0.6s ease, color 0.4s ease;
     }
     body.theme-afternoon {
       --bg: #fdf0e6; --bg-card: #ffffff; --bg-featured: #fde8d8;
       --text-primary: #1a1a1a; --text-muted: #7a6050; --text-faint: #b08060;
       --wellness-bg: #c45c2a; --wellness-orb: rgba(255,160,80,0.25);
-      --wellness-label: #fcd0b0; --nav-bg: #ffffff; --nav-border: rgba(0,0,0,0.06);
-      --section-label: #a07050; --footer: #c89070; --input-bg: #fffaf5;
-      --modal-bg: #fdf0e6; --card-border: rgba(196,92,42,0.12);
+      --wellness-label: #fcd0b0; --wellness-progress: #fcd0b0; --wellness-progress-text: #fde8d8;
+      --nav-bg: #ffffff; --nav-border: rgba(0,0,0,0.06);
+      --section-label: #a07050; --footer: #c89070; --card-border: rgba(196,92,42,0.12);
       --transition: background 0.6s ease, color 0.4s ease;
     }
     body.theme-evening {
       --bg: #12122a; --bg-card: #1e1e3a; --bg-featured: #1a1a32;
       --text-primary: #e8e4f0; --text-muted: #8880a8; --text-faint: #6660a8;
       --wellness-bg: #3d2b6b; --wellness-orb: rgba(120,80,200,0.25);
-      --wellness-label: #a890d8; --nav-bg: #1e1e3a; --nav-border: rgba(255,255,255,0.06);
-      --section-label: #6860a0; --footer: #4a4480; --input-bg: #1a1a30;
-      --modal-bg: #1e1e3a; --card-border: rgba(168,144,216,0.15);
+      --wellness-label: #a890d8; --wellness-progress: #a890d8; --wellness-progress-text: #2a1f50;
+      --nav-bg: #1e1e3a; --nav-border: rgba(255,255,255,0.06);
+      --section-label: #6860a0; --footer: #4a4480; --card-border: rgba(168,144,216,0.15);
       --transition: background 0.6s ease, color 0.4s ease;
     }
 
     body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text-primary); min-height: 100vh; transition: var(--transition); }
-    .app { max-width: 420px; margin: 0 auto; background: var(--bg); min-height: 100vh; padding-bottom: 100px; transition: var(--transition); }
+    .app { max-width: 420px; margin: 0 auto; background: var(--bg); min-height: 100vh; padding-bottom: 80px; transition: var(--transition); }
 
     /* Header */
     .header { padding: 1.5rem 1.5rem 0.5rem; display: flex; justify-content: space-between; align-items: flex-start; }
@@ -50,105 +51,77 @@
     .sky-arc-wrap { padding: 0 1.5rem; margin-bottom: 0; }
     .sky-arc-svg { width: 100%; display: block; overflow: visible; opacity: 0.85; }
 
-    /* Page title */
-    .page-title { padding: 0.75rem 1.5rem 1rem; }
-    .page-title p { font-size: 13px; color: var(--text-muted); margin-bottom: 4px; }
-    .page-title h1 { font-family: 'DM Serif Display', serif; font-size: 24px; font-weight: 400; color: var(--text-primary); }
+    /* Greeting */
+    .greeting { padding: 0 1.5rem 1.5rem; }
+    .greeting p { font-size: 13px; color: var(--text-muted); margin-bottom: 4px; }
+    .greeting h1 { font-family: 'DM Serif Display', serif; font-size: 24px; font-weight: 400; color: var(--text-primary); }
 
-    /* Month bar */
-    .month-bar { display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; margin-bottom: 1.25rem; }
-    .month-label { font-family: 'DM Serif Display', serif; font-size: 18px; color: #2d5a3d; }
-    .month-btn { background: none; border: 1px solid var(--card-border); border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 14px; color: var(--text-muted); display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
-    .month-btn:hover { background: rgba(45,90,61,0.1); }
+    /* Budget preview card */
+    .budget-card { margin: 0 1.5rem 1.5rem; background: var(--wellness-bg); border-radius: 20px; padding: 1.5rem; color: #f7f4ee; position: relative; overflow: hidden; text-decoration: none; display: block; cursor: pointer; transition: background 0.6s ease, transform 0.15s ease; }
+    .budget-card:active { transform: scale(0.98); }
+    .budget-card::before { content: ''; position: absolute; top: -40px; right: -40px; width: 160px; height: 160px; background: var(--wellness-orb); border-radius: 50%; }
+    .budget-card-label { font-size: 12px; color: var(--wellness-label); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+    .budget-card-title { font-family: 'DM Serif Display', serif; font-size: 20px; margin-bottom: 14px; line-height: 1.3; color: #fff; }
+    .budget-card-row { display: flex; gap: 10px; margin-bottom: 14px; }
+    .budget-pill { flex: 1; background: rgba(255,255,255,0.15); border-radius: 12px; padding: 10px 12px; }
+    .budget-pill-label { font-size: 10px; color: rgba(255,255,255,0.65); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
+    .budget-pill-value { font-size: 15px; font-weight: 500; color: white; }
+    .budget-pill-value.pos { color: #86efac; }
+    .budget-pill-value.neg { color: #fca5a5; }
+    .budget-card-cta { font-size: 12px; color: var(--wellness-label); display: flex; align-items: center; gap: 4px; }
 
-    /* Summary card */
-    .summary-card { margin: 0 1.5rem 1.25rem; background: var(--wellness-bg); border-radius: 20px; padding: 1.5rem; color: white; position: relative; overflow: hidden; transition: background 0.6s ease; }
-    .summary-card::before { content: ''; position: absolute; top: -40px; right: -40px; width: 160px; height: 160px; background: var(--wellness-orb); border-radius: 50%; }
-    .summary-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--wellness-label); margin-bottom: 6px; }
-    .summary-amount { font-family: 'DM Serif Display', serif; font-size: 38px; color: white; margin-bottom: 4px; }
-    .summary-sub { font-size: 12px; color: var(--wellness-label); }
-    .summary-row { display: flex; gap: 1rem; margin-top: 1.25rem; }
-    .summary-pill { flex: 1; background: rgba(255,255,255,0.1); border-radius: 12px; padding: 10px 12px; }
-    .summary-pill-label { font-size: 10px; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
-    .summary-pill-value { font-size: 16px; font-weight: 500; color: white; }
-    .summary-pill-value.neg { color: #fca5a5; }
-    .summary-pill-value.pos { color: #86efac; }
+    /* Section */
+    .section-label { padding: 0 1.5rem; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--section-label); margin-bottom: 12px; }
 
-    /* Savings goal */
-    .goal-card { margin: 0 1.5rem 1.25rem; background: var(--bg-card); border-radius: 20px; padding: 1.25rem; border: 1px solid var(--card-border); transition: background 0.6s ease; }
-    .goal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-    .goal-title { font-size: 13px; font-weight: 500; color: var(--text-primary); }
-    .goal-edit-btn { font-size: 11px; color: #2d5a3d; background: none; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; }
-    .goal-amount { font-family: 'DM Serif Display', serif; font-size: 22px; color: #2d5a3d; margin-bottom: 4px; }
-    .goal-sub { font-size: 11px; color: var(--text-muted); margin-bottom: 12px; }
-    .goal-bar-bg { background: rgba(0,0,0,0.07); border-radius: 100px; height: 8px; margin-bottom: 6px; }
-    .goal-bar-fill { background: #7fb069; height: 8px; border-radius: 100px; transition: width 0.5s ease; }
-    .goal-bar-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); }
-    .goal-empty { font-size: 12px; color: var(--text-muted); text-align: center; padding: 0.5rem 0; }
+    /* Module cards */
+    .modules { padding: 0 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.5rem; }
+    .module-card { background: var(--bg-card); border-radius: 16px; padding: 1rem; border: 1px solid var(--card-border); cursor: pointer; transition: background 0.6s ease; }
+    .module-card.featured { grid-column: span 2; background: var(--bg-featured); display: flex; align-items: center; gap: 1rem; }
+    .module-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 8px; flex-shrink: 0; }
+    .module-card.featured .module-icon { margin-bottom: 0; }
+    .module-tag { font-size: 10px; padding: 2px 8px; border-radius: 100px; font-weight: 500; display: inline-block; margin-bottom: 6px; }
+    .tag-start { background: #eef5eb; color: #3b6d11; }
+    .tag-next  { background: #e6f1fb; color: #185fa5; }
+    .tag-new   { background: #faeeda; color: #854f0b; }
+    .module-title { font-size: 13px; font-weight: 500; color: var(--text-primary); line-height: 1.3; }
+    .module-sub   { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
-    /* Donut */
-    .donut-wrap { margin: 0 1.5rem 1.25rem; background: var(--bg-card); border-radius: 20px; padding: 1.25rem; border: 1px solid var(--card-border); transition: background 0.6s ease; }
-    .donut-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--section-label); margin-bottom: 1rem; }
-    .donut-inner { display: flex; align-items: center; gap: 1.25rem; }
-    .donut-svg { flex-shrink: 0; }
-    .donut-legend { flex: 1; display: flex; flex-direction: column; gap: 8px; }
-    .legend-item { display: flex; align-items: center; gap: 8px; }
-    .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-    .legend-label { font-size: 11px; color: var(--text-primary); flex: 1; }
-    .legend-pct { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+    /* Map */
+    .map-wrap { margin: 0 1.5rem 1.5rem; border-radius: 16px; overflow: hidden; border: 1px solid var(--card-border); background: var(--bg-card); transition: background 0.6s ease; }
+    .map-header { padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--card-border); }
+    .map-header-title { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+    .map-header-sub   { font-size: 11px; color: var(--text-muted); }
+    .expand-btn { font-size: 11px; background: #2d5a3d; color: white; border: none; border-radius: 20px; padding: 5px 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; font-weight: 500; }
+    #map { height: 220px; width: 100%; z-index: 1; }
 
-    /* Section label */
-    .section-label { padding: 0 1.5rem; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--section-label); margin-bottom: 10px; }
+    /* Full map overlay */
+    .map-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 9999; align-items: flex-end; justify-content: center; }
+    .map-overlay.open { display: flex; }
+    .map-modal { background: white; border-radius: 24px 24px 0 0; width: 100%; max-width: 420px; height: 88vh; display: flex; flex-direction: column; overflow: hidden; }
+    .modal-header { padding: 14px 16px 12px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+    .modal-handle { width: 36px; height: 4px; background: #e0dbd2; border-radius: 2px; margin: 0 auto 12px; }
+    .modal-title  { font-size: 15px; font-weight: 500; color: #1a1a1a; font-family: 'DM Sans', sans-serif; }
+    .close-btn { background: #f0ede8; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
+    #map-full { flex: 1; min-height: 0; }
+    .pin-bar { padding: 10px 14px; border-top: 1px solid rgba(0,0,0,0.06); display: flex; gap: 8px; overflow-x: auto; flex-shrink: 0; }
+    .pin-chip { display: flex; align-items: center; gap: 7px; background: #f7f4ee; border: 1px solid rgba(0,0,0,0.07); border-radius: 100px; padding: 6px 12px 6px 8px; white-space: nowrap; cursor: pointer; }
+    .pin-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .pin-chip-label { font-size: 12px; font-weight: 500; color: #1a1a1a; font-family: 'DM Sans', sans-serif; }
 
-    /* Entry list */
-    .entry-list { padding: 0 1.5rem; display: flex; flex-direction: column; gap: 8px; margin-bottom: 1.25rem; }
-    .entry-card { background: var(--bg-card); border-radius: 14px; padding: 12px 14px; border: 1px solid var(--card-border); display: flex; align-items: flex-start; gap: 10px; transition: background 0.6s ease; }
-    .entry-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
-    .entry-body { flex: 1; min-width: 0; }
-    .entry-name { font-size: 13px; font-weight: 500; color: var(--text-primary); }
-    .entry-cat { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
-    .entry-note { font-size: 11px; color: var(--text-muted); margin-top: 4px; font-style: italic; line-height: 1.4; }
-    .entry-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
-    .entry-amount { font-size: 14px; font-weight: 500; }
-    .entry-amount.income { color: #2d5a3d; }
-    .entry-amount.expense { color: #c0392b; }
-    .entry-delete { background: none; border: none; cursor: pointer; font-size: 12px; color: var(--text-faint); padding: 2px 4px; border-radius: 6px; }
-    .entry-delete:hover { background: rgba(192,57,43,0.1); color: #c0392b; }
+    /* Leaflet popup */
+    .roots-popup .leaflet-popup-content-wrapper { border-radius: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.12); padding: 0; overflow: hidden; font-family: 'DM Sans', sans-serif; }
+    .roots-popup .leaflet-popup-content { margin: 0; width: 220px !important; }
+    .roots-popup .leaflet-popup-tip { background: white; }
+    .popup-inner  { padding: 14px; }
+    .popup-tag    { font-size: 10px; padding: 2px 8px; border-radius: 100px; font-weight: 500; display: inline-block; margin-bottom: 8px; }
+    .popup-name   { font-size: 13px; font-weight: 500; color: #1a1a1a; margin-bottom: 4px; line-height: 1.3; }
+    .popup-desc   { font-size: 11px; color: #7a7060; margin-bottom: 8px; line-height: 1.5; }
+    .popup-hours  { font-size: 11px; color: #5a7060; font-weight: 500; margin-bottom: 8px; }
+    .popup-link   { display: block; text-align: center; background: #2d5a3d; color: white; font-size: 11px; font-weight: 500; padding: 7px; border-radius: 8px; text-decoration: none; font-family: 'DM Sans', sans-serif; }
+    .popup-link:hover { background: #3a7050; }
 
-    /* Action row */
-    .action-row { padding: 0 1.5rem; margin-bottom: 1.25rem; display: flex; gap: 8px; }
-    .add-btn { flex: 1; background: #2d5a3d; color: white; border: none; border-radius: 14px; padding: 14px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
-    .add-btn:hover { background: #3a7050; }
-    .export-btn { background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--card-border); border-radius: 14px; padding: 14px 16px; font-family: 'DM Sans', sans-serif; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap; transition: background 0.3s; }
-    .export-btn:hover { background: var(--bg-featured); }
-
-    /* Modal */
-    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; align-items: flex-end; justify-content: center; }
-    .modal-overlay.open { display: flex; }
-    .modal { background: var(--modal-bg); border-radius: 24px 24px 0 0; width: 100%; max-width: 420px; padding: 1.5rem; padding-bottom: 2rem; max-height: 90vh; overflow-y: auto; transition: background 0.6s ease; }
-    .modal-handle { width: 36px; height: 4px; background: rgba(0,0,0,0.12); border-radius: 2px; margin: 0 auto 1.25rem; }
-    .modal-title { font-family: 'DM Serif Display', serif; font-size: 20px; margin-bottom: 1.25rem; color: var(--text-primary); }
-    .form-group { margin-bottom: 1rem; }
-    .form-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; display: block; }
-    .form-input, .form-select, .form-textarea { width: 100%; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 12px 14px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text-primary); outline: none; transition: border-color 0.2s; }
-    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: #7fb069; }
-    .form-textarea { resize: none; height: 72px; line-height: 1.5; }
-    .form-select { appearance: none; }
-    .type-toggle { display: flex; gap: 8px; margin-bottom: 1rem; }
-    .type-btn { flex: 1; padding: 10px; border-radius: 12px; border: 1px solid var(--card-border); background: var(--bg-card); font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; color: var(--text-muted); transition: all 0.2s; }
-    .type-btn.active.income { background: #eef5eb; color: #2d5a3d; border-color: #7fb069; font-weight: 500; }
-    .type-btn.active.expense { background: #fef2f2; color: #c0392b; border-color: #fca5a5; font-weight: 500; }
-    .form-submit { width: 100%; background: #2d5a3d; color: white; border: none; border-radius: 14px; padding: 14px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; margin-top: 0.5rem; }
-    .form-submit:hover { background: #3a7050; }
-    .form-cancel { width: 100%; background: none; border: none; color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; margin-top: 10px; padding: 8px; }
-
-    /* Goal modal */
-    .goal-modal { background: var(--modal-bg); border-radius: 24px 24px 0 0; width: 100%; max-width: 420px; padding: 1.5rem; padding-bottom: 2rem; transition: background 0.6s ease; }
-
-    /* Empty state */
-    .empty { text-align: center; padding: 1.5rem; color: var(--text-muted); }
-    .empty-icon { font-size: 32px; margin-bottom: 8px; }
-    .empty-text { font-size: 12px; }
+    /* Footer */
+    .page-footer { text-align: center; padding: 0 0 1.5rem; font-size: 11px; color: var(--footer); }
 
     /* Nav */
     .nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 420px; background: var(--nav-bg); border-top: 1px solid var(--nav-border); display: flex; justify-content: space-around; padding: 12px 0 20px; z-index: 100; transition: background 0.6s ease; }
@@ -166,7 +139,7 @@
     <div class="avatar">EC</div>
   </div>
 
-  <!-- Sky arc animation -->
+  <!-- Sky arc -->
   <div class="sky-arc-wrap">
     <svg class="sky-arc-svg" viewBox="0 0 340 52" xmlns="http://www.w3.org/2000/svg">
       <line x1="0" y1="48" x2="340" y2="48" stroke-width="1" stroke-linecap="round" id="horizon-line"/>
@@ -201,130 +174,103 @@
     </svg>
   </div>
 
-  <div class="page-title">
+  <div class="greeting">
     <p id="greeting-time">Good morning,</p>
-    <h1>Budget Journal 💸</h1>
+    <h1>Welcome back, Ethan 🌸</h1>
   </div>
 
-  <!-- Month selector -->
-  <div class="month-bar">
-    <button class="month-btn" onclick="changeMonth(-1)">‹</button>
-    <div class="month-label" id="month-label"></div>
-    <button class="month-btn" onclick="changeMonth(1)">›</button>
-  </div>
-
-  <!-- Summary card -->
-  <div class="summary-card">
-    <div class="summary-label">Remaining balance</div>
-    <div class="summary-amount" id="balance">$0.00</div>
-    <div class="summary-sub" id="balance-sub">this month</div>
-    <div class="summary-row">
-      <div class="summary-pill">
-        <div class="summary-pill-label">Income</div>
-        <div class="summary-pill-value pos" id="total-income">$0.00</div>
+  <!-- Budget preview card (links to budget.html) -->
+  <a class="budget-card" href="budget.html">
+    <div class="budget-card-label">Your finances</div>
+    <div class="budget-card-title" id="budget-card-title">Budget Journal</div>
+    <div class="budget-card-row">
+      <div class="budget-pill">
+        <div class="budget-pill-label">This month</div>
+        <div class="budget-pill-value pos" id="home-balance">$0.00</div>
       </div>
-      <div class="summary-pill">
-        <div class="summary-pill-label">Expenses</div>
-        <div class="summary-pill-value neg" id="total-expenses">$0.00</div>
+      <div class="budget-pill">
+        <div class="budget-pill-label">Expenses</div>
+        <div class="budget-pill-value neg" id="home-expenses">$0.00</div>
       </div>
     </div>
-  </div>
+    <div class="budget-card-cta">Open budget journal →</div>
+  </a>
 
-  <!-- Savings goal -->
-  <div class="section-label">Savings goal</div>
-  <div class="goal-card">
-    <div class="goal-header">
-      <div class="goal-title" id="goal-title">🎯 Monthly Savings Goal</div>
-      <button class="goal-edit-btn" onclick="openGoalModal()">Edit</button>
+  <div class="section-label">Learn</div>
+  <div class="modules">
+    <div class="module-card featured">
+      <div class="module-icon" style="background:#ddefd5;">📋</div>
+      <div>
+        <div class="module-tag tag-next">Up next</div>
+        <div class="module-title">Understanding Student Loans</div>
+        <div class="module-sub">5 min · Module 3</div>
+      </div>
     </div>
-    <div id="goal-body"></div>
-  </div>
-
-  <!-- Donut chart -->
-  <div class="donut-wrap" id="donut-wrap" style="display:none;">
-    <div class="donut-title">Spending breakdown</div>
-    <div class="donut-inner">
-      <svg class="donut-svg" width="100" height="100" viewBox="0 0 100 100" id="donut-svg"></svg>
-      <div class="donut-legend" id="donut-legend"></div>
+    <div class="module-card">
+      <div class="module-icon" style="background:#faeeda;">💸</div>
+      <div class="module-tag tag-start">Start</div>
+      <div class="module-title">Budgeting on a Student Income</div>
+      <div class="module-sub">7 min</div>
+    </div>
+    <div class="module-card">
+      <div class="module-icon" style="background:#e6f1fb;">🎓</div>
+      <div class="module-tag tag-new">New</div>
+      <div class="module-title">FAFSA Decoded</div>
+      <div class="module-sub">6 min</div>
     </div>
   </div>
 
-  <!-- Income -->
-  <div class="section-label">Income</div>
-  <div class="entry-list" id="income-list"></div>
-
-  <!-- Expenses -->
-  <div class="section-label">Expenses</div>
-  <div class="entry-list" id="expense-list"></div>
-
-  <!-- Actions -->
-  <div class="action-row">
-    <button class="add-btn" onclick="openModal()">＋ Add entry</button>
-    <button class="export-btn" onclick="exportCSV()">⬇ Export</button>
+  <div class="section-label">Resources for you</div>
+  <div class="map-wrap">
+    <div class="map-header">
+      <div>
+        <div class="map-header-title">UW Campus Resources</div>
+        <div class="map-header-sub">Tap a pin to learn more</div>
+      </div>
+      <button class="expand-btn" onclick="openFullMap()">Expand</button>
+    </div>
+    <div id="map"></div>
   </div>
 
-  <div style="text-align:center; padding: 0 0 1.5rem; font-size: 11px; color: var(--footer);">designed by @ethanchengluong</div>
+  <div class="page-footer">designed by @ethanchengluong</div>
 
   <nav class="nav">
-    <a href="index.html" class="nav-item"><span>🏠</span><span class="nav-label">Home</span></a>
+    <a href="index.html" class="nav-item active"><span>🏠</span><span class="nav-label">Home</span></a>
     <a href="#" class="nav-item"><span>📚</span><span class="nav-label">Learn</span></a>
     <a href="resources.html" class="nav-item"><span>🔖</span><span class="nav-label">Resources</span></a>
-    <a href="budget.html" class="nav-item active"><span>💸</span><span class="nav-label">Budget</span></a>
+    <a href="budget.html" class="nav-item"><span>💸</span><span class="nav-label">Budget</span></a>
   </nav>
 </div>
 
-<!-- Add entry modal -->
-<div class="modal-overlay" id="modal" onclick="handleOverlay(event,'modal')">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title">Add entry</div>
-    <div class="type-toggle">
-      <button class="type-btn active income" id="btn-income" onclick="setType('income')">＋ Income</button>
-      <button class="type-btn expense" id="btn-expense" onclick="setType('expense')">－ Expense</button>
+<!-- Full map overlay -->
+<div class="map-overlay" id="mapOverlay" onclick="handleOverlayClick(event)">
+  <div class="map-modal" id="mapModal">
+    <div style="padding: 12px 16px 0;">
+      <div class="modal-handle"></div>
+      <div class="modal-header" style="padding: 0 0 10px;">
+        <div class="modal-title">UW Campus Resources</div>
+        <button class="close-btn" onclick="closeFullMap()">✕</button>
+      </div>
     </div>
-    <div class="form-group">
-      <label class="form-label">Description</label>
-      <input class="form-input" id="f-desc" placeholder="e.g. Part-time job, Rent…"/>
+    <div id="map-full"></div>
+    <div class="pin-bar">
+      <div class="pin-chip" onclick="flyToPin('food', true)">
+        <div class="pin-dot" style="background:#2d5a3d;"></div>
+        <span class="pin-chip-label">UW Food Pantry</span>
+      </div>
+      <div class="pin-chip" onclick="flyToPin('advising', true)">
+        <div class="pin-dot" style="background:#7fb069;"></div>
+        <span class="pin-chip-label">UAA Advising</span>
+      </div>
+      <div class="pin-chip" onclick="flyToPin('financialaid', true)">
+        <div class="pin-dot" style="background:#e8a030;"></div>
+        <span class="pin-chip-label">Financial Aid</span>
+      </div>
     </div>
-    <div class="form-group">
-      <label class="form-label">Amount ($)</label>
-      <input class="form-input" id="f-amount" type="number" min="0" step="0.01" placeholder="0.00"/>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Category</label>
-      <select class="form-select" id="f-cat"></select>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Notes (optional)</label>
-      <textarea class="form-textarea" id="f-note" placeholder="Any details, reminders, or reflections…"></textarea>
-    </div>
-    <button class="form-submit" onclick="submitEntry()">Add entry</button>
-    <button class="form-cancel" onclick="closeModal('modal')">Cancel</button>
   </div>
 </div>
 
-<!-- Goal modal -->
-<div class="modal-overlay" id="goal-modal" onclick="handleOverlay(event,'goal-modal')">
-  <div class="goal-modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title">Savings goal</div>
-    <div class="form-group">
-      <label class="form-label">Goal name</label>
-      <input class="form-input" id="g-name" placeholder="e.g. Emergency fund, Laptop…"/>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Target amount ($)</label>
-      <input class="form-input" id="g-target" type="number" min="0" step="1" placeholder="500"/>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Amount saved so far ($)</label>
-      <input class="form-input" id="g-saved" type="number" min="0" step="1" placeholder="0"/>
-    </div>
-    <button class="form-submit" onclick="saveGoal()">Save goal</button>
-    <button class="form-cancel" onclick="closeModal('goal-modal')">Cancel</button>
-  </div>
-</div>
-
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
   // ── Theme & sky arc ──────────────────────────────────────────────────────
   const hour = new Date().getHours();
@@ -351,12 +297,12 @@
   const sx = cx + rx * Math.cos(angle), sy = cy - ry * Math.sin(angle);
   document.getElementById('sky-body').setAttribute('transform', `translate(${sx}, ${sy})`);
 
-  const circle = document.getElementById('sky-circle');
-  const glow   = document.getElementById('sky-glow');
-  const rays   = document.getElementById('sun-rays');
-  const moonDetail = document.getElementById('moon-detail');
-  const stars      = document.getElementById('stars');
-  const arcPath    = document.getElementById('arc-path');
+  const circle      = document.getElementById('sky-circle');
+  const glow        = document.getElementById('sky-glow');
+  const rays        = document.getElementById('sun-rays');
+  const moonDetail  = document.getElementById('moon-detail');
+  const stars       = document.getElementById('stars');
+  const arcPath     = document.getElementById('arc-path');
   const horizonLine = document.getElementById('horizon-line');
 
   if (isDay) {
@@ -380,224 +326,122 @@
     horizonLine.setAttribute('stroke', '#6860a0');
   }
 
-  // ── Data ─────────────────────────────────────────────────────────────────
-  const INCOME_CATS = [
-    { label: '💼 Part-time job',                icon: '💼', color: '#2d5a3d', bg: '#eef5eb' },
-    { label: '🎓 Financial aid / Scholarships', icon: '🎓', color: '#185fa5', bg: '#e6f1fb' },
-    { label: '👨‍👩‍👧 Family support',              icon: '👨‍👩‍👧', color: '#854f0b', bg: '#faeeda' },
-    { label: '🏦 Savings withdrawal',           icon: '🏦', color: '#6b21a8', bg: '#f3e8ff' },
-    { label: '🎁 Gift / Other',                 icon: '🎁', color: '#7a7060', bg: '#f0ede8' },
-  ];
-  const EXPENSE_CATS = [
-    { label: '🏠 Housing / Rent',         icon: '🏠', color: '#c0392b', bg: '#fef2f2' },
-    { label: '🍜 Food & Dining',          icon: '🍜', color: '#854f0b', bg: '#faeeda' },
-    { label: '📚 Textbooks & Supplies',   icon: '📚', color: '#185fa5', bg: '#e6f1fb' },
-    { label: '🚌 Transportation',         icon: '🚌', color: '#2d5a3d', bg: '#eef5eb' },
-    { label: '📱 Phone & Internet',       icon: '📱', color: '#6b21a8', bg: '#f3e8ff' },
-    { label: '🎉 Entertainment',          icon: '🎉', color: '#c45c2a', bg: '#fde8d8' },
-    { label: '💊 Health & Wellness',      icon: '💊', color: '#0e7490', bg: '#ecfeff' },
-    { label: '🛍️ Shopping',              icon: '🛍️', color: '#a16207', bg: '#fefce8' },
-    { label: '📦 Other expense',          icon: '📦', color: '#7a7060', bg: '#f0ede8' },
-  ];
-  const DONUT_COLORS = ['#2d5a3d','#7fb069','#e8a030','#185fa5','#c45c2a','#6b21a8','#0e7490','#c0392b','#a16207'];
-  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  // ── Budget summary preview from localStorage ─────────────────────────────
+  (function() {
+    const entries = JSON.parse(localStorage.getItem('bloom_budget') || '[]');
+    const now = new Date();
+    const key = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    const me  = entries.filter(e => e.month === key);
+    const inc = me.filter(e => e.type === 'income').reduce((a, e) => a + e.amount, 0);
+    const exp = me.filter(e => e.type === 'expense').reduce((a, e) => a + e.amount, 0);
+    const bal = inc - exp;
+    const fmt = n => '$' + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const balEl = document.getElementById('home-balance');
+    balEl.textContent = fmt(bal);
+    balEl.className = 'budget-pill-value ' + (bal < 0 ? 'neg' : 'pos');
+    document.getElementById('home-expenses').textContent = fmt(exp);
+    const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    document.getElementById('budget-card-title').textContent = `${MONTHS[now.getMonth()]} Budget`;
+  })();
 
-  let currentType  = 'income';
-  let currentMonth = new Date().getMonth();
-  let currentYear  = new Date().getFullYear();
-  let entries = JSON.parse(localStorage.getItem('bloom_budget') || '[]');
-  let goal    = JSON.parse(localStorage.getItem('bloom_goal')   || 'null');
-
-  function fmt(n) {
-    return '$' + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  }
-  function monthKey() {
-    return `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
-  }
-  function monthEntries() {
-    return entries.filter(e => e.month === monthKey());
-  }
-
-  function changeMonth(d) {
-    currentMonth += d;
-    if (currentMonth > 11) { currentMonth = 0; currentYear++; }
-    if (currentMonth < 0)  { currentMonth = 11; currentYear--; }
-    render();
-  }
-
-  // ── Modal helpers ─────────────────────────────────────────────────────────
-  function setType(t) {
-    currentType = t;
-    document.getElementById('btn-income').className  = 'type-btn' + (t === 'income'  ? ' active income'  : '');
-    document.getElementById('btn-expense').className = 'type-btn' + (t === 'expense' ? ' active expense' : '');
-    populateCats();
-  }
-  function populateCats() {
-    const sel  = document.getElementById('f-cat');
-    const cats = currentType === 'income' ? INCOME_CATS : EXPENSE_CATS;
-    sel.innerHTML = cats.map(c => `<option value="${c.label}">${c.label}</option>`).join('');
-  }
-  function openModal() {
-    setType('income');
-    document.getElementById('f-desc').value   = '';
-    document.getElementById('f-amount').value = '';
-    document.getElementById('f-note').value   = '';
-    document.getElementById('modal').classList.add('open');
-  }
-  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-  function handleOverlay(e, id) { if (e.target === document.getElementById(id)) closeModal(id); }
-
-  function submitEntry() {
-    const desc   = document.getElementById('f-desc').value.trim();
-    const amount = parseFloat(document.getElementById('f-amount').value);
-    const cat    = document.getElementById('f-cat').value;
-    const note   = document.getElementById('f-note').value.trim();
-    if (!desc || !amount || amount <= 0) return;
-    entries.push({ id: Date.now(), month: monthKey(), type: currentType, desc, amount, cat, note });
-    localStorage.setItem('bloom_budget', JSON.stringify(entries));
-    closeModal('modal');
-    render();
-  }
-  function deleteEntry(id) {
-    entries = entries.filter(e => e.id !== id);
-    localStorage.setItem('bloom_budget', JSON.stringify(entries));
-    render();
-  }
-
-  // ── Goal ──────────────────────────────────────────────────────────────────
-  function openGoalModal() {
-    document.getElementById('g-name').value   = goal ? goal.name   : '';
-    document.getElementById('g-target').value = goal ? goal.target : '';
-    document.getElementById('g-saved').value  = goal ? goal.saved  : '';
-    document.getElementById('goal-modal').classList.add('open');
-  }
-  function saveGoal() {
-    const name   = document.getElementById('g-name').value.trim();
-    const target = parseFloat(document.getElementById('g-target').value);
-    const saved  = parseFloat(document.getElementById('g-saved').value) || 0;
-    if (!name || !target || target <= 0) return;
-    goal = { name, target, saved };
-    localStorage.setItem('bloom_goal', JSON.stringify(goal));
-    closeModal('goal-modal');
-    render();
-  }
-
-  // ── Export ────────────────────────────────────────────────────────────────
-  function exportCSV() {
-    const me = monthEntries();
-    if (!me.length) { alert('No entries to export for this month.'); return; }
-    const rows = [['Date','Type','Description','Category','Amount','Notes']];
-    me.forEach(e => {
-      rows.push([e.month, e.type, e.desc, e.cat.replace(/^[^ ]+ /, ''), e.amount, e.note || '']);
-    });
-    const csv  = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href = url; a.download = `bloom-budget-${monthKey()}.csv`; a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  // ── Render ────────────────────────────────────────────────────────────────
-  function getCatMeta(label, type) {
-    const cats = type === 'income' ? INCOME_CATS : EXPENSE_CATS;
-    return cats.find(c => c.label === label) || { icon: '📦', color: '#7a7060', bg: '#f0ede8' };
-  }
-
-  function renderGoal() {
-    const el = document.getElementById('goal-body');
-    if (!goal) {
-      el.innerHTML = `<div class="goal-empty">Tap Edit to set a savings goal 🌱</div>`;
-      return;
+  // ── Map ───────────────────────────────────────────────────────────────────
+  const UW_CENTER = [47.6553, -122.3035];
+  const resources = {
+    food: {
+      latlng: [47.6599, -122.3152], color: '#2d5a3d',
+      tag: 'Food support', tagBg: '#eef5eb', tagColor: '#3b6d11',
+      name: 'UW Food Pantry',
+      desc: 'Free groceries, fresh produce, and pantry staples for UW students in need. No eligibility requirements.',
+      hours: 'Mon–Fri · Hours vary by quarter',
+      link: 'https://www.washington.edu/anyhungryhusky/', linkLabel: 'Visit website →'
+    },
+    advising: {
+      latlng: [47.6561, -122.3082], color: '#7fb069',
+      tag: 'Academic advising', tagBg: '#eef5eb', tagColor: '#3b6d11',
+      name: 'UAA Undergraduate Advising',
+      desc: 'Academic planning, degree requirements, major exploration, and support for all UW undergrads.',
+      hours: 'Mon–Fri 8am–5pm',
+      link: 'https://www.washington.edu/uaa/', linkLabel: 'Visit website →'
+    },
+    financialaid: {
+      latlng: [47.6532, -122.3082], color: '#e8a030',
+      tag: 'Financial aid', tagBg: '#faeeda', tagColor: '#854f0b',
+      name: 'Office of Student Financial Aid',
+      desc: 'Help with FAFSA, scholarships, grants, loans, and work-study. Located in Schmitz Hall.',
+      hours: 'Mon–Fri 11am–3pm (in-person)',
+      link: 'https://www.washington.edu/financialaid/', linkLabel: 'Visit website →'
     }
-    const pct       = Math.min(100, Math.round(goal.saved / goal.target * 100));
-    const remaining = Math.max(0, goal.target - goal.saved);
-    el.innerHTML = `
-      <div class="goal-amount">${fmt(goal.saved)} <span style="font-size:14px;color:var(--text-muted)">of ${fmt(goal.target)}</span></div>
-      <div class="goal-sub">${goal.name} · ${remaining > 0 ? fmt(remaining) + ' to go' : 'Goal reached! 🎉'}</div>
-      <div class="goal-bar-bg"><div class="goal-bar-fill" style="width:${pct}%;"></div></div>
-      <div class="goal-bar-labels"><span>${pct}% saved</span><span>${fmt(goal.target)}</span></div>`;
-  }
+  };
 
-  function renderDonut(expenseEntries) {
-    const wrap = document.getElementById('donut-wrap');
-    if (!expenseEntries.length) { wrap.style.display = 'none'; return; }
-    wrap.style.display = 'block';
-    const groups = {};
-    expenseEntries.forEach(e => { groups[e.cat] = (groups[e.cat] || 0) + e.amount; });
-    const total = Object.values(groups).reduce((a, b) => a + b, 0);
-    const items = Object.entries(groups).sort((a, b) => b[1] - a[1]);
-    const CX = 50, CY = 50, R = 38, INNER = 24;
-    let startAngle = -Math.PI / 2;
-    let paths = '';
-    items.forEach(([cat, val], i) => {
-      const ang = (val / total) * Math.PI * 2;
-      const ea  = startAngle + ang;
-      const x1 = CX + R * Math.cos(startAngle), y1 = CY + R * Math.sin(startAngle);
-      const x2 = CX + R * Math.cos(ea),          y2 = CY + R * Math.sin(ea);
-      const ix1 = CX + INNER * Math.cos(startAngle), iy1 = CY + INNER * Math.sin(startAngle);
-      const ix2 = CX + INNER * Math.cos(ea),          iy2 = CY + INNER * Math.sin(ea);
-      const lg  = ang > Math.PI ? 1 : 0;
-      const col = DONUT_COLORS[i % DONUT_COLORS.length];
-      paths += `<path d="M${ix1},${iy1} L${x1},${y1} A${R},${R} 0 ${lg},1 ${x2},${y2} L${ix2},${iy2} A${INNER},${INNER} 0 ${lg},0 ${ix1},${iy1}" fill="${col}" stroke="#f7f4ee" stroke-width="1.5"/>`;
-      startAngle = ea;
+  function makeIcon(color) {
+    return L.divIcon({
+      className: '',
+      html: `<svg width="28" height="38" viewBox="0 0 28 38" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="14" cy="14" r="13" fill="${color}" stroke="white" stroke-width="2.5"/>
+        <circle cx="14" cy="14" r="5" fill="white"/>
+        <polygon points="14,38 6,24 22,24" fill="${color}"/>
+      </svg>`,
+      iconSize: [28, 38], iconAnchor: [14, 38], popupAnchor: [0, -40]
     });
-    document.getElementById('donut-svg').innerHTML = paths;
-    document.getElementById('donut-legend').innerHTML = items.map(([cat, val], i) => {
-      const meta = getCatMeta(cat, 'expense');
-      const pct  = Math.round(val / total * 100);
-      return `<div class="legend-item">
-        <div class="legend-dot" style="background:${DONUT_COLORS[i % DONUT_COLORS.length]};"></div>
-        <div class="legend-label">${meta.icon} ${cat.replace(/^[^ ]+ /, '')}</div>
-        <div class="legend-pct">${pct}%</div>
-      </div>`;
-    }).join('');
+  }
+  function makePopup(r) {
+    return `<div class="popup-inner">
+      <div class="popup-tag" style="background:${r.tagBg};color:${r.tagColor};">${r.tag}</div>
+      <div class="popup-name">${r.name}</div>
+      <div class="popup-desc">${r.desc}</div>
+      <div class="popup-hours">🕐 ${r.hours}</div>
+      <a class="popup-link" href="${r.link}" target="_blank">${r.linkLabel}</a>
+    </div>`;
   }
 
-  function renderList(containerId, list, type) {
-    const el = document.getElementById(containerId);
-    if (!list.length) {
-      el.innerHTML = `<div class="empty"><div class="empty-icon">${type === 'income' ? '💵' : '🧾'}</div><div class="empty-text">No ${type} entries yet</div></div>`;
-      return;
-    }
-    el.innerHTML = list.map(e => {
-      const meta = getCatMeta(e.cat, type);
-      return `<div class="entry-card">
-        <div class="entry-icon" style="background:${meta.bg};">${meta.icon}</div>
-        <div class="entry-body">
-          <div class="entry-name">${e.desc}</div>
-          <div class="entry-cat">${e.cat.replace(/^[^ ]+ /, '')}</div>
-          ${e.note ? `<div class="entry-note">💬 ${e.note}</div>` : ''}
-        </div>
-        <div class="entry-right">
-          <div class="entry-amount ${type}">${type === 'income' ? '+' : '-'}${fmt(e.amount)}</div>
-          <button class="entry-delete" onclick="deleteEntry(${e.id})">✕</button>
-        </div>
-      </div>`;
-    }).join('');
+  const miniMap = L.map('map', {
+    center: UW_CENTER, zoom: 15,
+    zoomControl: false, scrollWheelZoom: false,
+    dragging: false, doubleClickZoom: false, touchZoom: false
+  });
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(miniMap);
+  Object.entries(resources).forEach(([key, r]) => {
+    L.marker(r.latlng, { icon: makeIcon(r.color) })
+      .addTo(miniMap)
+      .bindPopup(makePopup(r), { className: 'roots-popup', maxWidth: 240 });
+  });
+
+  let fullMap = null;
+  let fullMarkers = {};
+
+  function initFullMap() {
+    if (fullMap) return;
+    fullMap = L.map('map-full', { center: UW_CENTER, zoom: 16, zoomControl: true });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(fullMap);
+    Object.entries(resources).forEach(([key, r]) => {
+      const marker = L.marker(r.latlng, { icon: makeIcon(r.color) })
+        .addTo(fullMap)
+        .bindPopup(makePopup(r), { className: 'roots-popup', maxWidth: 240 });
+      fullMarkers[key] = marker;
+    });
   }
 
-  function render() {
-    document.getElementById('month-label').textContent = `${MONTHS[currentMonth]} ${currentYear}`;
-    const me  = monthEntries();
-    const inc = me.filter(e => e.type === 'income');
-    const exp = me.filter(e => e.type === 'expense');
-    const totalInc = inc.reduce((a, e) => a + e.amount, 0);
-    const totalExp = exp.reduce((a, e) => a + e.amount, 0);
-    const bal = totalInc - totalExp;
-    document.getElementById('total-income').textContent   = fmt(totalInc);
-    document.getElementById('total-expenses').textContent = fmt(totalExp);
-    document.getElementById('balance').textContent        = fmt(bal);
-    document.getElementById('balance').style.color        = bal < 0 ? '#fca5a5' : 'white';
-    document.getElementById('balance-sub').textContent    = bal < 0 ? 'over budget this month' : 'remaining this month';
-    renderGoal();
-    renderDonut(exp);
-    renderList('income-list', inc, 'income');
-    renderList('expense-list', exp, 'expense');
+  function openFullMap() {
+    document.getElementById('mapOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => { initFullMap(); fullMap.invalidateSize(); }, 100);
   }
-
-  populateCats();
-  render();
+  function closeFullMap() {
+    document.getElementById('mapOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('mapOverlay')) closeFullMap();
+  }
+  function flyToPin(key, openPopup) {
+    if (!fullMap) return;
+    fullMap.flyTo(resources[key].latlng, 17, { duration: 0.8 });
+    if (openPopup) setTimeout(() => fullMarkers[key].openPopup(), 900);
+  }
 </script>
 </body>
 </html>
