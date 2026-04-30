@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resources – Roots</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: #f7f4ee; color: #1a1a1a; min-height: 100vh; }
+    .app { max-width: 420px; margin: 0 auto; background: #f7f4ee; min-height: 100vh; padding-bottom: 100px; }
+    .header { padding: 3rem 1.5rem 1.5rem; display: flex; justify-content: space-between; align-items: flex-start; }
+    .logo { font-family: 'DM Serif Display', serif; font-size: 28px; color: #2d5a3d; }
+    .logo span { font-style: italic; color: #7fb069; }
+    .avatar { width: 40px; height: 40px; border-radius: 50%; background: #2d5a3d; display: flex; align-items: center; justify-content: center; color: #f7f4ee; font-size: 14px; font-weight: 500; }
+    .page-title { padding: 0 1.5rem 1.5rem; }
+    .page-title p { font-size: 13px; color: #7a7060; margin-bottom: 4px; }
+    .page-title h1 { font-family: 'DM Serif Display', serif; font-size: 24px; font-weight: 400; }
+    .section-label { padding: 0 1.5rem; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #7a7060; margin-bottom: 12px; }
+
+    /* Map */
+    .map-wrap { margin: 0 1.5rem 1.5rem; border-radius: 16px; overflow: hidden; border: 1px solid rgba(0,0,0,0.06); background: white; }
+    .map-header { padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.06); }
+    .map-header-title { font-size: 13px; font-weight: 500; color: #1a1a1a; }
+    .map-header-sub { font-size: 11px; color: #7a7060; }
+    .expand-btn { font-size: 11px; background: #2d5a3d; color: white; border: none; border-radius: 20px; padding: 5px 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; font-weight: 500; }
+    #map { height: 220px; width: 100%; z-index: 1; }
+
+    /* Full-screen map overlay */
+    .map-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 9999; align-items: flex-end; justify-content: center; }
+    .map-overlay.open { display: flex; }
+    .map-modal { background: white; border-radius: 24px 24px 0 0; width: 100%; max-width: 420px; height: 88vh; display: flex; flex-direction: column; overflow: hidden; }
+    .modal-handle { width: 36px; height: 4px; background: #e0dbd2; border-radius: 2px; margin: 0 auto 12px; }
+    .modal-header { padding: 0 0 10px; display: flex; align-items: center; justify-content: space-between; }
+    .modal-title { font-size: 15px; font-weight: 500; color: #1a1a1a; font-family: 'DM Sans', sans-serif; }
+    .close-btn { background: #f0ede8; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
+    #map-full { flex: 1; min-height: 0; }
+    .pin-bar { padding: 10px 14px; border-top: 1px solid rgba(0,0,0,0.06); display: flex; gap: 8px; overflow-x: auto; flex-shrink: 0; }
+    .pin-chip { display: flex; align-items: center; gap: 7px; background: #f7f4ee; border: 1px solid rgba(0,0,0,0.07); border-radius: 100px; padding: 6px 12px 6px 8px; white-space: nowrap; cursor: pointer; }
+    .pin-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .pin-chip-label { font-size: 12px; font-weight: 500; color: #1a1a1a; font-family: 'DM Sans', sans-serif; }
+
+    /* Leaflet popup */
+    .roots-popup .leaflet-popup-content-wrapper { border-radius: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.12); padding: 0; overflow: hidden; font-family: 'DM Sans', sans-serif; }
+    .roots-popup .leaflet-popup-content { margin: 0; width: 220px !important; }
+    .roots-popup .leaflet-popup-tip { background: white; }
+    .popup-inner { padding: 14px; }
+    .popup-tag { font-size: 10px; padding: 2px 8px; border-radius: 100px; font-weight: 500; display: inline-block; margin-bottom: 8px; }
+    .popup-name { font-size: 13px; font-weight: 500; color: #1a1a1a; margin-bottom: 4px; line-height: 1.3; }
+    .popup-desc { font-size: 11px; color: #7a7060; margin-bottom: 8px; line-height: 1.5; }
+    .popup-hours { font-size: 11px; color: #5a7060; font-weight: 500; margin-bottom: 8px; }
+    .popup-link { display: block; text-align: center; background: #2d5a3d; color: white; font-size: 11px; font-weight: 500; padding: 7px; border-radius: 8px; text-decoration: none; font-family: 'DM Sans', sans-serif; }
+    .popup-link:hover { background: #3a7050; }
+
+    /* Resource cards */
+    .resource-list { padding: 0 1.5rem; display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.5rem; }
+    .resource-card { background: white; border-radius: 16px; padding: 1rem; border: 1px solid rgba(0,0,0,0.04); display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .resource-card:active { background: #f7f4ee; }
+    .resource-card-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+    .resource-card-body { flex: 1; min-width: 0; }
+    .resource-card-tag { font-size: 10px; padding: 2px 8px; border-radius: 100px; font-weight: 500; display: inline-block; margin-bottom: 5px; }
+    .resource-card-name { font-size: 13px; font-weight: 500; color: #1a1a1a; line-height: 1.3; }
+    .resource-card-sub { font-size: 11px; color: #7a7060; margin-top: 2px; }
+    .resource-card-arrow { font-size: 16px; color: #c8c0b4; flex-shrink: 0; }
+
+    .footer { text-align: center; padding: 0 0 1.5rem; font-size: 11px; color: #b0a898; }
+
+    /* Nav */
+    .nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 420px; background: white; border-top: 1px solid rgba(0,0,0,0.06); display: flex; justify-content: space-around; padding: 12px 0 20px; z-index: 100; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; opacity: 0.4; text-decoration: none; }
+    .nav-item.active { opacity: 1; }
+    .nav-label { font-size: 10px; color: #1a1a1a; font-family: 'DM Sans', sans-serif; }
+    .nav-item.active .nav-label { color: #2d5a3d; font-weight: 500; }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <div class="logo">ro<span>ots</span></div>
+    <div class="avatar">EC</div>
+  </div>
+
+  <div class="page-title">
+    <p>Find what you need,</p>
+    <h1>Campus Resources 🗺️</h1>
+  </div>
+
+  <div class="section-label">Campus map</div>
+  <div class="map-wrap">
+    <div class="map-header">
+      <div>
+        <div class="map-header-title">UW Campus Resources</div>
+        <div class="map-header-sub">Tap a pin to learn more</div>
+      </div>
+      <button class="expand-btn" onclick="openFullMap()">Expand</button>
+    </div>
+    <div id="map"></div>
+  </div>
+
+  <div class="section-label">All resources</div>
+  <div class="resource-list">
+
+    <a class="resource-card" href="https://www.washington.edu/anyhungryhusky/" target="_blank">
+      <div class="resource-card-icon" style="background:#eef5eb;">🥗</div>
+      <div class="resource-card-body">
+        <div class="resource-card-tag" style="background:#eef5eb;color:#3b6d11;">Food support</div>
+        <div class="resource-card-name">UW Food Pantry</div>
+        <div class="resource-card-sub">Poplar Hall · Mon–Fri, hours vary</div>
+      </div>
+      <div class="resource-card-arrow">›</div>
+    </a>
+
+    <a class="resource-card" href="https://www.washington.edu/financialaid/" target="_blank">
+      <div class="resource-card-icon" style="background:#faeeda;">💰</div>
+      <div class="resource-card-body">
+        <div class="resource-card-tag" style="background:#faeeda;color:#854f0b;">Financial aid</div>
+        <div class="resource-card-name">Office of Student Financial Aid</div>
+        <div class="resource-card-sub">Schmitz Hall · Mon–Fri 11am–3pm</div>
+      </div>
+      <div class="resource-card-arrow">›</div>
+    </a>
+
+    <a class="resource-card" href="https://www.washington.edu/uaa/" target="_blank">
+      <div class="resource-card-icon" style="background:#eef5eb;">🎓</div>
+      <div class="resource-card-body">
+        <div class="resource-card-tag" style="background:#eef5eb;color:#3b6d11;">Academic advising</div>
+        <div class="resource-card-name">UAA Undergraduate Advising</div>
+        <div class="resource-card-sub">Mary Gates Hall · Mon–Fri 8am–5pm</div>
+      </div>
+      <div class="resource-card-arrow">›</div>
+    </a>
+
+  </div>
+
+  <div class="footer">designed by @ethanchengluong</div>
+
+</div>
+
+<!-- Full screen map overlay -->
+<div class="map-overlay" id="mapOverlay" onclick="handleOverlayClick(event)">
+  <div class="map-modal" id="mapModal">
+    <div style="padding: 12px 16px 0;">
+      <div class="modal-handle"></div>
+      <div class="modal-header">
+        <div class="modal-title">UW Campus Resources</div>
+        <button class="close-btn" onclick="closeFullMap()">✕</button>
+      </div>
+    </div>
+    <div id="map-full"></div>
+    <div class="pin-bar">
+      <div class="pin-chip" onclick="flyToPin('food', true)">
+        <div class="pin-dot" style="background:#2d5a3d;"></div>
+        <span class="pin-chip-label">UW Food Pantry</span>
+      </div>
+      <div class="pin-chip" onclick="flyToPin('advising', true)">
+        <div class="pin-dot" style="background:#7fb069;"></div>
+        <span class="pin-chip-label">UAA Advising</span>
+      </div>
+      <div class="pin-chip" onclick="flyToPin('financialaid', true)">
+        <div class="pin-dot" style="background:#e8a030;"></div>
+        <span class="pin-chip-label">Financial Aid</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<nav class="nav">
+  <a href="index.html" class="nav-item"><span>🏠</span><span class="nav-label">Home</span></a>
+  <a href="#" class="nav-item"><span>📚</span><span class="nav-label">Learn</span></a>
+  <a href="resources.html" class="nav-item active"><span>🔖</span><span class="nav-label">Resources</span></a>
+  <a href="#" class="nav-item"><span>👤</span><span class="nav-label">Profile</span></a>
+</nav>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const UW_CENTER = [47.6553, -122.3035];
+
+const resources = {
+  food: {
+    latlng: [47.6599, -122.3152],
+    color: '#2d5a3d',
+    tag: 'Food support',
+    tagBg: '#eef5eb',
+    tagColor: '#3b6d11',
+    name: 'UW Food Pantry',
+    desc: 'Free groceries, fresh produce, and pantry staples for UW students in need. No eligibility requirements.',
+    hours: 'Mon–Fri · Hours vary by quarter',
+    link: 'https://www.washington.edu/anyhungryhusky/',
+    linkLabel: 'Visit website →'
+  },
+  advising: {
+    latlng: [47.6561, -122.3082],
+    color: '#7fb069',
+    tag: 'Academic advising',
+    tagBg: '#eef5eb',
+    tagColor: '#3b6d11',
+    name: 'UAA Undergraduate Advising',
+    desc: 'Academic planning, degree requirements, major exploration, and support for all UW undergrads.',
+    hours: 'Mon–Fri 8am–5pm',
+    link: 'https://www.washington.edu/uaa/',
+    linkLabel: 'Visit website →'
+  },
+  financialaid: {
+    latlng: [47.6532, -122.3082],
+    color: '#e8a030',
+    tag: 'Financial aid',
+    tagBg: '#faeeda',
+    tagColor: '#854f0b',
+    name: 'Office of Student Financial Aid',
+    desc: 'Help with FAFSA, scholarships, grants, loans, and work-study. Located in Schmitz Hall.',
+    hours: 'Mon–Fri 11am–3pm (in-person)',
+    link: 'https://www.washington.edu/financialaid/',
+    linkLabel: 'Visit website →'
+  }
+};
+
+function makeIcon(color) {
+  return L.divIcon({
+    className: '',
+    html: `<svg width="28" height="38" viewBox="0 0 28 38" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="14" cy="14" r="13" fill="${color}" stroke="white" stroke-width="2.5"/>
+      <circle cx="14" cy="14" r="5" fill="white"/>
+      <polygon points="14,38 6,24 22,24" fill="${color}"/>
+    </svg>`,
+    iconSize: [28, 38],
+    iconAnchor: [14, 38],
+    popupAnchor: [0, -40]
+  });
+}
+
+function makePopup(r) {
+  return `<div class="popup-inner">
+    <div class="popup-tag" style="background:${r.tagBg};color:${r.tagColor};">${r.tag}</div>
+    <div class="popup-name">${r.name}</div>
+    <div class="popup-desc">${r.desc}</div>
+    <div class="popup-hours">🕐 ${r.hours}</div>
+    <a class="popup-link" href="${r.link}" target="_blank">${r.linkLabel}</a>
+  </div>`;
+}
+
+const miniMap = L.map('map', {
+  center: UW_CENTER, zoom: 15,
+  zoomControl: false, scrollWheelZoom: false,
+  dragging: false, doubleClickZoom: false, touchZoom: false
+});
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© OpenStreetMap contributors'
+}).addTo(miniMap);
+Object.entries(resources).forEach(([key, r]) => {
+  L.marker(r.latlng, { icon: makeIcon(r.color) })
+    .addTo(miniMap)
+    .bindPopup(makePopup(r), { className: 'roots-popup', maxWidth: 240 });
+});
+
+let fullMap = null;
+let fullMarkers = {};
+
+function initFullMap() {
+  if (fullMap) return;
+  fullMap = L.map('map-full', { center: UW_CENTER, zoom: 16, zoomControl: true });
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(fullMap);
+  Object.entries(resources).forEach(([key, r]) => {
+    const marker = L.marker(r.latlng, { icon: makeIcon(r.color) })
+      .addTo(fullMap)
+      .bindPopup(makePopup(r), { className: 'roots-popup', maxWidth: 240 });
+    fullMarkers[key] = marker;
+  });
+}
+
+function openFullMap() {
+  document.getElementById('mapOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => { initFullMap(); fullMap.invalidateSize(); }, 100);
+}
+
+function closeFullMap() {
+  document.getElementById('mapOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('mapOverlay')) closeFullMap();
+}
+
+function flyToPin(key, openPopup) {
+  if (!fullMap) return;
+  fullMap.flyTo(resources[key].latlng, 17, { duration: 0.8 });
+  if (openPopup) setTimeout(() => fullMarkers[key].openPopup(), 900);
+}
+</script>
+</body>
+</html>
