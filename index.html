@@ -94,7 +94,12 @@
     .module-title { font-size: 13px; font-weight: 500; color: var(--text-primary); line-height: 1.3; }
     .module-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
-    .map-wrap { margin: 0 1.5rem 1.5rem; border-radius: 16px; overflow: hidden; border: 1px solid rgba(0,0,0,0.06); background: var(--bg-card); position: relative; }
+    /* Sky arc */
+    .sky-arc-wrap { padding: 0 1.5rem; margin-bottom: 0; }
+    .sky-arc-svg { width: 100%; display: block; overflow: visible; opacity: 0.85; }
+    .sky-body { transition: all 0.8s ease; }
+
+    .header { padding: 1.5rem 1.5rem 0.5rem; display: flex; justify-content: space-between; align-items: flex-start; }
     .map-header { padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.06); }
     .map-header-title { font-size: 13px; font-weight: 500; color: var(--text-primary); }
     .map-header-sub { font-size: 11px; color: var(--text-muted); }
@@ -148,6 +153,49 @@
   <div class="header">
     <div class="logo">ro<span>ots</span></div>
     <div class="avatar">EC</div>
+  </div>
+
+  <!-- Sky arc animation -->
+  <div class="sky-arc-wrap">
+    <svg class="sky-arc-svg" viewBox="0 0 340 52" xmlns="http://www.w3.org/2000/svg">
+      <!-- horizon line -->
+      <line x1="0" y1="48" x2="340" y2="48" stroke-width="1" stroke-linecap="round" id="horizon-line"/>
+      <!-- arc path (half ellipse) -->
+      <path id="arc-path" d="M 20 48 A 150 42 0 0 1 320 48" fill="none" stroke-width="1" stroke-dasharray="3 5" stroke-linecap="round"/>
+      <!-- stars (evening only) -->
+      <g id="stars" opacity="0">
+        <circle cx="60" cy="12" r="1" fill="white" opacity="0.7"/>
+        <circle cx="110" cy="5" r="0.8" fill="white" opacity="0.5"/>
+        <circle cx="170" cy="9" r="1.1" fill="white" opacity="0.8"/>
+        <circle cx="230" cy="4" r="0.8" fill="white" opacity="0.6"/>
+        <circle cx="280" cy="13" r="1" fill="white" opacity="0.7"/>
+        <circle cx="145" cy="20" r="0.7" fill="white" opacity="0.5"/>
+        <circle cx="255" cy="22" r="0.7" fill="white" opacity="0.5"/>
+      </g>
+      <!-- sun/moon body -->
+      <g id="sky-body" class="sky-body">
+        <!-- glow ring -->
+        <circle id="sky-glow" cx="0" cy="0" r="10" opacity="0.25"/>
+        <!-- main body -->
+        <circle id="sky-circle" cx="0" cy="0" r="7"/>
+        <!-- moon craters -->
+        <g id="moon-detail" opacity="0">
+          <circle cx="2.5" cy="-2" r="1.6" fill="rgba(0,0,0,0.1)"/>
+          <circle cx="-2" cy="2" r="1.2" fill="rgba(0,0,0,0.08)"/>
+        </g>
+        <!-- sun rays -->
+        <g id="sun-rays" stroke-width="1.2" stroke-linecap="round">
+          <line x1="0" y1="-11" x2="0" y2="-14"/>
+          <line x1="8" y1="-8" x2="10" y2="-10"/>
+          <line x1="11" y1="0" x2="14" y2="0"/>
+          <line x1="8" y1="8" x2="10" y2="10"/>
+          <line x1="0" y1="11" x2="0" y2="14"/>
+          <line x1="-8" y1="8" x2="-10" y2="10"/>
+          <line x1="-11" y1="0" x2="-14" y2="0"/>
+          <line x1="-8" y1="-8" x2="-10" y2="-10"/>
+        </g>
+      </g>
+    </svg>
   </div>
 
   <div class="greeting">
@@ -240,10 +288,70 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const hour = new Date().getHours();
+const minutes = new Date().getMinutes();
+const timeDecimal = hour + minutes / 60;
 const greeting = hour < 12 ? 'Good morning,' : hour < 17 ? 'Good afternoon,' : 'Good evening,';
 const theme = hour < 12 ? 'theme-morning' : hour < 17 ? 'theme-afternoon' : 'theme-evening';
 document.getElementById('greeting-time').textContent = greeting;
 document.body.classList.add(theme);
+
+// Sky arc: sun rises at 6am, sets at 8pm (14hr day)
+// Moon: 8pm to 6am
+const RISE = 6, SET = 20;
+const isDay = timeDecimal >= RISE && timeDecimal < SET;
+
+// progress: 0 = left horizon, 1 = right horizon
+let progress;
+if (isDay) {
+  progress = (timeDecimal - RISE) / (SET - RISE);
+} else {
+  const nightDur = 24 - (SET - RISE);
+  const nightTime = timeDecimal >= SET ? timeDecimal - SET : timeDecimal + (24 - SET);
+  progress = nightTime / nightDur;
+}
+
+// Arc: half-ellipse from (20,82) to (320,82), peak at (170, 12)
+// Parametric: t=0→left, t=1→right
+const t = progress;
+const cx = 170, cy = 48, rx = 150, ry = 42;
+const angle = Math.PI - t * Math.PI; // PI to 0
+const x = cx + rx * Math.cos(angle);
+const y = cy - ry * Math.sin(angle);
+
+const body = document.getElementById('sky-body');
+body.setAttribute('transform', `translate(${x}, ${y})`);
+
+const circle = document.getElementById('sky-circle');
+const glow = document.getElementById('sky-glow');
+const rays = document.getElementById('sun-rays');
+const moonDetail = document.getElementById('moon-detail');
+const stars = document.getElementById('stars');
+const arcPath = document.getElementById('arc-path');
+const horizonLine = document.getElementById('horizon-line');
+
+if (isDay) {
+  // Sun colours: sunrise/sunset = orange, midday = golden yellow
+  const midProgress = 1 - Math.abs(progress - 0.5) * 2; // 0 at edges, 1 at noon
+  const sunColor = progress < 0.15 || progress > 0.85 ? '#f97316' : '#f59e0b';
+  const glowColor = progress < 0.15 || progress > 0.85 ? '#fed7aa' : '#fde68a';
+  circle.setAttribute('fill', sunColor);
+  glow.setAttribute('fill', glowColor);
+  rays.setAttribute('stroke', sunColor);
+  rays.style.opacity = '1';
+  moonDetail.style.opacity = '0';
+  stars.style.opacity = '0';
+  arcPath.setAttribute('stroke', '#d4a830');
+  horizonLine.setAttribute('stroke', '#d4a830');
+} else {
+  // Moon
+  circle.setAttribute('fill', '#e8e0f0');
+  glow.setAttribute('fill', '#c8b8e8');
+  rays.style.opacity = '0';
+  moonDetail.style.opacity = '1';
+  stars.style.opacity = '1';
+  arcPath.setAttribute('stroke', '#6860a0');
+  horizonLine.setAttribute('stroke', '#6860a0');
+}
 </script>
 <script>
 const UW_CENTER = [47.6553, -122.3035];
