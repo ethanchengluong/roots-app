@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Budget – BLOOM</title>
+  <title>Budget – Rice Bowl</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -120,7 +120,7 @@
 <body>
 <div class="app">
   <div class="header">
-    <div class="logo">BL<span>OOM</span></div>
+    <div class="logo">Rice <span>Bowl</span></div>
     <div class="header-right">
       <button class="lang-btn" onclick="openLang()">🌐 <span id="lang-current">EN</span></button>
       <div class="avatar">EC</div>
@@ -134,10 +134,7 @@
       <g id="sky-body"><circle id="sky-glow" cx="0" cy="0" r="10" opacity="0.25"/><circle id="sky-circle" cx="0" cy="0" r="7"/><g id="moon-detail" opacity="0"><circle cx="2.5" cy="-2" r="1.6" fill="rgba(0,0,0,0.1)"/><circle cx="-2" cy="2" r="1.2" fill="rgba(0,0,0,0.08)"/></g><g id="sun-rays" stroke-width="1.2" stroke-linecap="round"><line x1="0" y1="-11" x2="0" y2="-14"/><line x1="8" y1="-8" x2="10" y2="-10"/><line x1="11" y1="0" x2="14" y2="0"/><line x1="8" y1="8" x2="10" y2="10"/><line x1="0" y1="11" x2="0" y2="14"/><line x1="-8" y1="8" x2="-10" y2="10"/><line x1="-11" y1="0" x2="-14" y2="0"/><line x1="-8" y1="-8" x2="-10" y2="-10"/></g></g>
     </svg>
   </div>
-  <div class="page-title">
-    <p id="greeting-time"></p>
-    <h1 id="page-heading"></h1>
-  </div>
+  <div class="page-title"><p id="greeting-time"></p><h1 id="page-heading"></h1></div>
   <div class="month-bar">
     <button class="month-btn" onclick="changeMonth(-1)">‹</button>
     <div class="month-label" id="month-label"></div>
@@ -154,26 +151,20 @@
   </div>
   <div class="section-label" id="section-goal"></div>
   <div class="goal-card">
-    <div class="goal-header">
-      <div class="goal-title" id="goal-title-el">🎯 Monthly Savings Goal</div>
-      <button class="goal-edit-btn" onclick="openGoalModal()" id="goal-edit-btn">Edit</button>
-    </div>
+    <div class="goal-header"><div class="goal-title" id="goal-title-el"></div><button class="goal-edit-btn" onclick="openGoalModal()" id="goal-edit-btn"></button></div>
     <div id="goal-body"></div>
   </div>
   <div class="donut-wrap" id="donut-wrap" style="display:none;">
     <div class="donut-title" id="donut-title"></div>
-    <div class="donut-inner">
-      <svg class="donut-svg" width="100" height="100" viewBox="0 0 100 100" id="donut-svg"></svg>
-      <div class="donut-legend" id="donut-legend"></div>
-    </div>
+    <div class="donut-inner"><svg class="donut-svg" width="100" height="100" viewBox="0 0 100 100" id="donut-svg"></svg><div class="donut-legend" id="donut-legend"></div></div>
   </div>
   <div class="section-label" id="section-income"></div>
   <div class="entry-list" id="income-list"></div>
   <div class="section-label" id="section-expenses"></div>
   <div class="entry-list" id="expense-list"></div>
   <div class="action-row">
-    <button class="add-btn" onclick="openModal()" id="add-btn">＋ Add entry</button>
-    <button class="export-btn" onclick="exportCSV()" id="export-btn">⬇ Export</button>
+    <button class="add-btn" onclick="openModal()" id="add-btn"></button>
+    <button class="export-btn" onclick="exportCSV()" id="export-btn"></button>
   </div>
   <div class="page-footer">designed by @ethanchengluong</div>
   <nav class="nav">
@@ -185,25 +176,17 @@
 </div>
 
 <div class="lang-overlay" id="lang-overlay" onclick="handleLangOverlay(event)">
-  <div class="lang-modal-el">
-    <div class="lang-handle"></div>
-    <div class="lang-title-el" id="lang-modal-title">Language</div>
-    <div class="lang-list" id="lang-list"></div>
-  </div>
+  <div class="lang-modal-el"><div class="lang-handle"></div><div class="lang-title-el" id="lang-modal-title"></div><div class="lang-list" id="lang-list"></div></div>
 </div>
 
 <div class="modal-overlay" id="modal" onclick="handleOverlay(event,'modal')">
   <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title" id="modal-title"></div>
-    <div class="type-toggle">
-      <button class="type-btn active income" id="btn-income" onclick="setType('income')"></button>
-      <button class="type-btn expense" id="btn-expense" onclick="setType('expense')"></button>
-    </div>
-    <div class="form-group"><label class="form-label" id="label-desc"></label><input class="form-input" id="f-desc" placeholder=""/></div>
+    <div class="modal-handle"></div><div class="modal-title" id="modal-title"></div>
+    <div class="type-toggle"><button class="type-btn active income" id="btn-income" onclick="setType('income')"></button><button class="type-btn expense" id="btn-expense" onclick="setType('expense')"></button></div>
+    <div class="form-group"><label class="form-label" id="label-desc"></label><input class="form-input" id="f-desc"/></div>
     <div class="form-group"><label class="form-label" id="label-amount"></label><input class="form-input" id="f-amount" type="number" min="0" step="0.01" placeholder="0.00"/></div>
     <div class="form-group"><label class="form-label" id="label-cat"></label><select class="form-select" id="f-cat"></select></div>
-    <div class="form-group"><label class="form-label" id="label-notes"></label><textarea class="form-textarea" id="f-note" placeholder=""></textarea></div>
+    <div class="form-group"><label class="form-label" id="label-notes"></label><textarea class="form-textarea" id="f-note"></textarea></div>
     <button class="form-submit" onclick="submitEntry()" id="submit-btn"></button>
     <button class="form-cancel" onclick="closeModal('modal')" id="cancel-btn"></button>
   </div>
@@ -211,9 +194,8 @@
 
 <div class="modal-overlay" id="goal-modal" onclick="handleOverlay(event,'goal-modal')">
   <div class="goal-modal-el">
-    <div class="modal-handle"></div>
-    <div class="modal-title" id="goal-modal-title"></div>
-    <div class="form-group"><label class="form-label" id="label-goal-name"></label><input class="form-input" id="g-name" placeholder=""/></div>
+    <div class="modal-handle"></div><div class="modal-title" id="goal-modal-title"></div>
+    <div class="form-group"><label class="form-label" id="label-goal-name"></label><input class="form-input" id="g-name"/></div>
     <div class="form-group"><label class="form-label" id="label-goal-target"></label><input class="form-input" id="g-target" type="number" min="0" step="1" placeholder="500"/></div>
     <div class="form-group"><label class="form-label" id="label-goal-saved"></label><input class="form-input" id="g-saved" type="number" min="0" step="1" placeholder="0"/></div>
     <button class="form-submit" onclick="saveGoal()" id="goal-submit-btn"></button>
@@ -222,41 +204,34 @@
 </div>
 
 <script>
-// ── Translations ──────────────────────────────────────────────────────────────
 const LANGS={
   en:{code:'EN',native:'English',english:'English',gm:'Good morning,',ga:'Good afternoon,',ge:'Good evening,',ph:'Budget Journal 💸',sum_label:'Remaining balance',remaining:'remaining this month',over:'over budget this month',pill_inc:'Income',pill_exp:'Expenses',sec_goal:'Savings goal',goal_title:'🎯 Monthly Savings Goal',goal_edit:'Edit',goal_empty:'Tap Edit to set a savings goal 🌱',goal_to_go:'to go',goal_reached:'Goal reached! 🎉',donut_title:'Spending breakdown',sec_income:'Income',sec_expenses:'Expenses',add_btn:'＋ Add entry',export_btn:'⬇ Export',modal_title:'Add entry',btn_income:'＋ Income',btn_expense:'－ Expense',label_desc:'Description',label_amount:'Amount ($)',label_cat:'Category',label_notes:'Notes (optional)',notes_ph:'Any details, reminders, or reflections…',submit:'Add entry',cancel:'Cancel',goal_modal_title:'Savings goal',label_goal_name:'Goal name',goal_name_ph:'e.g. Emergency fund, Laptop…',label_goal_target:'Target amount ($)',label_goal_saved:'Amount saved so far ($)',goal_submit:'Save goal',no_income:'No income entries yet',no_expense:'No expense entries yet',export_empty:'No entries to export for this month.',nh:'Home',nl:'Learn',nr:'Resources',nb:'Budget',lt:'Language',
     months:['January','February','March','April','May','June','July','August','September','October','November','December'],
     inc_cats:['💼 Part-time job','🎓 Financial aid / Scholarships','👨‍👩‍👧 Family support','🏦 Savings withdrawal','🎁 Gift / Other'],
-    exp_cats:['🏠 Housing / Rent','🍜 Food & Dining','📚 Textbooks & Supplies','🚌 Transportation','📱 Phone & Internet','🎉 Entertainment','💊 Health & Wellness','🛍️ Shopping','📦 Other expense'],
-  },
-  zh:{code:'繁中',native:'繁體中文',english:'Chinese (Traditional)',gm:'早安，',ga:'午安，',ge:'晚安，',ph:'預算日記 💸',sum_label:'剩餘餘額',remaining:'本月剩餘',over:'本月超支',pill_inc:'收入',pill_exp:'支出',sec_goal:'儲蓄目標',goal_title:'🎯 每月儲蓄目標',goal_edit:'編輯',goal_empty:'點擊編輯設定儲蓄目標 🌱',goal_to_go:'待達成',goal_reached:'達成目標！🎉',donut_title:'支出細項',sec_income:'收入',sec_expenses:'支出',add_btn:'＋ 新增記錄',export_btn:'⬇ 匯出',modal_title:'新增記錄',btn_income:'＋ 收入',btn_expense:'－ 支出',label_desc:'說明',label_amount:'金額 ($)',label_cat:'類別',label_notes:'備註（選填）',notes_ph:'任何細節、提醒或反思…',submit:'新增記錄',cancel:'取消',goal_modal_title:'儲蓄目標',label_goal_name:'目標名稱',goal_name_ph:'例：緊急備用金、筆記型電腦…',label_goal_target:'目標金額 ($)',label_goal_saved:'目前已存金額 ($)',goal_submit:'儲存目標',no_income:'尚無收入記錄',no_expense:'尚無支出記錄',export_empty:'本月無記錄可匯出。',nh:'首頁',nl:'學習',nr:'資源',nb:'預算',lt:'語言',
+    exp_cats:['🏠 Housing / Rent','🍜 Food & Dining','📚 Textbooks & Supplies','🚌 Transportation','📱 Phone & Internet','🎉 Entertainment','💊 Health & Wellness','🛍️ Shopping','📦 Other expense']},
+  zh:{code:'繁中',native:'繁體中文',english:'Chinese (Traditional)',gm:'早安，',ga:'午安，',ge:'晚安，',ph:'預算日記 💸',sum_label:'剩餘餘額',remaining:'本月剩餘',over:'本月超支',pill_inc:'收入',pill_exp:'支出',sec_goal:'儲蓄目標',goal_title:'🎯 每月儲蓄目標',goal_edit:'編輯',goal_empty:'點擊編輯設定儲蓄目標 🌱',goal_to_go:'待達成',goal_reached:'達成目標！🎉',donut_title:'支出細項',sec_income:'收入',sec_expenses:'支出',add_btn:'＋ 新增記錄',export_btn:'⬇ 匯出',modal_title:'新增記錄',btn_income:'＋ 收入',btn_expense:'－ 支出',label_desc:'說明',label_amount:'金額 ($)',label_cat:'類別',label_notes:'備註（選填）',notes_ph:'任何細節、提醒或反思…',submit:'新增記錄',cancel:'取消',goal_modal_title:'儲蓄目標',label_goal_name:'目標名稱',goal_name_ph:'例：緊急備用金…',label_goal_target:'目標金額 ($)',label_goal_saved:'目前已存金額 ($)',goal_submit:'儲存目標',no_income:'尚無收入記錄',no_expense:'尚無支出記錄',export_empty:'本月無記錄可匯出。',nh:'首頁',nl:'學習',nr:'資源',nb:'預算',lt:'語言',
     months:['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
     inc_cats:['💼 兼職工作','🎓 助學金/獎學金','👨‍👩‍👧 家庭支援','🏦 提取儲蓄','🎁 禮物/其他'],
-    exp_cats:['🏠 住房/租金','🍜 餐飲','📚 教材/文具','🚌 交通','📱 電話/網路','🎉 娛樂','💊 健康/保健','🛍️ 購物','📦 其他支出'],
-  },
-  ja:{code:'日本語',native:'日本語',english:'Japanese',gm:'おはようございます、',ga:'こんにちは、',ge:'こんばんは、',ph:'家計簿 💸',sum_label:'残高',remaining:'今月の残り',over:'今月は予算オーバーです',pill_inc:'収入',pill_exp:'支出',sec_goal:'貯蓄目標',goal_title:'🎯 月間貯蓄目標',goal_edit:'編集',goal_empty:'編集をタップして貯蓄目標を設定 🌱',goal_to_go:'残り',goal_reached:'目標達成！🎉',donut_title:'支出内訳',sec_income:'収入',sec_expenses:'支出',add_btn:'＋ 記録を追加',export_btn:'⬇ 書き出し',modal_title:'記録を追加',btn_income:'＋ 収入',btn_expense:'－ 支出',label_desc:'説明',label_amount:'金額 ($)',label_cat:'カテゴリ',label_notes:'メモ（任意）',notes_ph:'詳細・リマインダー・振り返り…',submit:'記録を追加',cancel:'キャンセル',goal_modal_title:'貯蓄目標',label_goal_name:'目標名',goal_name_ph:'例：緊急資金、パソコン…',label_goal_target:'目標金額 ($)',label_goal_saved:'現在の貯蓄額 ($)',goal_submit:'目標を保存',no_income:'収入の記録はまだありません',no_expense:'支出の記録はまだありません',export_empty:'この月には書き出すデータがありません。',nh:'ホーム',nl:'学ぶ',nr:'リソース',nb:'予算',lt:'言語',
+    exp_cats:['🏠 住房/租金','🍜 餐飲','📚 教材/文具','🚌 交通','📱 電話/網路','🎉 娛樂','💊 健康/保健','🛍️ 購物','📦 其他支出']},
+  ja:{code:'日本語',native:'日本語',english:'Japanese',gm:'おはようございます、',ga:'こんにちは、',ge:'こんばんは、',ph:'家計簿 💸',sum_label:'残高',remaining:'今月の残り',over:'今月は予算オーバーです',pill_inc:'収入',pill_exp:'支出',sec_goal:'貯蓄目標',goal_title:'🎯 月間貯蓄目標',goal_edit:'編集',goal_empty:'編集をタップして貯蓄目標を設定 🌱',goal_to_go:'残り',goal_reached:'目標達成！🎉',donut_title:'支出内訳',sec_income:'収入',sec_expenses:'支出',add_btn:'＋ 記録を追加',export_btn:'⬇ 書き出し',modal_title:'記録を追加',btn_income:'＋ 収入',btn_expense:'－ 支出',label_desc:'説明',label_amount:'金額 ($)',label_cat:'カテゴリ',label_notes:'メモ（任意）',notes_ph:'詳細・リマインダー・振り返り…',submit:'記録を追加',cancel:'キャンセル',goal_modal_title:'貯蓄目標',label_goal_name:'目標名',goal_name_ph:'例：緊急資金…',label_goal_target:'目標金額 ($)',label_goal_saved:'現在の貯蓄額 ($)',goal_submit:'目標を保存',no_income:'収入の記録はまだありません',no_expense:'支出の記録はまだありません',export_empty:'この月には書き出すデータがありません。',nh:'ホーム',nl:'学ぶ',nr:'リソース',nb:'予算',lt:'言語',
     months:['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
     inc_cats:['💼 アルバイト','🎓 奨学金','👨‍👩‍👧 家族からの支援','🏦 貯蓄引き出し','🎁 ギフト/その他'],
-    exp_cats:['🏠 住居/家賃','🍜 食費','📚 教材/文具','🚌 交通費','📱 電話/インターネット','🎉 娯楽','💊 健康/ウェルネス','🛍️ 買い物','📦 その他'],
-  },
-  vi:{code:'VI',native:'Tiếng Việt',english:'Vietnamese',gm:'Chào buổi sáng,',ga:'Chào buổi chiều,',ge:'Chào buổi tối,',ph:'Nhật Ký Ngân Sách 💸',sum_label:'Số dư còn lại',remaining:'còn lại tháng này',over:'vượt ngân sách tháng này',pill_inc:'Thu nhập',pill_exp:'Chi tiêu',sec_goal:'Mục tiêu tiết kiệm',goal_title:'🎯 Mục Tiêu Tiết Kiệm Tháng',goal_edit:'Chỉnh sửa',goal_empty:'Nhấn Chỉnh sửa để đặt mục tiêu 🌱',goal_to_go:'còn lại',goal_reached:'Đạt mục tiêu! 🎉',donut_title:'Phân tích chi tiêu',sec_income:'Thu nhập',sec_expenses:'Chi tiêu',add_btn:'＋ Thêm mục',export_btn:'⬇ Xuất file',modal_title:'Thêm mục',btn_income:'＋ Thu nhập',btn_expense:'－ Chi tiêu',label_desc:'Mô tả',label_amount:'Số tiền ($)',label_cat:'Danh mục',label_notes:'Ghi chú (tùy chọn)',notes_ph:'Chi tiết, nhắc nhở, hoặc suy nghĩ…',submit:'Thêm mục',cancel:'Hủy',goal_modal_title:'Mục tiêu tiết kiệm',label_goal_name:'Tên mục tiêu',goal_name_ph:'Ví dụ: Quỹ khẩn cấp, Laptop…',label_goal_target:'Số tiền mục tiêu ($)',label_goal_saved:'Số tiền đã tiết kiệm ($)',goal_submit:'Lưu mục tiêu',no_income:'Chưa có mục thu nhập',no_expense:'Chưa có mục chi tiêu',export_empty:'Không có dữ liệu để xuất tháng này.',nh:'Trang Chủ',nl:'Học Tập',nr:'Tài Nguyên',nb:'Ngân Sách',lt:'Ngôn ngữ',
+    exp_cats:['🏠 住居/家賃','🍜 食費','📚 教材/文具','🚌 交通費','📱 電話/インターネット','🎉 娯楽','💊 健康/ウェルネス','🛍️ 買い物','📦 その他']},
+  vi:{code:'VI',native:'Tiếng Việt',english:'Vietnamese',gm:'Chào buổi sáng,',ga:'Chào buổi chiều,',ge:'Chào buổi tối,',ph:'Nhật Ký Ngân Sách 💸',sum_label:'Số dư còn lại',remaining:'còn lại tháng này',over:'vượt ngân sách tháng này',pill_inc:'Thu nhập',pill_exp:'Chi tiêu',sec_goal:'Mục tiêu tiết kiệm',goal_title:'🎯 Mục Tiêu Tiết Kiệm Tháng',goal_edit:'Chỉnh sửa',goal_empty:'Nhấn Chỉnh sửa để đặt mục tiêu 🌱',goal_to_go:'còn lại',goal_reached:'Đạt mục tiêu! 🎉',donut_title:'Phân tích chi tiêu',sec_income:'Thu nhập',sec_expenses:'Chi tiêu',add_btn:'＋ Thêm mục',export_btn:'⬇ Xuất file',modal_title:'Thêm mục',btn_income:'＋ Thu nhập',btn_expense:'－ Chi tiêu',label_desc:'Mô tả',label_amount:'Số tiền ($)',label_cat:'Danh mục',label_notes:'Ghi chú (tùy chọn)',notes_ph:'Chi tiết, nhắc nhở…',submit:'Thêm mục',cancel:'Hủy',goal_modal_title:'Mục tiêu tiết kiệm',label_goal_name:'Tên mục tiêu',goal_name_ph:'Ví dụ: Quỹ khẩn cấp…',label_goal_target:'Số tiền mục tiêu ($)',label_goal_saved:'Số tiền đã tiết kiệm ($)',goal_submit:'Lưu mục tiêu',no_income:'Chưa có mục thu nhập',no_expense:'Chưa có mục chi tiêu',export_empty:'Không có dữ liệu để xuất tháng này.',nh:'Trang Chủ',nl:'Học Tập',nr:'Tài Nguyên',nb:'Ngân Sách',lt:'Ngôn ngữ',
     months:['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'],
     inc_cats:['💼 Việc làm bán thời gian','🎓 Học bổng / Hỗ trợ tài chính','👨‍👩‍👧 Hỗ trợ gia đình','🏦 Rút tiết kiệm','🎁 Quà / Khác'],
-    exp_cats:['🏠 Nhà ở / Thuê nhà','🍜 Ăn uống','📚 Sách giáo khoa','🚌 Đi lại','📱 Điện thoại & Internet','🎉 Giải trí','💊 Sức khỏe','🛍️ Mua sắm','📦 Chi tiêu khác'],
-  },
-  ko:{code:'한국어',native:'한국어',english:'Korean',gm:'좋은 아침이에요,',ga:'안녕하세요,',ge:'좋은 저녁이에요,',ph:'예산 일기 💸',sum_label:'잔여 잔액',remaining:'이번 달 남은 금액',over:'이번 달 예산 초과',pill_inc:'수입',pill_exp:'지출',sec_goal:'저축 목표',goal_title:'🎯 월간 저축 목표',goal_edit:'편집',goal_empty:'편집을 눌러 저축 목표를 설정하세요 🌱',goal_to_go:'남음',goal_reached:'목표 달성! 🎉',donut_title:'지출 분석',sec_income:'수입',sec_expenses:'지출',add_btn:'＋ 항목 추가',export_btn:'⬇ 내보내기',modal_title:'항목 추가',btn_income:'＋ 수입',btn_expense:'－ 지출',label_desc:'설명',label_amount:'금액 ($)',label_cat:'카테고리',label_notes:'메모 (선택사항)',notes_ph:'세부 내용, 알림, 또는 소감…',submit:'항목 추가',cancel:'취소',goal_modal_title:'저축 목표',label_goal_name:'목표 이름',goal_name_ph:'예: 비상금, 노트북…',label_goal_target:'목표 금액 ($)',label_goal_saved:'현재까지 저축한 금액 ($)',goal_submit:'목표 저장',no_income:'수입 항목이 없습니다',no_expense:'지출 항목이 없습니다',export_empty:'이번 달 내보낼 항목이 없습니다.',nh:'홈',nl:'학습',nr:'자원',nb:'예산',lt:'언어',
+    exp_cats:['🏠 Nhà ở / Thuê nhà','🍜 Ăn uống','📚 Sách giáo khoa','🚌 Đi lại','📱 Điện thoại & Internet','🎉 Giải trí','💊 Sức khỏe','🛍️ Mua sắm','📦 Chi tiêu khác']},
+  ko:{code:'한국어',native:'한국어',english:'Korean',gm:'좋은 아침이에요,',ga:'안녕하세요,',ge:'좋은 저녁이에요,',ph:'예산 일기 💸',sum_label:'잔여 잔액',remaining:'이번 달 남은 금액',over:'이번 달 예산 초과',pill_inc:'수입',pill_exp:'지출',sec_goal:'저축 목표',goal_title:'🎯 월간 저축 목표',goal_edit:'편집',goal_empty:'편집을 눌러 저축 목표를 설정하세요 🌱',goal_to_go:'남음',goal_reached:'목표 달성! 🎉',donut_title:'지출 분석',sec_income:'수입',sec_expenses:'지출',add_btn:'＋ 항목 추가',export_btn:'⬇ 내보내기',modal_title:'항목 추가',btn_income:'＋ 수입',btn_expense:'－ 지출',label_desc:'설명',label_amount:'금액 ($)',label_cat:'카테고리',label_notes:'메모 (선택사항)',notes_ph:'세부 내용, 알림…',submit:'항목 추가',cancel:'취소',goal_modal_title:'저축 목표',label_goal_name:'목표 이름',goal_name_ph:'예: 비상금…',label_goal_target:'목표 금액 ($)',label_goal_saved:'현재까지 저축한 금액 ($)',goal_submit:'목표 저장',no_income:'수입 항목이 없습니다',no_expense:'지출 항목이 없습니다',export_empty:'이번 달 내보낼 항목이 없습니다.',nh:'홈',nl:'학습',nr:'자원',nb:'예산',lt:'언어',
     months:['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
     inc_cats:['💼 아르바이트','🎓 장학금 / 학비 지원','👨‍👩‍👧 가족 지원','🏦 저축 인출','🎁 선물 / 기타'],
-    exp_cats:['🏠 주거 / 임대료','🍜 식비','📚 교재 및 학용품','🚌 교통','📱 전화 및 인터넷','🎉 여가','💊 건강 및 웰빙','🛍️ 쇼핑','📦 기타 지출'],
-  },
+    exp_cats:['🏠 주거 / 임대료','🍜 식비','📚 교재 및 학용품','🚌 교통','📱 전화 및 인터넷','🎉 여가','💊 건강 및 웰빙','🛍️ 쇼핑','📦 기타 지출']},
 };
 const LANG_ORDER=['en','zh','ja','vi','ko'];
 const DONUT_COLORS=['#274133','#9ab08d','#ce9042','#7d2027','#c8b067','#6a8870','#4a3a70','#ce7042','#8a7a5a'];
 let currentLang=localStorage.getItem('bloom_lang')||'en';
-let currentType='income', currentMonth=new Date().getMonth(), currentYear=new Date().getFullYear();
+let currentType='income',currentMonth=new Date().getMonth(),currentYear=new Date().getFullYear();
 let entries=JSON.parse(localStorage.getItem('bloom_budget')||'[]');
 let goal=JSON.parse(localStorage.getItem('bloom_goal')||'null');
-
 function t(k){return LANGS[currentLang][k]||LANGS.en[k]||'';}
 function getLang(){return LANGS[currentLang];}
 
@@ -300,16 +275,14 @@ function applyLang(){
   document.getElementById('lang-current').textContent=LANGS[currentLang].code;
   document.getElementById('lang-modal-title').textContent=t('lt');
   document.getElementById('lang-list').innerHTML=LANG_ORDER.map(lk=>{const l=LANGS[lk];return `<div class="lang-option ${lk===currentLang?'active':''}" onclick="selectLang('${lk}')"><div class="lang-option-left"><div class="lang-native">${l.native}</div><div class="lang-english">${l.english}</div></div><div class="lang-check">✓</div></div>`;}).join('');
-  populateCats();
-  render();
+  populateCats();render();
 }
-
 function openLang(){document.getElementById('lang-overlay').classList.add('open');}
 function closeLang(){document.getElementById('lang-overlay').classList.remove('open');}
 function handleLangOverlay(e){if(e.target===document.getElementById('lang-overlay'))closeLang();}
 function selectLang(lk){currentLang=lk;localStorage.setItem('bloom_lang',lk);applyLang();closeLang();}
 
-// ── Sky & theme ───────────────────────────────────────────────────────────────
+// Sky & theme
 const hour=new Date().getHours(),mins=new Date().getMinutes(),timeDecimal=hour+mins/60;
 document.body.classList.add(hour<12?'theme-morning':hour<17?'theme-afternoon':'theme-evening');
 const RISE=6,SET=20,isDay=timeDecimal>=RISE&&timeDecimal<SET;
@@ -320,77 +293,26 @@ const circle=document.getElementById('sky-circle'),glow=document.getElementById(
 if(isDay){const edge=progress<0.15||progress>0.85;circle.setAttribute('fill',edge?'#ce9042':'#c8b067');glow.setAttribute('fill',edge?'#f5d4a0':'#e8d898');rays.setAttribute('stroke',edge?'#ce9042':'#c8b067');rays.style.opacity='1';moonDetail.style.opacity='0';stars.style.opacity='0';arcPath.setAttribute('stroke','#c8b067');horizonLine.setAttribute('stroke','#c8b067');}
 else{circle.setAttribute('fill','#edddc5');glow.setAttribute('fill','#c8b067');rays.style.opacity='0';moonDetail.style.opacity='1';stars.style.opacity='1';arcPath.setAttribute('stroke','#9ab08d');horizonLine.setAttribute('stroke','#9ab08d');}
 
-// ── Budget logic ──────────────────────────────────────────────────────────────
+// Budget logic
 const fmt=n=>'$'+Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 const monthKey=()=>`${currentYear}-${String(currentMonth+1).padStart(2,'0')}`;
 const monthEntries=()=>entries.filter(e=>e.month===monthKey());
-
 function changeMonth(d){currentMonth+=d;if(currentMonth>11){currentMonth=0;currentYear++;}if(currentMonth<0){currentMonth=11;currentYear--;}render();}
-
-function setType(tp){
-  currentType=tp;
-  document.getElementById('btn-income').className='type-btn'+(tp==='income'?' active income':'');
-  document.getElementById('btn-expense').className='type-btn'+(tp==='expense'?' active expense':'');
-  populateCats();
-}
-function populateCats(){
-  const cats=currentType==='income'?getLang().inc_cats:getLang().exp_cats;
-  document.getElementById('f-cat').innerHTML=cats.map(c=>`<option value="${c}">${c}</option>`).join('');
-}
+function setType(tp){currentType=tp;document.getElementById('btn-income').className='type-btn'+(tp==='income'?' active income':'');document.getElementById('btn-expense').className='type-btn'+(tp==='expense'?' active expense':'');populateCats();}
+function populateCats(){const cats=currentType==='income'?getLang().inc_cats:getLang().exp_cats;document.getElementById('f-cat').innerHTML=cats.map(c=>`<option value="${c}">${c}</option>`).join('');}
 function openModal(){setType('income');document.getElementById('f-desc').value='';document.getElementById('f-amount').value='';document.getElementById('f-note').value='';document.getElementById('modal').classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 function handleOverlay(e,id){if(e.target===document.getElementById(id))closeModal(id);}
-function submitEntry(){
-  const desc=document.getElementById('f-desc').value.trim(),amount=parseFloat(document.getElementById('f-amount').value);
-  const cat=document.getElementById('f-cat').value,note=document.getElementById('f-note').value.trim();
-  if(!desc||!amount||amount<=0)return;
-  entries.push({id:Date.now(),month:monthKey(),type:currentType,desc,amount,cat,note});
-  localStorage.setItem('bloom_budget',JSON.stringify(entries));closeModal('modal');render();
-}
+function submitEntry(){const desc=document.getElementById('f-desc').value.trim(),amount=parseFloat(document.getElementById('f-amount').value),cat=document.getElementById('f-cat').value,note=document.getElementById('f-note').value.trim();if(!desc||!amount||amount<=0)return;entries.push({id:Date.now(),month:monthKey(),type:currentType,desc,amount,cat,note});localStorage.setItem('bloom_budget',JSON.stringify(entries));closeModal('modal');render();}
 function deleteEntry(id){entries=entries.filter(e=>e.id!==id);localStorage.setItem('bloom_budget',JSON.stringify(entries));render();}
 function openGoalModal(){document.getElementById('g-name').value=goal?goal.name:'';document.getElementById('g-target').value=goal?goal.target:'';document.getElementById('g-saved').value=goal?goal.saved:'';document.getElementById('goal-modal').classList.add('open');}
 function saveGoal(){const name=document.getElementById('g-name').value.trim(),target=parseFloat(document.getElementById('g-target').value),saved=parseFloat(document.getElementById('g-saved').value)||0;if(!name||!target||target<=0)return;goal={name,target,saved};localStorage.setItem('bloom_goal',JSON.stringify(goal));closeModal('goal-modal');render();}
-function exportCSV(){
-  const me=monthEntries();if(!me.length){alert(t('export_empty'));return;}
-  const rows=[['Date','Type','Description','Category','Amount','Notes']];
-  me.forEach(e=>rows.push([e.month,e.type,e.desc,e.cat.replace(/^[^ ]+ /,''),e.amount,e.note||'']));
-  const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
-  const blob=new Blob([csv],{type:'text/csv'}),url=URL.createObjectURL(blob),a=document.createElement('a');
-  a.href=url;a.download=`bloom-budget-${monthKey()}.csv`;a.click();URL.revokeObjectURL(url);
-}
+function exportCSV(){const me=monthEntries();if(!me.length){alert(t('export_empty'));return;}const rows=[['Date','Type','Description','Category','Amount','Notes']];me.forEach(e=>rows.push([e.month,e.type,e.desc,e.cat.replace(/^\S+\s/,''),e.amount,e.note||'']));const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');const blob=new Blob([csv],{type:'text/csv'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`rice-bowl-budget-${monthKey()}.csv`;a.click();URL.revokeObjectURL(url);}
 function getCatIcon(label){const m=label.match(/^(\S+)/);return m?m[1]:'📦';}
-function renderGoal(){
-  const el=document.getElementById('goal-body');
-  if(!goal){el.innerHTML=`<div class="goal-empty">${t('goal_empty')}</div>`;return;}
-  const pct=Math.min(100,Math.round(goal.saved/goal.target*100)),remaining=Math.max(0,goal.target-goal.saved);
-  el.innerHTML=`<div class="goal-amount">${fmt(goal.saved)} <span style="font-size:14px;color:var(--text-muted)">of ${fmt(goal.target)}</span></div><div class="goal-sub">${goal.name} · ${remaining>0?fmt(remaining)+' '+t('goal_to_go'):t('goal_reached')}</div><div class="goal-bar-bg"><div class="goal-bar-fill" style="width:${pct}%;"></div></div><div class="goal-bar-labels"><span>${pct}%</span><span>${fmt(goal.target)}</span></div>`;
-}
-function renderDonut(exp){
-  const wrap=document.getElementById('donut-wrap');if(!exp.length){wrap.style.display='none';return;}wrap.style.display='block';
-  const groups={};exp.forEach(e=>{groups[e.cat]=(groups[e.cat]||0)+e.amount;});
-  const total=Object.values(groups).reduce((a,b)=>a+b,0),items=Object.entries(groups).sort((a,b)=>b[1]-a[1]);
-  const CX=50,CY=50,R=38,IN=24;let sa=-Math.PI/2,paths='';
-  items.forEach(([cat,val],i)=>{const a2=(val/total)*Math.PI*2,ea=sa+a2,x1=CX+R*Math.cos(sa),y1=CY+R*Math.sin(sa),x2=CX+R*Math.cos(ea),y2=CY+R*Math.sin(ea),ix1=CX+IN*Math.cos(sa),iy1=CY+IN*Math.sin(sa),ix2=CX+IN*Math.cos(ea),iy2=CY+IN*Math.sin(ea),lg=a2>Math.PI?1:0,col=DONUT_COLORS[i%DONUT_COLORS.length];paths+=`<path d="M${ix1},${iy1} L${x1},${y1} A${R},${R} 0 ${lg},1 ${x2},${y2} L${ix2},${iy2} A${IN},${IN} 0 ${lg},0 ${ix1},${iy1}" fill="${col}" stroke="var(--bg)" stroke-width="1.5"/>`;sa=ea;});
-  document.getElementById('donut-svg').innerHTML=paths;
-  document.getElementById('donut-legend').innerHTML=items.map(([cat,val],i)=>{const icon=getCatIcon(cat),pct=Math.round(val/total*100);return `<div class="legend-item"><div class="legend-dot" style="background:${DONUT_COLORS[i%DONUT_COLORS.length]};"></div><div class="legend-label">${icon} ${cat.replace(/^\S+\s/,'')}</div><div class="legend-pct">${pct}%</div></div>`;}).join('');
-}
-function renderList(id,list,type){
-  const el=document.getElementById(id);
-  if(!list.length){el.innerHTML=`<div class="empty"><div class="empty-icon">${type==='income'?'💵':'🧾'}</div><div class="empty-text">${type==='income'?t('no_income'):t('no_expense')}</div></div>`;return;}
-  el.innerHTML=list.map(e=>{const icon=getCatIcon(e.cat);return `<div class="entry-card"><div class="entry-icon" style="background:rgba(154,176,141,0.2);">${icon}</div><div class="entry-body"><div class="entry-name">${e.desc}</div><div class="entry-cat">${e.cat.replace(/^\S+\s/,'')}</div>${e.note?`<div class="entry-note">💬 ${e.note}</div>`:''}</div><div class="entry-right"><div class="entry-amount ${type}">${type==='income'?'+':'-'}${fmt(e.amount)}</div><button class="entry-delete" onclick="deleteEntry(${e.id})">✕</button></div></div>`;}).join('');
-}
-function render(){
-  const months=getLang().months;
-  document.getElementById('month-label').textContent=`${months[currentMonth]} ${currentYear}`;
-  const me=monthEntries(),inc=me.filter(e=>e.type==='income'),exp=me.filter(e=>e.type==='expense');
-  const totalInc=inc.reduce((a,e)=>a+e.amount,0),totalExp=exp.reduce((a,e)=>a+e.amount,0),bal=totalInc-totalExp;
-  document.getElementById('total-income').textContent=fmt(totalInc);
-  document.getElementById('total-expenses').textContent=fmt(totalExp);
-  document.getElementById('balance').textContent=fmt(bal);
-  document.getElementById('balance').style.color=bal<0?'#f5a898':'#edddc5';
-  document.getElementById('balance-sub').textContent=bal<0?t('over'):t('remaining');
-  renderGoal();renderDonut(exp);renderList('income-list',inc,'income');renderList('expense-list',exp,'expense');
-}
+function renderGoal(){const el=document.getElementById('goal-body');if(!goal){el.innerHTML=`<div class="goal-empty">${t('goal_empty')}</div>`;return;}const pct=Math.min(100,Math.round(goal.saved/goal.target*100)),remaining=Math.max(0,goal.target-goal.saved);el.innerHTML=`<div class="goal-amount">${fmt(goal.saved)} <span style="font-size:14px;color:var(--text-muted)">of ${fmt(goal.target)}</span></div><div class="goal-sub">${goal.name} · ${remaining>0?fmt(remaining)+' '+t('goal_to_go'):t('goal_reached')}</div><div class="goal-bar-bg"><div class="goal-bar-fill" style="width:${pct}%;"></div></div><div class="goal-bar-labels"><span>${pct}%</span><span>${fmt(goal.target)}</span></div>`;}
+function renderDonut(exp){const wrap=document.getElementById('donut-wrap');if(!exp.length){wrap.style.display='none';return;}wrap.style.display='block';const groups={};exp.forEach(e=>{groups[e.cat]=(groups[e.cat]||0)+e.amount;});const total=Object.values(groups).reduce((a,b)=>a+b,0),items=Object.entries(groups).sort((a,b)=>b[1]-a[1]);const CX=50,CY=50,R=38,IN=24;let sa=-Math.PI/2,paths='';items.forEach(([cat,val],i)=>{const a2=(val/total)*Math.PI*2,ea=sa+a2,x1=CX+R*Math.cos(sa),y1=CY+R*Math.sin(sa),x2=CX+R*Math.cos(ea),y2=CY+R*Math.sin(ea),ix1=CX+IN*Math.cos(sa),iy1=CY+IN*Math.sin(sa),ix2=CX+IN*Math.cos(ea),iy2=CY+IN*Math.sin(ea),lg=a2>Math.PI?1:0,col=DONUT_COLORS[i%DONUT_COLORS.length];paths+=`<path d="M${ix1},${iy1} L${x1},${y1} A${R},${R} 0 ${lg},1 ${x2},${y2} L${ix2},${iy2} A${IN},${IN} 0 ${lg},0 ${ix1},${iy1}" fill="${col}" stroke="var(--bg)" stroke-width="1.5"/>`;sa=ea;});document.getElementById('donut-svg').innerHTML=paths;document.getElementById('donut-legend').innerHTML=items.map(([cat,val],i)=>{const icon=getCatIcon(cat),pct=Math.round(val/total*100);return `<div class="legend-item"><div class="legend-dot" style="background:${DONUT_COLORS[i%DONUT_COLORS.length]};"></div><div class="legend-label">${icon} ${cat.replace(/^\S+\s/,'')}</div><div class="legend-pct">${pct}%</div></div>`;}).join('');}
+function renderList(id,list,type){const el=document.getElementById(id);if(!list.length){el.innerHTML=`<div class="empty"><div class="empty-icon">${type==='income'?'💵':'🧾'}</div><div class="empty-text">${type==='income'?t('no_income'):t('no_expense')}</div></div>`;return;}el.innerHTML=list.map(e=>{const icon=getCatIcon(e.cat);return `<div class="entry-card"><div class="entry-icon" style="background:rgba(154,176,141,0.2);">${icon}</div><div class="entry-body"><div class="entry-name">${e.desc}</div><div class="entry-cat">${e.cat.replace(/^\S+\s/,'')}</div>${e.note?`<div class="entry-note">💬 ${e.note}</div>`:''}</div><div class="entry-right"><div class="entry-amount ${type}">${type==='income'?'+':'-'}${fmt(e.amount)}</div><button class="entry-delete" onclick="deleteEntry(${e.id})">✕</button></div></div>`;}).join('');}
+function render(){const months=getLang().months;document.getElementById('month-label').textContent=`${months[currentMonth]} ${currentYear}`;const me=monthEntries(),inc=me.filter(e=>e.type==='income'),exp=me.filter(e=>e.type==='expense');const totalInc=inc.reduce((a,e)=>a+e.amount,0),totalExp=exp.reduce((a,e)=>a+e.amount,0),bal=totalInc-totalExp;document.getElementById('total-income').textContent=fmt(totalInc);document.getElementById('total-expenses').textContent=fmt(totalExp);document.getElementById('balance').textContent=fmt(bal);document.getElementById('balance').style.color=bal<0?'#f5a898':'#edddc5';document.getElementById('balance-sub').textContent=bal<0?t('over'):t('remaining');renderGoal();renderDonut(exp);renderList('income-list',inc,'income');renderList('expense-list',exp,'expense');}
 
 populateCats();
 applyLang();
