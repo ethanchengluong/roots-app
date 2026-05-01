@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Resources – BLOOM</title>
+  <title>Resources – Rice Bowl</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
@@ -24,7 +24,7 @@
     .lang-overlay.open { display:flex; }
     .lang-modal { background:var(--bg);border-radius:24px 24px 0 0;width:100%;max-width:420px;padding:1.5rem;padding-bottom:2.5rem;transition:background 0.6s ease; }
     .lang-handle { width:36px;height:4px;background:var(--card-border);border-radius:2px;margin:0 auto 1.25rem; }
-    .lang-title-el { font-family:'DM Serif Display',serif;font-size:20px;color:var(--text-primary);margin-bottom:1rem; }
+    .lang-title { font-family:'DM Serif Display',serif;font-size:20px;color:var(--text-primary);margin-bottom:1rem; }
     .lang-list { display:flex;flex-direction:column;gap:8px; }
     .lang-option { display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--bg-card);border:1px solid var(--card-border);border-radius:14px;cursor:pointer;transition:all 0.2s; }
     .lang-option:hover { border-color:var(--accent); }
@@ -87,7 +87,7 @@
 <body>
 <div class="app">
   <div class="header">
-    <div class="logo">BL<span>OOM</span></div>
+    <div class="logo">Rice <span>Bowl</span></div>
     <div class="header-right">
       <button class="lang-btn" onclick="openLang()">🌐 <span id="lang-current">EN</span></button>
       <div class="avatar">EC</div>
@@ -117,29 +117,17 @@
   <div class="resource-list">
     <a class="resource-card" href="https://www.washington.edu/anyhungryhusky/" target="_blank">
       <div class="resource-card-icon" style="background:rgba(154,176,141,0.25);">🥗</div>
-      <div class="resource-card-body">
-        <div class="resource-card-tag" style="background:rgba(154,176,141,0.25);color:#274133;" id="tag-food"></div>
-        <div class="resource-card-name" id="name-food"></div>
-        <div class="resource-card-sub" id="sub-food"></div>
-      </div>
+      <div class="resource-card-body"><div class="resource-card-tag" style="background:rgba(154,176,141,0.25);color:#274133;" id="tag-food"></div><div class="resource-card-name" id="name-food"></div><div class="resource-card-sub" id="sub-food"></div></div>
       <div class="resource-card-arrow">›</div>
     </a>
     <a class="resource-card" href="https://www.washington.edu/financialaid/" target="_blank">
       <div class="resource-card-icon" style="background:rgba(206,144,66,0.2);">💰</div>
-      <div class="resource-card-body">
-        <div class="resource-card-tag" style="background:rgba(206,144,66,0.2);color:#7a4010;" id="tag-aid"></div>
-        <div class="resource-card-name" id="name-aid"></div>
-        <div class="resource-card-sub" id="sub-aid"></div>
-      </div>
+      <div class="resource-card-body"><div class="resource-card-tag" style="background:rgba(206,144,66,0.2);color:#7a4010;" id="tag-aid"></div><div class="resource-card-name" id="name-aid"></div><div class="resource-card-sub" id="sub-aid"></div></div>
       <div class="resource-card-arrow">›</div>
     </a>
     <a class="resource-card" href="https://www.washington.edu/uaa/" target="_blank">
       <div class="resource-card-icon" style="background:rgba(154,176,141,0.25);">🎓</div>
-      <div class="resource-card-body">
-        <div class="resource-card-tag" style="background:rgba(154,176,141,0.25);color:#274133;" id="tag-advising"></div>
-        <div class="resource-card-name" id="name-advising"></div>
-        <div class="resource-card-sub" id="sub-advising"></div>
-      </div>
+      <div class="resource-card-body"><div class="resource-card-tag" style="background:rgba(154,176,141,0.25);color:#274133;" id="tag-advising"></div><div class="resource-card-name" id="name-advising"></div><div class="resource-card-sub" id="sub-advising"></div></div>
       <div class="resource-card-arrow">›</div>
     </a>
   </div>
@@ -147,11 +135,7 @@
 </div>
 
 <div class="lang-overlay" id="lang-overlay" onclick="handleLangOverlay(event)">
-  <div class="lang-modal">
-    <div class="lang-handle"></div>
-    <div class="lang-title-el" id="lang-modal-title">Language</div>
-    <div class="lang-list" id="lang-list"></div>
-  </div>
+  <div class="lang-modal"><div class="lang-handle"></div><div class="lang-title" id="lang-modal-title">Language</div><div class="lang-list" id="lang-list"></div></div>
 </div>
 
 <div class="map-overlay" id="mapOverlay" onclick="handleOverlayClick(event)">
@@ -185,10 +169,7 @@ function applyLang(){
   document.getElementById('page-heading').textContent=t('ph');
   document.getElementById('section-map').textContent=t('sm');
   document.getElementById('section-all').textContent=t('sa');
-  document.getElementById('map-title').textContent=t('mt');
-  document.getElementById('map-sub').textContent=t('ms');
-  document.getElementById('map-expand-btn').textContent=t('me');
-  document.getElementById('map-modal-title').textContent=t('mt');
+  document.getElementById('map-title').textContent=t('mt');document.getElementById('map-sub').textContent=t('ms');document.getElementById('map-expand-btn').textContent=t('me');document.getElementById('map-modal-title').textContent=t('mt');
   document.getElementById('tag-food').textContent=t('tf');document.getElementById('name-food').textContent=t('nf');document.getElementById('sub-food').textContent=t('sf');
   document.getElementById('tag-aid').textContent=t('ta');document.getElementById('name-aid').textContent=t('na');document.getElementById('sub-aid').textContent=t('sat');
   document.getElementById('tag-advising').textContent=t('tad');document.getElementById('name-advising').textContent=t('nad');document.getElementById('sub-advising').textContent=t('sad');
