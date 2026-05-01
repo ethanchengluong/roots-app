@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BLOOM</title>
+  <title>Rice Bowl</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
@@ -40,14 +40,12 @@
     body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text-primary); min-height: 100vh; transition: var(--transition); }
     .app { max-width: 420px; margin: 0 auto; background: var(--bg); min-height: 100vh; padding-bottom: 80px; transition: var(--transition); }
 
-    .header { padding: 1.5rem 1.5rem 0.5rem; display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
-    .header-left { display: flex; align-items: center; gap: 10px; }
+    .header { padding: 1.5rem 1.5rem 0.5rem; display: flex; justify-content: space-between; align-items: flex-start; }
+    .header-right { display: flex; align-items: center; gap: 8px; }
     .logo { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--logo-primary); }
     .logo span { font-style: italic; color: var(--logo-accent); }
-    .header-right { display: flex; align-items: center; gap: 8px; }
     .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; color: #edddc5; font-size: 14px; font-weight: 500; flex-shrink: 0; }
 
-    /* Language switcher */
     .lang-btn { background: var(--bg-card); border: 1px solid var(--card-border); border-radius: 20px; padding: 5px 10px; font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
     .lang-btn:hover { border-color: var(--accent); color: var(--accent); }
     .lang-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 999; align-items: flex-end; justify-content: center; }
@@ -118,7 +116,6 @@
     .pin-chip { display: flex; align-items: center; gap: 7px; background: #f5efe3; border: 1px solid rgba(0,0,0,0.07); border-radius: 100px; padding: 6px 12px 6px 8px; white-space: nowrap; cursor: pointer; }
     .pin-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
     .pin-chip-label { font-size: 12px; font-weight: 500; color: #1a1a1a; font-family: 'DM Sans', sans-serif; }
-
     .roots-popup .leaflet-popup-content-wrapper { border-radius: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.12); padding: 0; overflow: hidden; font-family: 'DM Sans', sans-serif; }
     .roots-popup .leaflet-popup-content { margin: 0; width: 220px !important; }
     .roots-popup .leaflet-popup-tip { background: white; }
@@ -142,9 +139,7 @@
 <body>
 <div class="app">
   <div class="header">
-    <div class="header-left">
-      <div class="logo">BL<span>OOM</span></div>
-    </div>
+    <div class="logo">Rice <span>Bowl</span></div>
     <div class="header-right">
       <button class="lang-btn" onclick="openLang()">🌐 <span id="lang-current">EN</span></button>
       <div class="avatar">EC</div>
@@ -156,21 +151,15 @@
       <line x1="0" y1="48" x2="340" y2="48" stroke-width="1" stroke-linecap="round" id="horizon-line"/>
       <path id="arc-path" d="M 20 48 A 150 42 0 0 1 320 48" fill="none" stroke-width="1" stroke-dasharray="3 5" stroke-linecap="round"/>
       <g id="stars" opacity="0">
-        <circle cx="60" cy="12" r="1" fill="#edddc5" opacity="0.7"/>
-        <circle cx="110" cy="5" r="0.8" fill="#edddc5" opacity="0.5"/>
-        <circle cx="170" cy="9" r="1.1" fill="#edddc5" opacity="0.8"/>
-        <circle cx="230" cy="4" r="0.8" fill="#edddc5" opacity="0.6"/>
-        <circle cx="280" cy="13" r="1" fill="#edddc5" opacity="0.7"/>
-        <circle cx="145" cy="20" r="0.7" fill="#edddc5" opacity="0.5"/>
+        <circle cx="60" cy="12" r="1" fill="#edddc5" opacity="0.7"/><circle cx="110" cy="5" r="0.8" fill="#edddc5" opacity="0.5"/>
+        <circle cx="170" cy="9" r="1.1" fill="#edddc5" opacity="0.8"/><circle cx="230" cy="4" r="0.8" fill="#edddc5" opacity="0.6"/>
+        <circle cx="280" cy="13" r="1" fill="#edddc5" opacity="0.7"/><circle cx="145" cy="20" r="0.7" fill="#edddc5" opacity="0.5"/>
         <circle cx="255" cy="22" r="0.7" fill="#edddc5" opacity="0.5"/>
       </g>
       <g id="sky-body">
         <circle id="sky-glow" cx="0" cy="0" r="10" opacity="0.25"/>
         <circle id="sky-circle" cx="0" cy="0" r="7"/>
-        <g id="moon-detail" opacity="0">
-          <circle cx="2.5" cy="-2" r="1.6" fill="rgba(0,0,0,0.1)"/>
-          <circle cx="-2" cy="2" r="1.2" fill="rgba(0,0,0,0.08)"/>
-        </g>
+        <g id="moon-detail" opacity="0"><circle cx="2.5" cy="-2" r="1.6" fill="rgba(0,0,0,0.1)"/><circle cx="-2" cy="2" r="1.2" fill="rgba(0,0,0,0.08)"/></g>
         <g id="sun-rays" stroke-width="1.2" stroke-linecap="round">
           <line x1="0" y1="-11" x2="0" y2="-14"/><line x1="8" y1="-8" x2="10" y2="-10"/>
           <line x1="11" y1="0" x2="14" y2="0"/><line x1="8" y1="8" x2="10" y2="10"/>
@@ -278,182 +267,70 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-// ── Translations ─────────────────────────────────────────────────────────────
-const LANGS = {
-  en: {
-    code: 'EN', native: 'English', english: 'English',
-    greeting_morning: 'Good morning,', greeting_afternoon: 'Good afternoon,', greeting_evening: 'Good evening,',
-    welcome: 'Welcome back, Ethan 🌸',
-    finances: 'Your finances', budget_cta: 'Open budget journal →',
-    pill_month: 'This month', pill_expenses: 'Expenses',
-    learn: 'Learn', resources_section: 'Resources for you',
-    tag_next: 'Up next', tag_start: 'Start', tag_new: 'New',
-    mod1_title: 'Understanding Student Loans', mod1_sub: '5 min · Module 3',
-    mod2_title: 'Budgeting on a Student Income', mod2_sub: '7 min',
-    mod3_title: 'FAFSA Decoded', mod3_sub: '6 min',
-    map_title: 'UW Campus Resources', map_sub: 'Tap a pin to learn more', map_expand: 'Expand',
-    pin_food: 'UW Food Pantry', pin_advising: 'UAA Advising', pin_aid: 'Financial Aid',
-    nav_home: 'Home', nav_learn: 'Learn', nav_resources: 'Resources', nav_budget: 'Budget',
-    lang_title: 'Language',
-  },
-  zh: {
-    code: '繁中', native: '繁體中文', english: 'Chinese (Traditional)',
-    greeting_morning: '早安，', greeting_afternoon: '午安，', greeting_evening: '晚安，',
-    welcome: '歡迎回來，Ethan 🌸',
-    finances: '您的財務', budget_cta: '開啟預算日記 →',
-    pill_month: '本月', pill_expenses: '支出',
-    learn: '學習', resources_section: '為您推薦的資源',
-    tag_next: '下一個', tag_start: '開始', tag_new: '最新',
-    mod1_title: '了解學生貸款', mod1_sub: '5 分鐘 · 第 3 單元',
-    mod2_title: '學生收入理財規劃', mod2_sub: '7 分鐘',
-    mod3_title: 'FAFSA 解碼', mod3_sub: '6 分鐘',
-    map_title: '華盛頓大學校園資源', map_sub: '點擊圖釘了解更多', map_expand: '展開',
-    pin_food: '食物儲藏室', pin_advising: '學業輔導', pin_aid: '助學金辦公室',
-    nav_home: '首頁', nav_learn: '學習', nav_resources: '資源', nav_budget: '預算',
-    lang_title: '語言',
-  },
-  ja: {
-    code: '日本語', native: '日本語', english: 'Japanese',
-    greeting_morning: 'おはようございます、', greeting_afternoon: 'こんにちは、', greeting_evening: 'こんばんは、',
-    welcome: 'おかえりなさい、Ethan 🌸',
-    finances: 'あなたの財務', budget_cta: '家計簿を開く →',
-    pill_month: '今月', pill_expenses: '支出',
-    learn: '学ぶ', resources_section: 'あなたへのリソース',
-    tag_next: '次へ', tag_start: '開始', tag_new: '新着',
-    mod1_title: '学生ローンを理解する', mod1_sub: '5分 · モジュール3',
-    mod2_title: '学生収入での予算管理', mod2_sub: '7分',
-    mod3_title: 'FAFSAを解読する', mod3_sub: '6分',
-    map_title: 'UWキャンパスリソース', map_sub: 'ピンをタップして詳細を見る', map_expand: '拡大',
-    pin_food: 'フードパントリー', pin_advising: '学業アドバイジング', pin_aid: '奨学金オフィス',
-    nav_home: 'ホーム', nav_learn: '学ぶ', nav_resources: 'リソース', nav_budget: '予算',
-    lang_title: '言語',
-  },
-  vi: {
-    code: 'VI', native: 'Tiếng Việt', english: 'Vietnamese',
-    greeting_morning: 'Chào buổi sáng,', greeting_afternoon: 'Chào buổi chiều,', greeting_evening: 'Chào buổi tối,',
-    welcome: 'Chào mừng trở lại, Ethan 🌸',
-    finances: 'Tài chính của bạn', budget_cta: 'Mở nhật ký ngân sách →',
-    pill_month: 'Tháng này', pill_expenses: 'Chi tiêu',
-    learn: 'Học tập', resources_section: 'Tài nguyên cho bạn',
-    tag_next: 'Tiếp theo', tag_start: 'Bắt đầu', tag_new: 'Mới',
-    mod1_title: 'Hiểu về Vay Sinh Viên', mod1_sub: '5 phút · Bài 3',
-    mod2_title: 'Lập Ngân Sách với Thu Nhập Sinh Viên', mod2_sub: '7 phút',
-    mod3_title: 'Giải Mã FAFSA', mod3_sub: '6 phút',
-    map_title: 'Tài Nguyên Khuôn Viên UW', map_sub: 'Nhấn vào ghim để tìm hiểu thêm', map_expand: 'Mở rộng',
-    pin_food: 'Kho Lương Thực UW', pin_advising: 'Tư Vấn UAA', pin_aid: 'Hỗ Trợ Tài Chính',
-    nav_home: 'Trang Chủ', nav_learn: 'Học Tập', nav_resources: 'Tài Nguyên', nav_budget: 'Ngân Sách',
-    lang_title: 'Ngôn ngữ',
-  },
-  ko: {
-    code: '한국어', native: '한국어', english: 'Korean',
-    greeting_morning: '좋은 아침이에요,', greeting_afternoon: '안녕하세요,', greeting_evening: '좋은 저녁이에요,',
-    welcome: '돌아오신 것을 환영해요, Ethan 🌸',
-    finances: '내 재정', budget_cta: '예산 일기 열기 →',
-    pill_month: '이번 달', pill_expenses: '지출',
-    learn: '학습', resources_section: '추천 리소스',
-    tag_next: '다음', tag_start: '시작', tag_new: '신규',
-    mod1_title: '학자금 대출 이해하기', mod1_sub: '5분 · 모듈 3',
-    mod2_title: '학생 수입으로 예산 관리하기', mod2_sub: '7분',
-    mod3_title: 'FAFSA 완전 정복', mod3_sub: '6분',
-    map_title: 'UW 캠퍼스 자원', map_sub: '핀을 탭하여 자세히 알아보세요', map_expand: '확대',
-    pin_food: 'UW 푸드 팬트리', pin_advising: 'UAA 학업 상담', pin_aid: '학비 지원 사무소',
-    nav_home: '홈', nav_learn: '학습', nav_resources: '자원', nav_budget: '예산',
-    lang_title: '언어',
-  },
+const LANGS={
+  en:{code:'EN',native:'English',english:'English',gm:'Good morning,',ga:'Good afternoon,',ge:'Good evening,',welcome:'Welcome back, Ethan 🍚',finances:'Your finances',budget_cta:'Open budget journal →',pill_month:'This month',pill_expenses:'Expenses',learn:'Learn',resources_section:'Resources for you',tag_next:'Up next',tag_start:'Start',tag_new:'New',mod1_title:'Understanding Student Loans',mod1_sub:'5 min · Module 3',mod2_title:'Budgeting on a Student Income',mod2_sub:'7 min',mod3_title:'FAFSA Decoded',mod3_sub:'6 min',map_title:'UW Campus Resources',map_sub:'Tap a pin to learn more',map_expand:'Expand',pin_food:'UW Food Pantry',pin_advising:'UAA Advising',pin_aid:'Financial Aid',nav_home:'Home',nav_learn:'Learn',nav_resources:'Resources',nav_budget:'Budget',lang_title:'Language',months:['January','February','March','April','May','June','July','August','September','October','November','December']},
+  zh:{code:'繁中',native:'繁體中文',english:'Chinese (Traditional)',gm:'早安，',ga:'午安，',ge:'晚安，',welcome:'歡迎回來，Ethan 🍚',finances:'您的財務',budget_cta:'開啟預算日記 →',pill_month:'本月',pill_expenses:'支出',learn:'學習',resources_section:'為您推薦的資源',tag_next:'下一個',tag_start:'開始',tag_new:'最新',mod1_title:'了解學生貸款',mod1_sub:'5 分鐘 · 第 3 單元',mod2_title:'學生收入理財規劃',mod2_sub:'7 分鐘',mod3_title:'FAFSA 解碼',mod3_sub:'6 分鐘',map_title:'華盛頓大學校園資源',map_sub:'點擊圖釘了解更多',map_expand:'展開',pin_food:'食物儲藏室',pin_advising:'學業輔導',pin_aid:'助學金辦公室',nav_home:'首頁',nav_learn:'學習',nav_resources:'資源',nav_budget:'預算',lang_title:'語言',months:['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月']},
+  ja:{code:'日本語',native:'日本語',english:'Japanese',gm:'おはようございます、',ga:'こんにちは、',ge:'こんばんは、',welcome:'おかえりなさい、Ethan 🍚',finances:'あなたの財務',budget_cta:'家計簿を開く →',pill_month:'今月',pill_expenses:'支出',learn:'学ぶ',resources_section:'あなたへのリソース',tag_next:'次へ',tag_start:'開始',tag_new:'新着',mod1_title:'学生ローンを理解する',mod1_sub:'5分 · モジュール3',mod2_title:'学生収入での予算管理',mod2_sub:'7分',mod3_title:'FAFSAを解読する',mod3_sub:'6分',map_title:'UWキャンパスリソース',map_sub:'ピンをタップして詳細を見る',map_expand:'拡大',pin_food:'フードパントリー',pin_advising:'学業アドバイジング',pin_aid:'奨学金オフィス',nav_home:'ホーム',nav_learn:'学ぶ',nav_resources:'リソース',nav_budget:'予算',lang_title:'言語',months:['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月']},
+  vi:{code:'VI',native:'Tiếng Việt',english:'Vietnamese',gm:'Chào buổi sáng,',ga:'Chào buổi chiều,',ge:'Chào buổi tối,',welcome:'Chào mừng trở lại, Ethan 🍚',finances:'Tài chính của bạn',budget_cta:'Mở nhật ký ngân sách →',pill_month:'Tháng này',pill_expenses:'Chi tiêu',learn:'Học tập',resources_section:'Tài nguyên cho bạn',tag_next:'Tiếp theo',tag_start:'Bắt đầu',tag_new:'Mới',mod1_title:'Hiểu về Vay Sinh Viên',mod1_sub:'5 phút · Bài 3',mod2_title:'Lập Ngân Sách với Thu Nhập Sinh Viên',mod2_sub:'7 phút',mod3_title:'Giải Mã FAFSA',mod3_sub:'6 phút',map_title:'Tài Nguyên Khuôn Viên UW',map_sub:'Nhấn vào ghim để tìm hiểu thêm',map_expand:'Mở rộng',pin_food:'Kho Lương Thực UW',pin_advising:'Tư Vấn UAA',pin_aid:'Hỗ Trợ Tài Chính',nav_home:'Trang Chủ',nav_learn:'Học Tập',nav_resources:'Tài Nguyên',nav_budget:'Ngân Sách',lang_title:'Ngôn ngữ',months:['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12']},
+  ko:{code:'한국어',native:'한국어',english:'Korean',gm:'좋은 아침이에요,',ga:'안녕하세요,',ge:'좋은 저녁이에요,',welcome:'돌아오신 것을 환영해요, Ethan 🍚',finances:'내 재정',budget_cta:'예산 일기 열기 →',pill_month:'이번 달',pill_expenses:'지출',learn:'학습',resources_section:'추천 리소스',tag_next:'다음',tag_start:'시작',tag_new:'신규',mod1_title:'학자금 대출 이해하기',mod1_sub:'5분 · 모듈 3',mod2_title:'학생 수입으로 예산 관리하기',mod2_sub:'7분',mod3_title:'FAFSA 완전 정복',mod3_sub:'6분',map_title:'UW 캠퍼스 자원',map_sub:'핀을 탭하여 자세히 알아보세요',map_expand:'확대',pin_food:'UW 푸드 팬트리',pin_advising:'UAA 학업 상담',pin_aid:'학비 지원 사무소',nav_home:'홈',nav_learn:'학습',nav_resources:'자원',nav_budget:'예산',lang_title:'언어',months:['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월']},
 };
+const LANG_ORDER=['en','zh','ja','vi','ko'];
+let currentLang=localStorage.getItem('bloom_lang')||'en';
+function t(k){return LANGS[currentLang][k]||LANGS.en[k]||'';}
 
-const LANG_ORDER = ['en','zh','ja','vi','ko'];
-let currentLang = localStorage.getItem('bloom_lang') || 'en';
-
-function t(key) { return LANGS[currentLang][key] || LANGS['en'][key] || ''; }
-
-function applyLang() {
-  const hour = new Date().getHours();
-  const greeting = hour < 12 ? t('greeting_morning') : hour < 17 ? t('greeting_afternoon') : t('greeting_evening');
-  document.getElementById('greeting-time').textContent = greeting;
-  document.getElementById('greeting-name').textContent = t('welcome');
-  document.getElementById('card-label-finances').textContent = t('finances');
-  document.getElementById('pill-label-month').textContent = t('pill_month');
-  document.getElementById('pill-label-expenses').textContent = t('pill_expenses');
-  document.getElementById('card-cta').textContent = t('budget_cta');
-  document.getElementById('section-learn').textContent = t('learn');
-  document.getElementById('section-resources').textContent = t('resources_section');
-  document.getElementById('tag-next').textContent = t('tag_next');
-  document.getElementById('tag-start').textContent = t('tag_start');
-  document.getElementById('tag-new').textContent = t('tag_new');
-  document.getElementById('mod1-title').textContent = t('mod1_title');
-  document.getElementById('mod1-sub').textContent = t('mod1_sub');
-  document.getElementById('mod2-title').textContent = t('mod2_title');
-  document.getElementById('mod2-sub').textContent = t('mod2_sub');
-  document.getElementById('mod3-title').textContent = t('mod3_title');
-  document.getElementById('mod3-sub').textContent = t('mod3_sub');
-  document.getElementById('map-title').textContent = t('map_title');
-  document.getElementById('map-sub').textContent = t('map_sub');
-  document.getElementById('map-expand-btn').textContent = t('map_expand');
-  document.getElementById('map-modal-title').textContent = t('map_title');
-  document.getElementById('pin-food').textContent = t('pin_food');
-  document.getElementById('pin-advising').textContent = t('pin_advising');
-  document.getElementById('pin-aid').textContent = t('pin_aid');
-  document.getElementById('nav-home').textContent = t('nav_home');
-  document.getElementById('nav-learn').textContent = t('nav_learn');
-  document.getElementById('nav-resources').textContent = t('nav_resources');
-  document.getElementById('nav-budget').textContent = t('nav_budget');
-  document.getElementById('lang-current').textContent = LANGS[currentLang].code;
-  document.getElementById('lang-modal-title').textContent = t('lang_title');
-
-  // Budget month name
-  const now = new Date();
-  const MONTHS = {
-    en:['January','February','March','April','May','June','July','August','September','October','November','December'],
-    zh:['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
-    ja:['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
-    vi:['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'],
-    ko:['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
-  };
-  document.getElementById('budget-card-title').textContent = (MONTHS[currentLang]||MONTHS.en)[now.getMonth()];
-
-  // Lang list
-  document.getElementById('lang-list').innerHTML = LANG_ORDER.map(lk => {
-    const l = LANGS[lk];
-    return `<div class="lang-option ${lk===currentLang?'active':''}" onclick="selectLang('${lk}')">
-      <div class="lang-option-left">
-        <div class="lang-native">${l.native}</div>
-        <div class="lang-english">${l.english}</div>
-      </div>
-      <div class="lang-check">✓</div>
-    </div>`;
-  }).join('');
+function applyLang(){
+  const h=new Date().getHours();
+  document.getElementById('greeting-time').textContent=h<12?t('gm'):h<17?t('ga'):t('ge');
+  document.getElementById('greeting-name').textContent=t('welcome');
+  document.getElementById('card-label-finances').textContent=t('finances');
+  document.getElementById('pill-label-month').textContent=t('pill_month');
+  document.getElementById('pill-label-expenses').textContent=t('pill_expenses');
+  document.getElementById('card-cta').textContent=t('budget_cta');
+  document.getElementById('section-learn').textContent=t('learn');
+  document.getElementById('section-resources').textContent=t('resources_section');
+  document.getElementById('tag-next').textContent=t('tag_next');
+  document.getElementById('tag-start').textContent=t('tag_start');
+  document.getElementById('tag-new').textContent=t('tag_new');
+  document.getElementById('mod1-title').textContent=t('mod1_title');
+  document.getElementById('mod1-sub').textContent=t('mod1_sub');
+  document.getElementById('mod2-title').textContent=t('mod2_title');
+  document.getElementById('mod2-sub').textContent=t('mod2_sub');
+  document.getElementById('mod3-title').textContent=t('mod3_title');
+  document.getElementById('mod3-sub').textContent=t('mod3_sub');
+  document.getElementById('map-title').textContent=t('map_title');
+  document.getElementById('map-sub').textContent=t('map_sub');
+  document.getElementById('map-expand-btn').textContent=t('map_expand');
+  document.getElementById('map-modal-title').textContent=t('map_title');
+  document.getElementById('pin-food').textContent=t('pin_food');
+  document.getElementById('pin-advising').textContent=t('pin_advising');
+  document.getElementById('pin-aid').textContent=t('pin_aid');
+  document.getElementById('nav-home').textContent=t('nav_home');
+  document.getElementById('nav-learn').textContent=t('nav_learn');
+  document.getElementById('nav-resources').textContent=t('nav_resources');
+  document.getElementById('nav-budget').textContent=t('nav_budget');
+  document.getElementById('lang-current').textContent=LANGS[currentLang].code;
+  document.getElementById('lang-modal-title').textContent=t('lang_title');
+  const now=new Date();
+  document.getElementById('budget-card-title').textContent=LANGS[currentLang].months[now.getMonth()];
+  document.getElementById('lang-list').innerHTML=LANG_ORDER.map(lk=>{const l=LANGS[lk];return `<div class="lang-option ${lk===currentLang?'active':''}" onclick="selectLang('${lk}')"><div class="lang-option-left"><div class="lang-native">${l.native}</div><div class="lang-english">${l.english}</div></div><div class="lang-check">✓</div></div>`;}).join('');
 }
+function openLang(){document.getElementById('lang-overlay').classList.add('open');}
+function closeLang(){document.getElementById('lang-overlay').classList.remove('open');}
+function handleLangOverlay(e){if(e.target===document.getElementById('lang-overlay'))closeLang();}
+function selectLang(lk){currentLang=lk;localStorage.setItem('bloom_lang',lk);applyLang();closeLang();}
 
-function openLang() { document.getElementById('lang-overlay').classList.add('open'); }
-function closeLang() { document.getElementById('lang-overlay').classList.remove('open'); }
-function handleLangOverlay(e) { if(e.target===document.getElementById('lang-overlay')) closeLang(); }
-function selectLang(lk) { currentLang=lk; localStorage.setItem('bloom_lang',lk); applyLang(); closeLang(); }
-
-// ── Theme & sky arc ──────────────────────────────────────────────────────────
-const hour=new Date().getHours(), mins=new Date().getMinutes(), timeDecimal=hour+mins/60;
+// Theme & sky
+const hour=new Date().getHours(),mins=new Date().getMinutes(),timeDecimal=hour+mins/60;
 document.body.classList.add(hour<12?'theme-morning':hour<17?'theme-afternoon':'theme-evening');
-
 const RISE=6,SET=20,isDay=timeDecimal>=RISE&&timeDecimal<SET;
 let progress=isDay?(timeDecimal-RISE)/(SET-RISE):(()=>{const nd=24-(SET-RISE),nt=timeDecimal>=SET?timeDecimal-SET:timeDecimal+(24-SET);return nt/nd;})();
-const angle=Math.PI-progress*Math.PI;
-document.getElementById('sky-body').setAttribute('transform',`translate(${170+150*Math.cos(angle)},${48-42*Math.sin(angle)})`);
-const circle=document.getElementById('sky-circle'),glow=document.getElementById('sky-glow'),rays=document.getElementById('sun-rays');
-const moonDetail=document.getElementById('moon-detail'),stars=document.getElementById('stars');
-const arcPath=document.getElementById('arc-path'),horizonLine=document.getElementById('horizon-line');
-if(isDay){
-  const edge=progress<0.15||progress>0.85;
-  circle.setAttribute('fill',edge?'#ce9042':'#c8b067');glow.setAttribute('fill',edge?'#f5d4a0':'#e8d898');
-  rays.setAttribute('stroke',edge?'#ce9042':'#c8b067');rays.style.opacity='1';
-  moonDetail.style.opacity='0';stars.style.opacity='0';
-  arcPath.setAttribute('stroke','#c8b067');horizonLine.setAttribute('stroke','#c8b067');
-}else{
-  circle.setAttribute('fill','#edddc5');glow.setAttribute('fill','#c8b067');
-  rays.style.opacity='0';moonDetail.style.opacity='1';stars.style.opacity='1';
-  arcPath.setAttribute('stroke','#9ab08d');horizonLine.setAttribute('stroke','#9ab08d');
-}
+const ang=Math.PI-progress*Math.PI;
+document.getElementById('sky-body').setAttribute('transform',`translate(${170+150*Math.cos(ang)},${48-42*Math.sin(ang)})`);
+const circle=document.getElementById('sky-circle'),glow=document.getElementById('sky-glow'),rays=document.getElementById('sun-rays'),moonDetail=document.getElementById('moon-detail'),stars=document.getElementById('stars'),arcPath=document.getElementById('arc-path'),horizonLine=document.getElementById('horizon-line');
+if(isDay){const edge=progress<0.15||progress>0.85;circle.setAttribute('fill',edge?'#ce9042':'#c8b067');glow.setAttribute('fill',edge?'#f5d4a0':'#e8d898');rays.setAttribute('stroke',edge?'#ce9042':'#c8b067');rays.style.opacity='1';moonDetail.style.opacity='0';stars.style.opacity='0';arcPath.setAttribute('stroke','#c8b067');horizonLine.setAttribute('stroke','#c8b067');}
+else{circle.setAttribute('fill','#edddc5');glow.setAttribute('fill','#c8b067');rays.style.opacity='0';moonDetail.style.opacity='1';stars.style.opacity='1';arcPath.setAttribute('stroke','#9ab08d');horizonLine.setAttribute('stroke','#9ab08d');}
 
-// ── Budget preview ────────────────────────────────────────────────────────────
+// Budget preview
 (function(){
   const entries=JSON.parse(localStorage.getItem('bloom_budget')||'[]');
   const now=new Date(),key=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
@@ -466,14 +343,10 @@ if(isDay){
   document.getElementById('home-expenses').textContent=fmt(exp);
 })();
 
-// ── Map ───────────────────────────────────────────────────────────────────────
+// Map
 const UW_CENTER=[47.6553,-122.3035];
-const resources={
-  food:{latlng:[47.6599,-122.3152],color:'#274133',tag:'Food support',tagBg:'rgba(154,176,141,0.2)',tagColor:'#274133',name:'UW Food Pantry',desc:'Free groceries, fresh produce, and pantry staples for UW students in need. No eligibility requirements.',hours:'Mon–Fri · Hours vary by quarter',link:'https://www.washington.edu/anyhungryhusky/',linkLabel:'Visit website →'},
-  advising:{latlng:[47.6561,-122.3082],color:'#9ab08d',tag:'Academic advising',tagBg:'rgba(154,176,141,0.2)',tagColor:'#274133',name:'UAA Undergraduate Advising',desc:'Academic planning, degree requirements, major exploration, and support for all UW undergrads.',hours:'Mon–Fri 8am–5pm',link:'https://www.washington.edu/uaa/',linkLabel:'Visit website →'},
-  financialaid:{latlng:[47.6532,-122.3082],color:'#ce9042',tag:'Financial aid',tagBg:'rgba(206,144,66,0.18)',tagColor:'#7a4010',name:'Office of Student Financial Aid',desc:'Help with FAFSA, scholarships, grants, loans, and work-study. Located in Schmitz Hall.',hours:'Mon–Fri 11am–3pm (in-person)',link:'https://www.washington.edu/financialaid/',linkLabel:'Visit website →'}
-};
-const makeIcon=color=>L.divIcon({className:'',html:`<svg width="28" height="38" viewBox="0 0 28 38" xmlns="http://www.w3.org/2000/svg"><circle cx="14" cy="14" r="13" fill="${color}" stroke="white" stroke-width="2.5"/><circle cx="14" cy="14" r="5" fill="white"/><polygon points="14,38 6,24 22,24" fill="${color}"/></svg>`,iconSize:[28,38],iconAnchor:[14,38],popupAnchor:[0,-40]});
+const resources={food:{latlng:[47.6599,-122.3152],color:'#274133',tag:'Food support',tagBg:'rgba(154,176,141,0.2)',tagColor:'#274133',name:'UW Food Pantry',desc:'Free groceries, fresh produce, and pantry staples for UW students in need. No eligibility requirements.',hours:'Mon–Fri · Hours vary by quarter',link:'https://www.washington.edu/anyhungryhusky/',linkLabel:'Visit website →'},advising:{latlng:[47.6561,-122.3082],color:'#9ab08d',tag:'Academic advising',tagBg:'rgba(154,176,141,0.2)',tagColor:'#274133',name:'UAA Undergraduate Advising',desc:'Academic planning, degree requirements, major exploration, and support for all UW undergrads.',hours:'Mon–Fri 8am–5pm',link:'https://www.washington.edu/uaa/',linkLabel:'Visit website →'},financialaid:{latlng:[47.6532,-122.3082],color:'#ce9042',tag:'Financial aid',tagBg:'rgba(206,144,66,0.18)',tagColor:'#7a4010',name:'Office of Student Financial Aid',desc:'Help with FAFSA, scholarships, grants, loans, and work-study. Located in Schmitz Hall.',hours:'Mon–Fri 11am–3pm (in-person)',link:'https://www.washington.edu/financialaid/',linkLabel:'Visit website →'}};
+const makeIcon=c=>L.divIcon({className:'',html:`<svg width="28" height="38" viewBox="0 0 28 38" xmlns="http://www.w3.org/2000/svg"><circle cx="14" cy="14" r="13" fill="${c}" stroke="white" stroke-width="2.5"/><circle cx="14" cy="14" r="5" fill="white"/><polygon points="14,38 6,24 22,24" fill="${c}"/></svg>`,iconSize:[28,38],iconAnchor:[14,38],popupAnchor:[0,-40]});
 const makePopup=r=>`<div class="popup-inner"><div class="popup-tag" style="background:${r.tagBg};color:${r.tagColor};">${r.tag}</div><div class="popup-name">${r.name}</div><div class="popup-desc">${r.desc}</div><div class="popup-hours">🕐 ${r.hours}</div><a class="popup-link" href="${r.link}" target="_blank">${r.linkLabel}</a></div>`;
 const miniMap=L.map('map',{center:UW_CENTER,zoom:15,zoomControl:false,scrollWheelZoom:false,dragging:false,doubleClickZoom:false,touchZoom:false});
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap contributors'}).addTo(miniMap);
