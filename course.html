@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Course – BLOOM</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body.theme-morning {
+      --bg: #fdf8e4; --bg-card: #ffffff; --bg-featured: #fef3c7;
+      --text-primary: #1a1a1a; --text-muted: #7a7060; --text-faint: #b0a060;
+      --wellness-bg: #c8960c; --wellness-orb: rgba(255,220,80,0.25);
+      --wellness-label: #fde68a; --nav-bg: #ffffff; --nav-border: rgba(0,0,0,0.06);
+      --section-label: #a09050; --card-border: rgba(200,150,12,0.12);
+      --transition: background 0.6s ease, color 0.4s ease;
+    }
+    body.theme-afternoon {
+      --bg: #fdf0e6; --bg-card: #ffffff; --bg-featured: #fde8d8;
+      --text-primary: #1a1a1a; --text-muted: #7a6050; --text-faint: #b08060;
+      --wellness-bg: #c45c2a; --wellness-orb: rgba(255,160,80,0.25);
+      --wellness-label: #fcd0b0; --nav-bg: #ffffff; --nav-border: rgba(0,0,0,0.06);
+      --section-label: #a07050; --card-border: rgba(196,92,42,0.12);
+      --transition: background 0.6s ease, color 0.4s ease;
+    }
+    body.theme-evening {
+      --bg: #12122a; --bg-card: #1e1e3a; --bg-featured: #1a1a32;
+      --text-primary: #e8e4f0; --text-muted: #8880a8; --text-faint: #6660a8;
+      --wellness-bg: #3d2b6b; --wellness-orb: rgba(120,80,200,0.25);
+      --wellness-label: #a890d8; --nav-bg: #1e1e3a; --nav-border: rgba(255,255,255,0.06);
+      --section-label: #6860a0; --card-border: rgba(168,144,216,0.15);
+      --transition: background 0.6s ease, color 0.4s ease;
+    }
+
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text-primary); min-height: 100vh; transition: var(--transition); }
+    .app { max-width: 420px; margin: 0 auto; background: var(--bg); min-height: 100vh; padding-bottom: 120px; transition: var(--transition); }
+
+    /* ── Course hero banner ── */
+    .course-hero {
+      width: 100%;
+      height: 180px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-start;
+      padding: 1.25rem 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .course-hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.45) 100%);
+    }
+    .hero-emoji {
+      position: absolute;
+      top: 50%;
+      right: 1.5rem;
+      transform: translateY(-60%);
+      font-size: 64px;
+      opacity: 0.35;
+      z-index: 1;
+    }
+    .hero-back-btn {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      z-index: 2;
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 50%;
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      font-size: 18px;
+      color: white;
+      text-decoration: none;
+    }
+    .hero-text { position: relative; z-index: 2; }
+    .hero-tag {
+      font-size: 10px;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-weight: 500;
+      display: inline-block;
+      margin-bottom: 8px;
+      background: rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.9);
+      backdrop-filter: blur(4px);
+    }
+    .hero-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px;
+      font-weight: 400;
+      color: white;
+      line-height: 1.25;
+    }
+
+    /* ── Progress bar strip ── */
+    .progress-strip {
+      padding: 1rem 1.5rem 0.75rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .progress-strip-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .progress-strip-bar-bg { background: rgba(0,0,0,0.07); border-radius: 100px; height: 5px; }
+    .progress-strip-bar-fill { height: 5px; border-radius: 100px; background: #7fb069; transition: width 0.5s ease; }
+
+    /* ── Step dots ── */
+    .step-dots {
+      display: flex;
+      gap: 5px;
+      padding: 0.75rem 1.5rem;
+      flex-wrap: wrap;
+    }
+    .step-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--card-border);
+      transition: background 0.3s ease, transform 0.2s ease;
+      flex-shrink: 0;
+    }
+    .step-dot.done { background: #7fb069; }
+    .step-dot.active { background: #2d5a3d; transform: scale(1.5); }
+
+    /* ── Lesson card ── */
+    .lesson-card {
+      margin: 0 1.5rem 1.25rem;
+      background: var(--bg-card);
+      border-radius: 20px;
+      border: 1px solid var(--card-border);
+      overflow: hidden;
+      animation: cardIn 0.3s ease;
+    }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .lesson-card-header {
+      padding: 1.25rem 1.25rem 1rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .lesson-step-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--section-label);
+      margin-bottom: 6px;
+    }
+    .lesson-card-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+    .lesson-card-body { padding: 1.25rem; }
+
+    .lesson-text { font-size: 13px; color: var(--text-primary); line-height: 1.7; margin-bottom: 1rem; }
+    .lesson-text:last-child { margin-bottom: 0; }
+
+    .lesson-highlight {
+      background: #eef5eb;
+      border-left: 3px solid #7fb069;
+      border-radius: 0 10px 10px 0;
+      padding: 10px 14px;
+      margin: 0.75rem 0;
+      font-size: 12px;
+      color: #2d5a3d;
+      line-height: 1.6;
+    }
+    body.theme-evening .lesson-highlight { background: rgba(127,176,105,0.1); color: #a8d890; }
+
+    .lesson-callout {
+      background: #faeeda;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin: 0.75rem 0;
+      font-size: 12px;
+      color: #854f0b;
+      line-height: 1.6;
+      display: flex;
+      gap: 8px;
+    }
+    body.theme-evening .lesson-callout { background: rgba(232,160,48,0.12); color: #e8c080; }
+    .callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+    .lesson-stat-row { display: flex; gap: 8px; margin: 0.75rem 0; }
+    .lesson-stat { flex: 1; background: var(--bg-featured); border-radius: 12px; padding: 10px 12px; text-align: center; }
+    .lesson-stat-value { font-family: 'DM Serif Display', serif; font-size: 18px; color: #2d5a3d; display: block; }
+    .lesson-stat-label { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+
+    /* ── Quiz ── */
+    .quiz-wrap { padding: 0 1.5rem 1.25rem; animation: cardIn 0.3s ease; }
+    .quiz-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--section-label); margin-bottom: 8px; }
+    .quiz-question { font-family: 'DM Serif Display', serif; font-size: 17px; font-weight: 400; color: var(--text-primary); margin-bottom: 1rem; line-height: 1.4; }
+    .quiz-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1rem; }
+    .quiz-option {
+      background: var(--bg-card);
+      border: 1.5px solid var(--card-border);
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 13px;
+      color: var(--text-primary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: border-color 0.2s, background 0.2s;
+      font-family: 'DM Sans', sans-serif;
+      text-align: left;
+      width: 100%;
+    }
+    .quiz-option:hover:not(:disabled) { border-color: #7fb069; background: var(--bg-featured); }
+    .quiz-option.correct { border-color: #7fb069; background: #eef5eb; color: #2d5a3d; }
+    .quiz-option.wrong   { border-color: #fca5a5; background: #fef2f2; color: #c0392b; }
+    body.theme-evening .quiz-option.correct { background: rgba(127,176,105,0.12); color: #a8d890; }
+    body.theme-evening .quiz-option.wrong   { background: rgba(192,57,43,0.12); color: #f87171; }
+    .option-letter {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--bg-featured);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 500; flex-shrink: 0;
+    }
+    .quiz-option.correct .option-letter { background: #7fb069; color: white; }
+    .quiz-option.wrong   .option-letter { background: #fca5a5; color: white; }
+
+    .quiz-feedback {
+      border-radius: 14px; padding: 12px 14px;
+      font-size: 13px; line-height: 1.6; margin-bottom: 1rem; display: none;
+    }
+    .quiz-feedback.show { display: block; animation: cardIn 0.3s ease; }
+    .quiz-feedback.correct-fb { background: #eef5eb; color: #2d5a3d; border: 1px solid #c3e6b5; }
+    .quiz-feedback.wrong-fb   { background: #fef2f2; color: #c0392b; border: 1px solid #fca5a5; }
+    body.theme-evening .quiz-feedback.correct-fb { background: rgba(127,176,105,0.1); color: #a8d890; border-color: rgba(127,176,105,0.3); }
+    body.theme-evening .quiz-feedback.wrong-fb   { background: rgba(192,57,43,0.1); color: #f87171; border-color: rgba(192,57,43,0.3); }
+
+    /* ── Nav buttons ── */
+    .lesson-nav-row {
+      position: fixed;
+      bottom: 0;
+      left: 50%; transform: translateX(-50%);
+      width: 100%; max-width: 420px;
+      padding: 0.75rem 1.5rem 1.5rem;
+      background: var(--nav-bg);
+      border-top: 1px solid var(--nav-border);
+      display: flex;
+      gap: 8px;
+      z-index: 100;
+      transition: background 0.6s ease;
+    }
+    .lesson-next-btn {
+      flex: 1; background: #2d5a3d; color: white;
+      border: none; border-radius: 14px; padding: 14px;
+      font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+      cursor: pointer; transition: background 0.2s, opacity 0.2s;
+    }
+    .lesson-next-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .lesson-next-btn:not(:disabled):hover { background: #3a7050; }
+    .lesson-prev-btn {
+      background: var(--bg-card); color: var(--text-primary);
+      border: 1px solid var(--card-border); border-radius: 14px;
+      padding: 14px 16px; font-family: 'DM Sans', sans-serif;
+      font-size: 14px; cursor: pointer;
+    }
+
+    /* ── Completion card ── */
+    .completion-card {
+      margin: 0 1.5rem 1.25rem;
+      background: var(--wellness-bg);
+      border-radius: 20px; padding: 2.5rem 1.5rem;
+      color: white; text-align: center;
+      position: relative; overflow: hidden;
+      animation: cardIn 0.4s ease;
+    }
+    .completion-card::before {
+      content: ''; position: absolute;
+      top: -50px; right: -50px;
+      width: 180px; height: 180px;
+      background: var(--wellness-orb); border-radius: 50%;
+    }
+    .completion-emoji { font-size: 52px; margin-bottom: 1rem; display: block; position: relative; z-index: 1; }
+    .completion-title { font-family: 'DM Serif Display', serif; font-size: 22px; margin-bottom: 8px; color: white; position: relative; z-index: 1; }
+    .completion-sub { font-size: 13px; color: var(--wellness-label); line-height: 1.6; margin-bottom: 1.5rem; position: relative; z-index: 1; }
+    .completion-btn {
+      background: white; color: #2d5a3d;
+      border: none; border-radius: 14px; padding: 12px 28px;
+      font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+      cursor: pointer; position: relative; z-index: 1;
+    }
+
+    /* ── 404 state ── */
+    .not-found {
+      padding: 3rem 1.5rem; text-align: center;
+    }
+    .not-found-emoji { font-size: 40px; margin-bottom: 1rem; }
+    .not-found-title { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--text-primary); margin-bottom: 8px; }
+    .not-found-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 1.5rem; }
+    .not-found-btn { background: #2d5a3d; color: white; border: none; border-radius: 14px; padding: 12px 24px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; text-decoration: none; display: inline-block; }
+  </style>
+</head>
+<body>
+<div class="app" id="app">
+  <!-- Populated by JS -->
+</div>
+
+<script>
+  // ── Theme ────────────────────────────────────────────────────────────────
+  const hour = new Date().getHours();
+  const minutes = new Date().getMinutes();
+  const timeDecimal = hour + minutes / 60;
+  const theme = hour < 12 ? 'theme-morning' : hour < 17 ? 'theme-afternoon' : 'theme-evening';
+  document.body.classList.add(theme);
+
+  // ── All course data (shared with learn.html) ─────────────────────────────
+  const COURSES = [
+    {
+      id: 'loans-101',
+      title: 'Student Loans 101',
+      description: 'What loans are, types, and how interest works',
+      emoji: '🏦',
+      bannerColor: '#2d5a3d',
+      tag: 'Start here',
+      tagBg: '#eef5eb', tagColor: '#3b6d11',
+      steps: [
+        {
+          type: 'lesson',
+          title: 'What is a student loan?',
+          content: `
+            <p class="lesson-text">A <strong>student loan</strong> is money you borrow to help pay for college — tuition, housing, books, and living expenses. Unlike a scholarship or grant, you must pay it back, usually with interest.</p>
+            <div class="lesson-highlight">💡 Think of a loan like borrowing your friend's notes — you have to give them back, and maybe a little extra as a thank-you.</div>
+            <p class="lesson-text">Most students use loans to fill the gap between what financial aid covers and what college actually costs. They're a normal part of the college experience, but understanding them helps you borrow smarter.</p>
+          `
+        },
+        {
+          type: 'lesson',
+          title: 'Federal vs. Private loans',
+          content: `
+            <p class="lesson-text">There are two main types of student loans:</p>
+            <div class="lesson-stat-row">
+              <div class="lesson-stat"><span class="lesson-stat-value">🏛️</span><div class="lesson-stat-label">Federal loans<br/><strong style="color:#2d5a3d">from the government</strong></div></div>
+              <div class="lesson-stat"><span class="lesson-stat-value">🏦</span><div class="lesson-stat-label">Private loans<br/><strong style="color:#c0392b">from banks</strong></div></div>
+            </div>
+            <p class="lesson-text"><strong>Federal loans</strong> are almost always the better choice. They offer lower, fixed interest rates, flexible repayment options, and can even be forgiven in certain situations.</p>
+            <div class="lesson-callout"><span class="callout-icon">⚠️</span><span><strong>Always exhaust federal loans first</strong> before considering private loans. Private loans have higher rates and fewer protections.</span></div>
+          `
+        },
+        {
+          type: 'quiz',
+          question: 'Which type of loan should you generally borrow first?',
+          options: ['Private loans — they\'re faster to get', 'Federal loans — they have better terms and protections', 'Credit cards — more flexible', 'Payday loans — no paperwork needed'],
+          correct: 1,
+          feedback: {
+            correct: '✅ Correct! Federal loans come from the government and offer lower interest rates, flexible repayment, and protections like income-driven plans and forgiveness programs.',
+            wrong: '❌ Federal loans are almost always the better choice. They have lower rates, fixed terms, and protections that private lenders don\'t offer.'
+          }
+        },
+        {
+          type: 'lesson',
+          title: 'How interest works',
+          content: `
+            <p class="lesson-text"><strong>Interest</strong> is the extra amount you pay for borrowing money. It's calculated as a percentage of your loan balance.</p>
+            <div class="lesson-highlight">📐 Example: If you borrow $10,000 at 5% annual interest, you'll owe $500 in interest after one year — making your balance $10,500.</div>
+            <p class="lesson-text">Federal student loans don't start charging interest until after you graduate (for subsidized loans). But <strong>unsubsidized loans</strong> start accruing interest the moment you borrow — even while you're in school.</p>
+            <div class="lesson-callout"><span class="callout-icon">💡</span><span>Even paying small amounts toward interest while in school can save you hundreds of dollars over time.</span></div>
+          `
+        },
+        {
+          type: 'quiz',
+          question: 'When does interest start accruing on an unsubsidized federal loan?',
+          options: ['After graduation', 'After your grace period ends', 'Immediately when you borrow it', 'Never — federal loans are interest-free'],
+          correct: 2,
+          feedback: {
+            correct: '✅ Exactly! Unsubsidized loans start accruing interest right away, even while you\'re in school. This is why subsidized loans are more valuable if you qualify.',
+            wrong: '❌ Unsubsidized loans start accruing interest the moment you borrow them — even while you\'re still in school. The interest can add up quickly!'
+          }
+        },
+        {
+          type: 'lesson',
+          title: 'Subsidized loans: the better deal',
+          content: `
+            <p class="lesson-text"><strong>Direct Subsidized Loans</strong> are the most favorable federal loan you can get. The government pays the interest for you while you're enrolled at least half-time, during your 6-month grace period, and during approved deferment periods.</p>
+            <div class="lesson-stat-row">
+              <div class="lesson-stat"><span class="lesson-stat-value">🏛️</span><div class="lesson-stat-label">Who pays interest<br/><strong style="color:#2d5a3d">The government</strong></div></div>
+              <div class="lesson-stat"><span class="lesson-stat-value">📋</span><div class="lesson-stat-label">Eligibility<br/><strong style="color:#185fa5">Need-based</strong></div></div>
+            </div>
+            <p class="lesson-text">The catch: you must demonstrate <strong>financial need</strong> through your FAFSA to qualify. Not everyone gets subsidized loans — but if you do, always use them first before touching unsubsidized loans.</p>
+            <div class="lesson-highlight">💡 A $5,500 subsidized loan costs you nothing in interest during 4 years of school. The same unsubsidized loan could grow to ~$6,600 before you make a single payment.</div>
+          `
+        },
+        {
+          type: 'lesson',
+          title: 'Unsubsidized loans: available to everyone',
+          content: `
+            <p class="lesson-text"><strong>Direct Unsubsidized Loans</strong> are available to all students regardless of financial need — but the interest clock starts the moment your loan is disbursed.</p>
+            <div class="lesson-callout"><span class="callout-icon">⚠️</span><span>If you don't pay the interest while in school, it <strong>capitalizes</strong> — meaning it gets added to your principal balance, and then you pay interest on a larger amount. This is called interest capitalization.</span></div>
+            <p class="lesson-text">Example: Borrow $7,000 at 6.5% interest. After 4 years without paying interest, ~$1,900 in interest capitalizes. Now you owe $8,900 — and your monthly payment is calculated on that higher amount.</p>
+            <div class="lesson-highlight">📐 Even paying $25–$50/month toward interest while in school can prevent hundreds of dollars in capitalized interest.</div>
+          `
+        },
+        {
+          type: 'quiz',
+          question: 'What is "interest capitalization"?',
+          options: ['The government paying off your interest for you', 'Unpaid interest being added to your loan principal, increasing what you owe', 'A penalty fee charged when you miss a payment', 'The process of converting loans into grants'],
+          correct: 1,
+          feedback: {
+            correct: '✅ Correct! Capitalization means unpaid interest gets folded into your loan balance. You then pay interest on a larger number — making your loan more expensive over time.',
+            wrong: '❌ Capitalization happens when unpaid interest is added to your principal. You then owe interest on a bigger balance, which is why paying interest while in school matters.'
+          }
+        },
+        {
+          type: 'lesson',
+          title: 'How much can you actually borrow?',
+          content: `
+            <p class="lesson-text">Federal loans have annual and lifetime limits based on your year in school and dependency status. You cannot borrow more than these caps — even if your school costs more.</p>
+            <div class="lesson-stat-row">
+              <div class="lesson-stat"><span class="lesson-stat-value">1️⃣</span><div class="lesson-stat-label">Freshman<br/><strong style="color:#2d5a3d">$5,500/yr</strong></div></div>
+              <div class="lesson-stat"><span class="lesson-stat-value">2️⃣</span><div class="lesson-stat-label">Sophomore<br/><strong style="color:#2d5a3d">$6,500/yr</strong></div></div>
+              <div class="lesson-stat"><span class="lesson-stat-value">3️⃣</span><div class="lesson-stat-label">Junior/Senior<br/><strong style="color:#2d5a3d">$7,500/yr</strong></div></div>
+            </div>
+            <p class="lesson-text">These are limits for <strong>dependent undergrads</strong>. Independent students can borrow more. The <strong>lifetime limit</strong> for dependent undergrads is <strong>$31,000</strong> — with no more than $23,000 subsidized.</p>
+            <div class="lesson-callout"><span class="callout-icon">💡</span><span>UW tuition alone can exceed $12,000/year for in-state students. Federal loan limits rarely cover the full cost — which is why grants, scholarships, and work-study matter so much.</span></div>
+          `
+        },
+        {
+          type: 'quiz',
+          question: 'What is the annual federal loan limit for a dependent freshman undergrad?',
+          options: ['$3,500', '$5,500', '$7,500', '$12,500'],
+          correct: 1,
+          feedback: {
+            correct: '✅ Right! Dependent freshmen can borrow up to $5,500 in federal loans per year, with a maximum of $3,500 of that being subsidized.',
+            wrong: '❌ The annual federal loan limit for a dependent freshman is $5,500. Limits increase as you advance through school, up to $7,500/year for juniors and seniors.'
+          }
+        },
+        {
+          type: 'lesson',
+          title: 'Parent PLUS Loans',
+          content: `
+            <p class="lesson-text"><strong>Parent PLUS Loans</strong> are federal loans taken out by your parents — not you — to help cover college costs beyond what your aid package covers. They can borrow up to the full cost of attendance minus other aid.</p>
+            <div class="lesson-callout"><span class="callout-icon">⚠️</span><span>PLUS Loans have <strong>higher interest rates</strong> (currently ~9%) and fewer repayment protections than student loans. They are in your parent's name — your parent is legally responsible, not you.</span></div>
+            <p class="lesson-text">Some families informally agree that the student will repay the PLUS Loan, but this arrangement has no legal standing. If your parent can't pay, <strong>their</strong> credit is damaged.</p>
+            <div class="lesson-highlight">🗣️ Have an honest conversation with your family about PLUS Loans before they're taken out. Understand who is responsible and what the monthly payment will look like after graduation.</div>
+          `
+        },
+        {
+          type: 'lesson',
+          title: 'State & institutional loans',
+          content: `
+            <p class="lesson-text">Beyond federal options, some states and schools offer their own loan programs — often with competitive rates and flexible terms tailored to local students.</p>
+            <div class="lesson-stat-row">
+              <div class="lesson-stat"><span class="lesson-stat-value">🏔️</span><div class="lesson-stat-label">Washington State<br/><strong style="color:#2d5a3d">WSAC programs</strong></div></div>
+              <div class="lesson-stat"><span class="lesson-stat-value">🏫</span><div class="lesson-stat-label">UW Institutional<br/><strong style="color:#185fa5">Short-term aid</strong></div></div>
+            </div>
+            <p class="lesson-text">The <strong>Washington Student Achievement Council (WSAC)</strong> offers several loan and grant programs for WA residents. UW also has emergency loans and short-term interest-free loans for students in financial crisis — available through the Financial Aid office.</p>
+            <div class="lesson-callout"><span class="callout-icon">🌏</span><span><strong>AANHPI-specific note:</strong> Some state and institutional aid programs have specific eligibility for first-generation students or those from underrepresented communities. Always ask the aid office — aid you don't apply for is aid you don't receive.</span></div>
+          `
+        },
+        {
+          type: 'quiz',
+          question: 'Which of the following is true about Parent PLUS Loans?',
+          options: ['They are taken out in the student\'s name and protected by student repayment plans', 'They have lower interest rates than regular student loans', 'They are in the parent\'s name, with the parent legally responsible for repayment', 'They are automatically forgiven after 10 years'],
+          correct: 2,
+          feedback: {
+            correct: '✅ Correct! Parent PLUS Loans are the parent\'s legal responsibility. They have higher interest rates (~9%) and fewer protections than direct student loans.',
+            wrong: '❌ Parent PLUS Loans are taken out by parents, not students. The parent is legally responsible. They also carry higher interest rates than standard student loans.'
+          }
+        },
+        {
+          type: 'lesson',
+          title: 'What happens if you default?',
+          content: `
+            <p class="lesson-text"><strong>Default</strong> happens when you fail to make loan payments for an extended period — typically 270 days (about 9 months) for federal loans. The consequences are serious and long-lasting.</p>
+            <div class="lesson-stat-row">
+              <div class="lesson-stat"><span class="lesson-stat-value">📉</span><div class="lesson-stat-label">Credit score<br/><strong style="color:#c0392b">Severely damaged</strong></div></div>
+              <div class="lesson-stat"><span class="lesson-stat-value">💸</span><div class="lesson-stat-label">Tax refunds<br/><strong style="color:#c0392b">Can be seized</strong></div></div>
+              <div class="lesson-stat"><span class="lesson-stat-value">🚫</span><div class="lesson-stat-label">Future aid<br/><strong style="color:#c0392b">Ineligible</strong></div></div>
+            </div>
+            <div class="lesson-callout"><span class="callout-icon">🆘</span><span><strong>If you're struggling to make payments, act before you default.</strong> Federal loans offer deferment, forbearance, and income-driven plans that can pause or reduce payments. Silence makes it worse.</span></div>
+            <p class="lesson-text">Your loan servicer is required to work with you. Call them — it's their job to help you find options before default occurs.</p>
+          `
+        },
+        {
+          type: 'quiz',
+          question: 'If you\'re struggling to afford your loan payments, what should you do first?',
+          options: ['Stop paying and hope it gets resolved on its own', 'Immediately declare bankruptcy', 'Contact your loan servicer to explore deferment, forbearance, or an income-driven plan', 'Take out a private loan to cover the payments'],
+          correct: 2,
+          feedback: {
+            correct: '✅ Exactly right! Your loan servicer has options to help you — income-driven plans, deferment, and forbearance can all prevent default. The key is reaching out early.',
+            wrong: '❌ If you\'re struggling, contact your loan servicer immediately. They can offer deferment, forbearance, or income-driven repayment — all of which are better than defaulting.'
+          }
+        },
+        {
+          type: 'lesson',
+          title: 'Smart borrowing: the golden rules',
+          content: `
+            <p class="lesson-text">You've made it through the deep dive. Here are the principles that will save you thousands of dollars over your lifetime:</p>
+            <div class="lesson-highlight">1️⃣ <strong>Borrow only what you need</strong> — not the maximum offered. Every dollar borrowed is a dollar plus interest to repay.</div>
+            <div class="lesson-highlight">2️⃣ <strong>Exhaust subsidized loans first</strong>, then unsubsidized, then consider other options.</div>
+            <div class="lesson-highlight">3️⃣ <strong>Pay interest while in school</strong> if you can — even $25/month prevents capitalization.</div>
+            <div class="lesson-highlight">4️⃣ <strong>Know your servicer</strong> — they manage your account and are your first call if you have trouble.</div>
+            <div class="lesson-highlight">5️⃣ <strong>Track your total debt</strong> at studentaid.gov — ignorance is expensive.</div>
+            <div class="lesson-callout"><span class="callout-icon">🌸</span><span>Financial wellness isn't about having no loans — it's about understanding them and making intentional choices. You're already doing that by being here.</span></div>
+          `
+        }
+      ]
+    },
+    {
+      id: 'fafsa-guide',
+      title: 'FAFSA Decoded',
+      description: 'Navigate the application that unlocks federal aid',
+      emoji: '📋',
+      bannerColor: '#185fa5',
+      tag: 'New',
+      tagBg: '#e6f1fb', tagColor: '#185fa5',
+      steps: [
+        {
+          type: 'lesson',
+          title: 'What is FAFSA?',
+          content: `
+            <p class="lesson-text">The <strong>Free Application for Federal Student Aid (FAFSA)</strong> is the form you fill out to access federal grants, loans, and work-study programs. It's the single most important financial aid form you'll ever complete.</p>
+            <div class="lesson-highlight">🗓️ FAFSA opens every October 1st for the following school year. Filing early means more money — some aid is first-come, first-served.</div>
+            <p class="lesson-text">Millions of students leave free money on the table by not filing. Even if you think your family earns too much, you may still qualify for unsubsidized loans or work-study.</p>
+          `
+        },
+        {
+          type: 'lesson',
+          title: 'What FAFSA determines',
+          content: `
+            <p class="lesson-text">FAFSA calculates your <strong>Student Aid Index (SAI)</strong> — a number that represents how much your family can contribute toward college costs.</p>
+            <div class="lesson-stat-row">
+              <div class="lesson-stat"><span class="lesson-stat-value">🎁</span><div class="lesson-stat-label">Pell Grants<br/><strong style="color:#2d5a3d">free money</strong></div></div>
+              <div class="lesson-stat"><span class="lesson-stat-value">💼</span><div class="lesson-stat-label">Work-Study<br/><strong style="color:#185fa5">part-time jobs</strong></div></div>
+              <div class="lesson-stat"><span class="lesson-stat-value">🏦</span><div class="lesson-stat-label">Federal Loans<br/><strong style="color:#854f0b">lower rates</strong></div></div>
+            </div>
+            <p class="lesson-text">Your school uses your SAI to build a <strong>financial aid package</strong> — a mix of grants (free), work-study, and loans to help cover your cost of attendance.</p>
+          `
+        },
+        {
+          type: 'quiz',
+          question: 'When is the best time to submit your FAFSA?',
+          options: ['Spring, closer to your enrollment date', 'As early as possible after October 1st', 'December, after tax season', 'It doesn\'t matter when you file'],
+          correct: 1,
+          feedback: {
+            correct: '✅ Right! FAFSA opens October 1st and some state and school aid is first-come, first-served. Filing early gives you the best chance at the most aid.',
+            wrong: '❌ Earlier is always better with FAFSA. It opens October 1st, and some grants and scholarships are first-come, first-served. Don\'t wait!'
+          }
+        },
+        {
+          type: 'lesson',
+          title: 'What you\'ll need to file',
+          content: `
+            <p class="lesson-text">Before you start your FAFSA, gather these documents:</p>
+            <div class="lesson-highlight">📄 Your (and parents') Social Security Numbers or ITIN · Prior-year tax returns · W-2s · Bank and investment statements · Records of untaxed income</div>
+            <div class="lesson-callout"><span class="callout-icon">🌏</span><span><strong>Undocumented students:</strong> You may not qualify for federal aid, but Washington state's WASFA covers state aid. Check with the UW Financial Aid office — they're here to help.</span></div>
+            <p class="lesson-text">Once submitted, you'll get a <strong>Student Aid Report (SAR)</strong> confirming your information. Schools you listed will then send you financial aid offer letters.</p>
+          `
+        },
+        {
+          type: 'quiz',
+          question: 'What is the Student Aid Index (SAI)?',
+          options: ['The total amount of loans you can borrow', 'A score that determines how much federal aid you receive', 'Your GPA requirement for scholarships', 'The interest rate on your loans'],
+          correct: 1,
+          feedback: {
+            correct: '✅ Correct! The SAI represents your expected family contribution and is used by schools to determine your financial aid package — grants, work-study, and loans.',
+            wrong: '❌ The SAI (Student Aid Index) is a number that reflects your family\'s financial situation. Schools use it to decide how much aid to offer you.'
+          }
+        }
+      ]
+    },
+    {
+      id: 'repayment',
+      title: 'Loan Repayment Strategies',
+      description: 'Pay off smarter, not harder',
+      emoji: '🌱',
+      bannerColor: '#7fb069',
+      tag: 'Module 3',
+      tagBg: '#eef5eb', tagColor: '#3b6d11',
+      steps: [
+        {
+          type: 'lesson',
+          title: 'When repayment begins',
+          content: `
+            <p class="lesson-text">For most federal loans, you have a <strong>6-month grace period</strong> after you graduate, leave school, or drop below half-time enrollment before repayment begins.</p>
+            <div class="lesson-highlight">📅 If you graduate in June, your first loan payment is typically due in December. Use this time to find a job and set up your budget.</div>
+            <p class="lesson-text">During your grace period, unsubsidized loans are still accruing interest — so even a few small payments now can reduce your total balance significantly.</p>
+          `
+        },
+        {
+          type: 'lesson',
+          title: 'Repayment plan options',
+          content: `
+            <p class="lesson-text">The government offers several ways to repay your loans. Here are the most important:</p>
+            <div class="lesson-stat-row">
+              <div class="lesson-stat"><span class="lesson-stat-value">📊</span><div class="lesson-stat-label">Standard<br/><strong style="color:#2d5a3d">10-year fixed</strong></div></div>
+              <div class="lesson-stat"><span class="lesson-stat-value">📈</span><div class="lesson-stat-label">Graduated<br/><strong style="color:#185fa5">starts low</strong></div></div>
+              <div class="lesson-stat"><span class="lesson-stat-value">💰</span><div class="lesson-stat-label">Income-driven<br/><strong style="color:#854f0b">% of income</strong></div></div>
+            </div>
+            <p class="lesson-text"><strong>Income-Driven Repayment (IDR)</strong> plans cap your monthly payment at a percentage of your discretionary income — as low as $0 if you're earning very little. After 20–25 years, the remaining balance may be forgiven.</p>
+            <div class="lesson-callout"><span class="callout-icon">💡</span><span>The SAVE plan is the newest IDR option and often results in the lowest monthly payments for recent graduates.</span></div>
+          `
+        },
+        {
+          type: 'quiz',
+          question: 'What is the benefit of an Income-Driven Repayment (IDR) plan?',
+          options: ['It eliminates your loan balance immediately', 'Your payment is capped based on your income, with possible forgiveness after 20–25 years', 'It increases your credit score automatically', 'It converts loans into grants'],
+          correct: 1,
+          feedback: {
+            correct: '✅ Right! IDR plans make repayment manageable by tying payments to your income. If you go into a lower-paying field, your payments stay affordable.',
+            wrong: '❌ IDR plans cap your monthly payment as a percentage of your income — which can be as low as $0. Any remaining balance after 20–25 years may be forgiven.'
+          }
+        },
+        {
+          type: 'lesson',
+          title: 'Public Service Loan Forgiveness',
+          content: `
+            <p class="lesson-text"><strong>Public Service Loan Forgiveness (PSLF)</strong> is one of the most powerful loan benefits available. If you work full-time at a qualifying nonprofit or government job, your federal loans can be forgiven after just 10 years of payments.</p>
+            <div class="lesson-highlight">🏛️ UW employees, teachers, nurses, and government workers often qualify. That's a big reason why your major choice and first job matter financially.</div>
+            <div class="lesson-callout"><span class="callout-icon">⚠️</span><span>You must be on an income-driven repayment plan and make 120 qualifying payments. Start tracking early — every month counts.</span></div>
+            <p class="lesson-text">The UW Financial Aid office can help you determine if your career path qualifies for PSLF.</p>
+          `
+        },
+        {
+          type: 'quiz',
+          question: 'How many years of qualifying payments does Public Service Loan Forgiveness require?',
+          options: ['5 years', '10 years', '20 years', '25 years'],
+          correct: 1,
+          feedback: {
+            correct: '✅ Correct! PSLF requires 120 payments (10 years) while working full-time at a qualifying nonprofit or government employer. The remaining balance is then forgiven tax-free.',
+            wrong: '❌ PSLF requires 10 years (120 payments) of qualifying payments while working at a nonprofit or government organization. It\'s one of the fastest paths to loan forgiveness.'
+          }
+        }
+      ]
+    }
+  ];
+
+  // ── Read course ID from URL ───────────────────────────────────────────────
+  const params   = new URLSearchParams(window.location.search);
+  const courseId = params.get('id');
+  const course   = COURSES.find(c => c.id === courseId);
+
+  // ── Progress storage ─────────────────────────────────────────────────────
+  let courseProgress = JSON.parse(localStorage.getItem('bloom_learn_progress') || '{}');
+  function getProgress() { return courseProgress[courseId] || { completed: [] }; }
+  function markStepDone(idx) {
+    if (!courseProgress[courseId]) courseProgress[courseId] = { completed: [] };
+    if (!courseProgress[courseId].completed.includes(idx)) courseProgress[courseId].completed.push(idx);
+    localStorage.setItem('bloom_learn_progress', JSON.stringify(courseProgress));
+  }
+
+  // ── State ────────────────────────────────────────────────────────────────
+  let activeStep   = 0;
+  let quizAnswered = false;
+
+  // ── Build page shell ─────────────────────────────────────────────────────
+  function buildShell() {
+    const prog     = getProgress();
+    const total    = course.steps.length;
+    const done     = prog.completed.length;
+    const pct      = Math.round(done / total * 100);
+
+    // Find first incomplete step
+    activeStep = total - 1;
+    for (let i = 0; i < total; i++) {
+      if (!prog.completed.includes(i)) { activeStep = i; break; }
+    }
+
+    document.title = course.title + ' – BLOOM';
+    document.getElementById('app').innerHTML = `
+      <div class="course-hero" style="background:${course.bannerColor};">
+        <a class="hero-back-btn" href="learn.html">‹</a>
+        <div class="hero-emoji">${course.emoji}</div>
+        <div class="hero-text">
+          <div class="hero-tag">${course.tag}</div>
+          <div class="hero-title">${course.title}</div>
+        </div>
+      </div>
+
+      <div class="progress-strip">
+        <div class="progress-strip-top">
+          <span id="lop-text">Step 1 of ${total}</span>
+          <span id="lop-pct">${pct}%</span>
+        </div>
+        <div class="progress-strip-bar-bg">
+          <div class="progress-strip-bar-fill" id="lop-fill" style="width:${pct}%"></div>
+        </div>
+      </div>
+
+      <div class="step-dots" id="step-dots"></div>
+      <div id="lesson-content"></div>
+
+      <div class="lesson-nav-row" id="lesson-nav-row">
+        <button class="lesson-prev-btn" id="prev-btn" onclick="prevStep()">‹</button>
+        <button class="lesson-next-btn" id="next-btn" onclick="nextStep()">Continue →</button>
+      </div>
+    `;
+
+    renderStep();
+  }
+
+  // ── Render step ──────────────────────────────────────────────────────────
+  function renderStep() {
+    const steps = course.steps;
+    const total = steps.length;
+    const step  = steps[activeStep];
+    const prog  = getProgress();
+    quizAnswered = false;
+
+    // Progress numbers
+    const pct = Math.round(activeStep / total * 100);
+    document.getElementById('lop-text').textContent = 'Step ' + (activeStep + 1) + ' of ' + total;
+    document.getElementById('lop-pct').textContent  = pct + '%';
+    document.getElementById('lop-fill').style.width = pct + '%';
+
+    // Dots
+    document.getElementById('step-dots').innerHTML = steps.map((_, i) => {
+      let cls = 'step-dot';
+      if (prog.completed.includes(i)) cls += ' done';
+      if (i === activeStep) cls += ' active';
+      return '<div class="' + cls + '"></div>';
+    }).join('');
+
+    // Content
+    const contentEl = document.getElementById('lesson-content');
+    const isLast = activeStep === total - 1;
+
+    if (step.type === 'lesson') {
+      contentEl.innerHTML = `
+        <div class="lesson-card">
+          <div class="lesson-card-header">
+            <div class="lesson-step-label">Step ${activeStep + 1} · ${course.title}</div>
+            <div class="lesson-card-title">${step.title}</div>
+          </div>
+          <div class="lesson-card-body">${step.content}</div>
+        </div>`;
+      document.getElementById('next-btn').disabled = false;
+      document.getElementById('next-btn').textContent = isLast ? 'Finish 🎉' : 'Continue →';
+      document.getElementById('prev-btn').style.display = activeStep === 0 ? 'none' : '';
+    }
+
+    if (step.type === 'quiz') {
+      const letters = ['A', 'B', 'C', 'D'];
+      contentEl.innerHTML = `
+        <div class="quiz-wrap">
+          <div class="quiz-label">Quick Check · Step ${activeStep + 1}</div>
+          <div class="quiz-question">${step.question}</div>
+          <div class="quiz-options" id="quiz-options">
+            ${step.options.map((opt, i) => `
+              <button class="quiz-option" onclick="answerQuiz(${i})" id="opt-${i}">
+                <div class="option-letter">${letters[i]}</div>${opt}
+              </button>`).join('')}
+          </div>
+          <div class="quiz-feedback" id="quiz-feedback"></div>
+        </div>`;
+      const nextBtn = document.getElementById('next-btn');
+      nextBtn.disabled = !prog.completed.includes(activeStep);
+      nextBtn.textContent = isLast ? 'Finish 🎉' : 'Continue →';
+      document.getElementById('prev-btn').style.display = activeStep === 0 ? 'none' : '';
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function answerQuiz(chosen) {
+    if (quizAnswered) return;
+    quizAnswered = true;
+    const step = course.steps[activeStep];
+    const isRight = chosen === step.correct;
+    document.querySelectorAll('.quiz-option').forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === step.correct) btn.classList.add('correct');
+      else if (i === chosen) btn.classList.add('wrong');
+    });
+    const fb = document.getElementById('quiz-feedback');
+    fb.className = 'quiz-feedback show ' + (isRight ? 'correct-fb' : 'wrong-fb');
+    fb.textContent = isRight ? step.feedback.correct : step.feedback.wrong;
+    document.getElementById('next-btn').disabled = false;
+    markStepDone(activeStep);
+  }
+
+  function nextStep() {
+    markStepDone(activeStep);
+    if (activeStep >= course.steps.length - 1) {
+      showCompletion();
+    } else {
+      activeStep++;
+      renderStep();
+    }
+  }
+
+  function prevStep() {
+    if (activeStep > 0) { activeStep--; renderStep(); }
+  }
+
+  function showCompletion() {
+    document.getElementById('lesson-content').innerHTML = `
+      <div class="completion-card">
+        <span class="completion-emoji">🌸</span>
+        <div class="completion-title">Course complete!</div>
+        <div class="completion-sub">You finished <strong>${course.title}</strong>. Keep growing your financial knowledge — every lesson gets you closer to financial confidence.</div>
+        <a class="completion-btn" href="learn.html">Back to courses</a>
+      </div>`;
+    document.getElementById('lesson-nav-row').style.display = 'none';
+    document.getElementById('step-dots').innerHTML = '';
+    document.getElementById('lop-fill').style.width = '100%';
+    document.getElementById('lop-pct').textContent = '100%';
+    document.getElementById('lop-text').textContent = 'Completed!';
+  }
+
+  // ── Not found state ──────────────────────────────────────────────────────
+  function showNotFound() {
+    document.getElementById('app').innerHTML = `
+      <div class="not-found">
+        <div class="not-found-emoji">🔍</div>
+        <div class="not-found-title">Course not found</div>
+        <div class="not-found-sub">We couldn't find that course. Head back and pick one.</div>
+        <a class="not-found-btn" href="learn.html">Back to Learn</a>
+      </div>`;
+  }
+
+  // ── Init ─────────────────────────────────────────────────────────────────
+  if (course) { buildShell(); } else { showNotFound(); }
+</script>
+</body>
+</html>
