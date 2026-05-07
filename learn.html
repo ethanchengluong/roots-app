@@ -602,6 +602,196 @@
             correct: '✅ Exactly! Unsubsidized loans start accruing interest right away, even while you\'re in school. This is why subsidized loans are more valuable if you qualify.',
             wrong: '❌ Unsubsidized loans start accruing interest the moment you borrow them — even while you\'re still in school. The interest can add up quickly!'
           }
+        },
+        {
+          type: 'lesson',
+          title: 'Subsidized loans: the better deal',
+          content: `
+            <p class="lesson-text"><strong>Direct Subsidized Loans</strong> are the most favorable federal loan you can get. The government pays the interest for you while you're enrolled at least half-time, during your 6-month grace period, and during approved deferment periods.</p>
+            <div class="lesson-stat-row">
+              <div class="lesson-stat">
+                <span class="lesson-stat-value">🏛️</span>
+                <div class="lesson-stat-label">Who pays interest<br/><strong style="color:#2d5a3d">The government</strong></div>
+              </div>
+              <div class="lesson-stat">
+                <span class="lesson-stat-value">📋</span>
+                <div class="lesson-stat-label">Eligibility<br/><strong style="color:#185fa5">Need-based</strong></div>
+              </div>
+            </div>
+            <p class="lesson-text">The catch: you must demonstrate <strong>financial need</strong> through your FAFSA to qualify. Not everyone gets subsidized loans — but if you do, always use them first before touching unsubsidized loans.</p>
+            <div class="lesson-highlight">💡 A $5,500 subsidized loan costs you nothing in interest during 4 years of school. The same unsubsidized loan could grow to ~$6,600 before you make a single payment.</div>
+          `
+        },
+        {
+          type: 'lesson',
+          title: 'Unsubsidized loans: available to everyone',
+          content: `
+            <p class="lesson-text"><strong>Direct Unsubsidized Loans</strong> are available to all students regardless of financial need — but the interest clock starts the moment your loan is disbursed.</p>
+            <div class="lesson-callout">
+              <span class="callout-icon">⚠️</span>
+              <span>If you don't pay the interest while in school, it <strong>capitalizes</strong> — meaning it gets added to your principal balance, and then you pay interest on a larger amount. This is called interest capitalization.</span>
+            </div>
+            <p class="lesson-text">Example: Borrow $7,000 at 6.5% interest. After 4 years without paying interest, ~$1,900 in interest capitalizes. Now you owe $8,900 — and your monthly payment is calculated on that higher amount.</p>
+            <div class="lesson-highlight">📐 Even paying $25–$50/month toward interest while in school can prevent hundreds of dollars in capitalized interest.</div>
+          `
+        },
+        {
+          type: 'quiz',
+          question: 'What is "interest capitalization"?',
+          options: [
+            'The government paying off your interest for you',
+            'Unpaid interest being added to your loan principal, increasing what you owe',
+            'A penalty fee charged when you miss a payment',
+            'The process of converting loans into grants'
+          ],
+          correct: 1,
+          feedback: {
+            correct: '✅ Correct! Capitalization means unpaid interest gets folded into your loan balance. You then pay interest on a larger number — making your loan more expensive over time.',
+            wrong: '❌ Capitalization happens when unpaid interest is added to your principal. You then owe interest on a bigger balance, which is why paying interest while in school matters.'
+          }
+        },
+        {
+          type: 'lesson',
+          title: 'How much can you actually borrow?',
+          content: `
+            <p class="lesson-text">Federal loans have annual and lifetime limits based on your year in school and dependency status. You cannot borrow more than these caps — even if your school costs more.</p>
+            <div class="lesson-stat-row">
+              <div class="lesson-stat">
+                <span class="lesson-stat-value">1️⃣</span>
+                <div class="lesson-stat-label">Freshman<br/><strong style="color:#2d5a3d">$5,500/yr</strong></div>
+              </div>
+              <div class="lesson-stat">
+                <span class="lesson-stat-value">2️⃣</span>
+                <div class="lesson-stat-label">Sophomore<br/><strong style="color:#2d5a3d">$6,500/yr</strong></div>
+              </div>
+              <div class="lesson-stat">
+                <span class="lesson-stat-value">3️⃣</span>
+                <div class="lesson-stat-label">Junior/Senior<br/><strong style="color:#2d5a3d">$7,500/yr</strong></div>
+              </div>
+            </div>
+            <p class="lesson-text">These are limits for <strong>dependent undergrads</strong>. Independent students can borrow more. The <strong>lifetime limit</strong> for dependent undergrads is <strong>$31,000</strong> — with no more than $23,000 subsidized.</p>
+            <div class="lesson-callout">
+              <span class="callout-icon">💡</span>
+              <span>UW tuition alone can exceed $12,000/year for in-state students. Federal loan limits rarely cover the full cost — which is why grants, scholarships, and work-study matter so much.</span>
+            </div>
+          `
+        },
+        {
+          type: 'quiz',
+          question: 'What is the annual federal loan limit for a dependent freshman undergrad?',
+          options: ['$3,500', '$5,500', '$7,500', '$12,500'],
+          correct: 1,
+          feedback: {
+            correct: '✅ Right! Dependent freshmen can borrow up to $5,500 in federal loans per year, with a maximum of $3,500 of that being subsidized.',
+            wrong: '❌ The annual federal loan limit for a dependent freshman is $5,500. Limits increase as you advance through school, up to $7,500/year for juniors and seniors.'
+          }
+        },
+        {
+          type: 'lesson',
+          title: 'Parent PLUS Loans',
+          content: `
+            <p class="lesson-text"><strong>Parent PLUS Loans</strong> are federal loans taken out by your parents — not you — to help cover college costs beyond what your aid package covers. They can borrow up to the full cost of attendance minus other aid.</p>
+            <div class="lesson-callout">
+              <span class="callout-icon">⚠️</span>
+              <span>PLUS Loans have <strong>higher interest rates</strong> (currently ~9%) and fewer repayment protections than student loans. They are in your parent's name — your parent is legally responsible, not you.</span>
+            </div>
+            <p class="lesson-text">Some families informally agree that the student will repay the PLUS Loan, but this arrangement has no legal standing. If your parent can't pay, <strong>their</strong> credit is damaged.</p>
+            <div class="lesson-highlight">🗣️ Have an honest conversation with your family about PLUS Loans before they're taken out. Understand who is responsible and what the monthly payment will look like after graduation.</div>
+          `
+        },
+        {
+          type: 'lesson',
+          title: 'State & institutional loans',
+          content: `
+            <p class="lesson-text">Beyond federal options, some states and schools offer their own loan programs — often with competitive rates and flexible terms tailored to local students.</p>
+            <div class="lesson-stat-row">
+              <div class="lesson-stat">
+                <span class="lesson-stat-value">🏔️</span>
+                <div class="lesson-stat-label">Washington State<br/><strong style="color:#2d5a3d">WSAC programs</strong></div>
+              </div>
+              <div class="lesson-stat">
+                <span class="lesson-stat-value">🏫</span>
+                <div class="lesson-stat-label">UW Institutional<br/><strong style="color:#185fa5">Short-term aid</strong></div>
+              </div>
+            </div>
+            <p class="lesson-text">The <strong>Washington Student Achievement Council (WSAC)</strong> offers several loan and grant programs for WA residents. UW also has emergency loans and short-term interest-free loans for students in financial crisis — available through the Financial Aid office.</p>
+            <div class="lesson-callout">
+              <span class="callout-icon">🌏</span>
+              <span><strong>AANHPI-specific note:</strong> Some state and institutional aid programs have specific eligibility for first-generation students or those from underrepresented communities. Always ask the aid office — aid you don't apply for is aid you don't receive.</span>
+            </div>
+          `
+        },
+        {
+          type: 'quiz',
+          question: 'Which of the following is true about Parent PLUS Loans?',
+          options: [
+            'They are taken out in the student\'s name and protected by student repayment plans',
+            'They have lower interest rates than regular student loans',
+            'They are in the parent\'s name, with the parent legally responsible for repayment',
+            'They are automatically forgiven after 10 years'
+          ],
+          correct: 2,
+          feedback: {
+            correct: '✅ Correct! Parent PLUS Loans are the parent\'s legal responsibility. They have higher interest rates (~9%) and fewer protections than direct student loans.',
+            wrong: '❌ Parent PLUS Loans are taken out by parents, not students. The parent is legally responsible. They also carry higher interest rates than standard student loans.'
+          }
+        },
+        {
+          type: 'lesson',
+          title: 'What happens if you default?',
+          content: `
+            <p class="lesson-text"><strong>Default</strong> happens when you fail to make loan payments for an extended period — typically 270 days (about 9 months) for federal loans. The consequences are serious and long-lasting.</p>
+            <div class="lesson-stat-row">
+              <div class="lesson-stat">
+                <span class="lesson-stat-value">📉</span>
+                <div class="lesson-stat-label">Credit score<br/><strong style="color:#c0392b">Severely damaged</strong></div>
+              </div>
+              <div class="lesson-stat">
+                <span class="lesson-stat-value">💸</span>
+                <div class="lesson-stat-label">Tax refunds<br/><strong style="color:#c0392b">Can be seized</strong></div>
+              </div>
+              <div class="lesson-stat">
+                <span class="lesson-stat-value">🚫</span>
+                <div class="lesson-stat-label">Future aid<br/><strong style="color:#c0392b">Ineligible</strong></div>
+              </div>
+            </div>
+            <div class="lesson-callout">
+              <span class="callout-icon">🆘</span>
+              <span><strong>If you're struggling to make payments, act before you default.</strong> Federal loans offer deferment, forbearance, and income-driven plans that can pause or reduce payments. Silence makes it worse.</span>
+            </div>
+            <p class="lesson-text">Your loan servicer is required to work with you. Call them — it's their job to help you find options before default occurs.</p>
+          `
+        },
+        {
+          type: 'quiz',
+          question: 'If you\'re struggling to afford your loan payments, what should you do first?',
+          options: [
+            'Stop paying and hope it gets resolved on its own',
+            'Immediately declare bankruptcy',
+            'Contact your loan servicer to explore deferment, forbearance, or an income-driven plan',
+            'Take out a private loan to cover the payments'
+          ],
+          correct: 2,
+          feedback: {
+            correct: '✅ Exactly right! Your loan servicer has options to help you — income-driven plans, deferment, and forbearance can all prevent default. The key is reaching out early.',
+            wrong: '❌ If you\'re struggling, contact your loan servicer immediately. They can offer deferment, forbearance, or income-driven repayment — all of which are better than defaulting.'
+          }
+        },
+        {
+          type: 'lesson',
+          title: 'Smart borrowing: the golden rules',
+          content: `
+            <p class="lesson-text">You've made it through the deep dive. Here are the principles that will save you thousands of dollars over your lifetime:</p>
+            <div class="lesson-highlight">1️⃣ <strong>Borrow only what you need</strong> — not the maximum offered. Every dollar borrowed is a dollar plus interest to repay.</div>
+            <div class="lesson-highlight">2️⃣ <strong>Exhaust subsidized loans first</strong>, then unsubsidized, then consider other options.</div>
+            <div class="lesson-highlight">3️⃣ <strong>Pay interest while in school</strong> if you can — even $25/month prevents capitalization.</div>
+            <div class="lesson-highlight">4️⃣ <strong>Know your servicer</strong> — they manage your account and are your first call if you have trouble.</div>
+            <div class="lesson-highlight">5️⃣ <strong>Track your total debt</strong> at studentaid.gov — ignorance is expensive.</div>
+            <div class="lesson-callout">
+              <span class="callout-icon">🌸</span>
+              <span>Financial wellness isn't about having no loans — it's about understanding them and making intentional choices. You're already doing that by being here.</span>
+            </div>
+          `
         }
       ]
     },
