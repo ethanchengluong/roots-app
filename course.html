@@ -192,6 +192,45 @@
     body.theme-evening .lesson-callout { background: rgba(232,160,48,0.12); color: #e8c080; }
     .callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
 
+    /* Cultural spotlight card */
+    .cultural-card {
+      background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+      border: 1.5px solid #f0abcf;
+      border-radius: 14px;
+      padding: 14px 14px 14px 16px;
+      margin: 0.75rem 0;
+      font-size: 12px;
+      color: #831843;
+      line-height: 1.65;
+      position: relative;
+    }
+    .cultural-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 4px;
+      background: linear-gradient(to bottom, #ec4899, #be185d);
+      border-radius: 4px 0 0 4px;
+    }
+    .cultural-card-label {
+      font-size: 9px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #be185d;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    body.theme-evening .cultural-card {
+      background: linear-gradient(135deg, rgba(236,72,153,0.08) 0%, rgba(190,24,93,0.12) 100%);
+      border-color: rgba(236,72,153,0.25);
+      color: #f9a8d4;
+    }
+    body.theme-evening .cultural-card-label { color: #f472b6; }
+    body.theme-evening .cultural-card::before { background: linear-gradient(to bottom, #ec4899, #9d174d); }
+
     .lesson-stat-row { display: flex; gap: 8px; margin: 0.75rem 0; }
     .lesson-stat { flex: 1; background: var(--bg-featured); border-radius: 12px; padding: 10px 12px; text-align: center; }
     .lesson-stat-value { font-family: 'DM Serif Display', serif; font-size: 18px; color: #2d5a3d; display: block; }
@@ -341,6 +380,19 @@
         },
         {
           type: 'lesson',
+          title: 'Loans & our community',
+          content: `
+            <p class="lesson-text">For many AANHPI families, debt carries a weight beyond dollars. In cultures across East, Southeast, and South Asia, borrowing money — especially for education — can feel like a source of shame, or a burden that reflects on the whole family.</p>
+            <div class="cultural-card">
+              <div class="cultural-card-label">🌸 Community context</div>
+              In many Asian households, the expectation is that education should be paid for outright — through family savings, sacrifice, or scholarships. Talking openly about taking out loans can feel like admitting failure, even when it's the most practical and responsible choice.
+            </div>
+            <p class="lesson-text">But here's the reality: <strong>over 60% of college students</strong> take out loans — including many AANHPI students at UW. Using a loan strategically isn't a sign of struggle. It's a tool, and knowing how to use it is a form of financial strength.</p>
+            <div class="lesson-highlight">💬 You don't have to carry the financial conversation alone. BLOOM is here to help you understand the options — so you can have informed, confident conversations with your family.</div>
+          `
+        },
+        {
+          type: 'lesson',
           title: 'Federal vs. Private loans',
           content: `
             <p class="lesson-text">There are two main types of student loans:</p>
@@ -361,6 +413,22 @@
             correct: '✅ Correct! Federal loans come from the government and offer lower interest rates, flexible repayment, and protections like income-driven plans and forgiveness programs.',
             wrong: '❌ Federal loans are almost always the better choice. They have lower rates, fixed terms, and protections that private lenders don\'t offer.'
           }
+        },
+        {
+          type: 'lesson',
+          title: 'The "model minority" myth & financial aid',
+          content: `
+            <p class="lesson-text">You may have heard that AANHPI students are less likely to receive financial aid — or been told by family not to bother applying because "we make too much." This belief has real consequences.</p>
+            <div class="cultural-card">
+              <div class="cultural-card-label">🌸 Community context</div>
+              The "model minority" stereotype paints AANHPI communities as uniformly wealthy and academically successful. In reality, AANHPI is one of the most economically diverse groups in the U.S. — with some of the highest poverty rates among Hmong, Cambodian, Laotian, and Pacific Islander communities.
+            </div>
+            <p class="lesson-text">Financial aid algorithms look at household income — but they often miss nuances like remittances sent to family abroad, multigenerational households, or cultural obligations that reduce actual disposable income.</p>
+            <div class="lesson-callout">
+              <span class="callout-icon">📣</span>
+              <span><strong>Always apply for FAFSA regardless of your family's income.</strong> You may qualify for more than you expect. And if your circumstances aren't captured by the form, you can appeal to the Financial Aid office — they have discretion to adjust your aid package.</span>
+            </div>
+          `
         },
         {
           type: 'lesson',
@@ -451,6 +519,19 @@
         },
         {
           type: 'lesson',
+          title: 'Family pressure & financial boundaries',
+          content: `
+            <p class="lesson-text">In many AANHPI families, finances are a collective — not individual — concern. Parents may take out PLUS Loans without fully explaining the terms. Older siblings may have their own debt while quietly helping younger ones. Financial decisions are made together, but not always transparently.</p>
+            <div class="cultural-card">
+              <div class="cultural-card-label">🌸 Community context</div>
+              Concepts like <em>utang na loob</em> (Filipino: debt of gratitude), filial piety in Chinese and Korean culture, or the expectation of sending remittances home in many Southeast Asian families can create invisible financial obligations that sit alongside your student loans.
+            </div>
+            <p class="lesson-text">These obligations are real and valid — but they can also make it harder to focus on your own financial health. The goal isn't to reject your family's values, but to find ways to honor them <em>and</em> protect yourself.</p>
+            <div class="lesson-highlight">💡 Knowing your own loan terms gives you the vocabulary to participate in family financial conversations — not just follow along. That's a form of care too.</div>
+          `
+        },
+        {
+          type: 'lesson',
           title: 'State & institutional loans',
           content: `
             <p class="lesson-text">Beyond federal options, some states and schools offer their own loan programs — often with competitive rates and flexible terms tailored to local students.</p>
@@ -506,6 +587,10 @@
             <div class="lesson-highlight">3️⃣ <strong>Pay interest while in school</strong> if you can — even $25/month prevents capitalization.</div>
             <div class="lesson-highlight">4️⃣ <strong>Know your servicer</strong> — they manage your account and are your first call if you have trouble.</div>
             <div class="lesson-highlight">5️⃣ <strong>Track your total debt</strong> at studentaid.gov — ignorance is expensive.</div>
+            <div class="cultural-card">
+              <div class="cultural-card-label">🌸 A note for our community</div>
+              Many of us grew up in households where money wasn't discussed openly — where financial struggle was hidden to preserve face, or where asking for help felt like weakness. But financial literacy <em>is</em> a form of respect: for yourself, for your family's sacrifices, and for the future you're building.
+            </div>
             <div class="lesson-callout"><span class="callout-icon">🌸</span><span>Financial wellness isn't about having no loans — it's about understanding them and making intentional choices. You're already doing that by being here.</span></div>
           `
         }
