@@ -1007,19 +1007,7 @@
   let quizAnswered = false;
 
   function openCourse(courseId) {
-    activeCourse = COURSES.find(c => c.id === courseId);
-    const prog = getProgress(courseId);
-    // Find first incomplete step
-    activeStep = 0;
-    for (let i = 0; i < activeCourse.steps.length; i++) {
-      if (!prog.completed.includes(i)) { activeStep = i; break; }
-      if (i === activeCourse.steps.length - 1) activeStep = i; // all done, show last
-    }
-
-    document.getElementById('course-list-view').style.display = 'none';
-    document.getElementById('lesson-view').style.display = '';
-    document.getElementById('lesson-course-title').textContent = activeCourse.title;
-    renderStep();
+    window.location.href = 'course.html?id=' + courseId;
   }
 
   function goBack() {
